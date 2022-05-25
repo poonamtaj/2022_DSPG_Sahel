@@ -1,2 +1,2 @@
 # 2022_DSPG_Sahel
-DSPG Sahel Climate Resilience Project. 
+Sensing drought in the Sahel for household climate resilience.  
