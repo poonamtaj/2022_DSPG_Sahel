@@ -1,0 +1,25 @@
+---
+title: "foodInsecurityTest"
+author: "CHB"
+date: '2022-06-10'
+output: html_document
+---
+
+```{r}
+install.packages("ggplot2")
+```
+
+```{r}
+library(readxl)
+foodInsecurity <- read_excel("C:/Users/Catherine/Documents/2022_DSPG_Sahel/Tables in excel food insecurity estimates.xlsx")
+summary(foodInsecurity)
+```
+```{r}
+str(foodInsecurity)
+```
+```{r}
+library(ggplot2)
+ggplot(foodInsecurity, aes(po)) +
+  geom_point()
+```
+
