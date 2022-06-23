@@ -86,17 +86,30 @@ ggplot() +
 ```
 summary statistics for 2011
 ```{r}
+library(gtsummary)
+library(psych)
 Summary2011<-LSMSdata[which(LSMSdata$year=="2011"),]
+#summary(Summary2011)
+#tbl_summary(Summary2011)
+#data_summary <- data.frame(unclass(summary(Summary2011)),  
+ #                          check.names = FALSE)
+#data_summary  
+
+describe(Summary2011)
 ```
 
 summary statistics for 2014
 ```{r}
 Summary2014<-LSMSdata[which(LSMSdata$year=="2014"),]
+
+describe(Summary2014)
 ```
 
 summary statistics for 2018
 ```{r}
 Summary2018<-LSMSdata[which(LSMSdata$year=="2018"),]
+
+describe(Summary2018)
 ```
 
 scatter plots
