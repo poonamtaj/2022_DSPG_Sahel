@@ -1,0 +1,43 @@
+---
+title: "nigerFoodInsecurity15/17"
+author: "CHB"
+date: '2022-06-16'
+output: html_document
+---
+
+```{r}
+library(readxl)
+foodInsecurityData <- read_excel("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/Données EVIAM 15 17 insécurite alimentaire.xlsx")
+summary(foodInsecurityData)
+```
+
+```{r}
+library(rgdal)
+nigerMap <- readOGR("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/2_shapeFile")
+```
+
+```{r}
+plot(nigerMap, col = "lightgreen", bg = "lightblue", lwd = 2)
+```
+
+```{r}
+library(sf)
+nigerShpMerged = merge(nigerMap,foodInsecurityData , by.x="admin2Name", by.y="departement_name", all = TRUE)
+plot(nigerShpMerged, aes(fill = severe_part_15))
+```
+
+Plot Charts
+```{r}
+library(ggplot2)
+ggplot(nigerShpMerged, aes(severe_part_15, severe_pop_15)) +
+  geom_point() +
+  labs( x = "Severe Part", y = "Severe Population Year: 2015") +
+  geom_smooth()
+
+ggplot(nigerShpMerged, aes(severe_part_17, severe_pop_17)) +
+  geom_point() +
+  labs( x = "Severe Part", y = "Severe Population Year: 2017") +
+  geom_smooth()
+```
+
+
