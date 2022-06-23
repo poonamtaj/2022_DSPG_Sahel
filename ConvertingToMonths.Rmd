@@ -1,0 +1,17 @@
+---
+title: "Untitled"
+author: "MG"
+date: "6/21/2022"
+output: html_document
+---
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+
+```{r}
+pentadData <-read.csv("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/rainfall_ts_niger.csv")
+df <- data.frame(pentadData)
+df <- df %>% gather(key = "variable", value = "Value")
+```

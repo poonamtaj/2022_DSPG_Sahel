@@ -1,0 +1,12 @@
+---
+title: "reading dta file"
+author: "MG"
+date: "6/13/2022"
+output: html_document
+---
+
+```{r}
+library(haven)
+data <- read_dta('C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/LSMS_Niger_11_14_18.dta')
+```
+

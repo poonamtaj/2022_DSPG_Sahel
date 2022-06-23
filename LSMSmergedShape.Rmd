@@ -1,0 +1,120 @@
+---
+title: "LSMS merged with list codes and then merged with shape file"
+author: "MG"
+date: "6/21/2022"
+output: html_document
+---
+
+`
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(leaflet)
+library(sf)
+```
+
+Reading LSMS data provided by Dr.Benami
+```{r}
+LSMSdata <-read.csv("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/nigerlsms_11_14_18_slim.csv")
+```
+
+Reading niger_Adm2 list codes 
+```{r}
+admin2listdata<-read_excel("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/niger_adm2_listCode.xlsx")
+```
+
+
+Reading admin2 shape file
+```{r}
+Niger_level2 <- st_read(
+  "C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
+ggplot() + 
+  geom_sf(data = Niger_level2, size = 1, color = "black", fill = "cyan1") + 
+  ggtitle("Niger_level2") + 
+  coord_sf()
+```
+
+Merging LSMS and list codes
+```{r}
+#LSMSmergedList=merge(x=admin2listdata,y=LSMSdata,by.x="admin2",by.y="admin2",all=TRUE)
+LSMSmergedList<-left_join(admin2listdata, LSMSdata, by='admin2')
+
+```
+
+merging shape file and creating maps for 2018
+```{r}
+library(ggsn)
+library(ggspatial)
+ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
+ggplot() + 
+  geom_sf(data = ShpMergedLsms, size = 1, color = "black", aes(fill=pcexp)) + 
+  ggtitle("LSMS 2018") + 
+  coord_sf()+
+  scale_fill_viridis(name="pcexp",limits=c(40000,750000),breaks=c(170000,340000,
+                                                                       510000))+
+   north(ShpMergedLsms, location = "topleft", symbol = 15)+
+   annotation_scale()
+```
+```{r}
+library(ggsn)
+ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
+ggplot() + 
+  geom_sf(data = ShpMergedLsms, size = 1, color = "black", aes(fill=pcexp_food)) + 
+  ggtitle("LSMS 2018") + 
+  coord_sf()+
+   scale_fill_viridis(name="pcexp_food",limits=c(8000,750000),breaks=c(170000,340000,
+                                                                       510000))+
+   north(ShpMergedLsms, location = "topleft", symbol = 15)+
+   annotation_scale()
+```
+```{r}
+library(ggsn)
+library(viridis)
+ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
+ggplot() + 
+  geom_sf(data = ShpMergedLsms, size = 1, color = "black", aes(fill=pcexp_nonfood)) + 
+  ggtitle("LSMS 2018") + 
+  coord_sf()+
+   scale_fill_viridis(name="pcexp_nonfood",limits=c(7000,350000),breaks=c(100000,150000,
+                                                                       200000))+
+   north(ShpMergedLsms, location = "topleft", symbol = 15)+
+   annotation_scale()
+```
+summary statistics for 2011
+```{r}
+Summary2011<-LSMSdata[which(LSMSdata$year=="2011"),]
+```
+
+summary statistics for 2014
+```{r}
+Summary2014<-LSMSdata[which(LSMSdata$year=="2014"),]
+```
+
+summary statistics for 2018
+```{r}
+Summary2018<-LSMSdata[which(LSMSdata$year=="2018"),]
+```
+
+scatter plots
+```{r}
+ggplot(data = LSMSdata, aes(year,pcexp,color=year)) + 
+  geom_jitter() + 
+  ggtitle("Distribution of pcexp") 
+  
+```
+```{r}
+ggplot(data = LSMSdata, aes(year,pcexp_food,color=year)) + 
+  geom_jitter() + 
+  ggtitle("Distribution of pcexp_food") 
+  
+```
+```{r}
+ggplot(data = LSMSdata, aes(year,pcexp_nonfood,color=year)) + 
+  geom_jitter() + 
+  ggtitle("Distribution of pcexp_nonfood") 
+  
+```
