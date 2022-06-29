@@ -1,0 +1,257 @@
+---
+title: "NDVItimeseries"
+author: "rileyrudd"
+date: '2022-06-27'
+output: html_document
+---
+
+Packages
+```{r}
+library(dplyr)
+library(openxlsx)
+library(moderndive)
+library(readr)
+library(tidyr)
+library(tidyverse)
+library(lubridate)
+library(reshape2)
+library(ggplot2)
+```
+
+Read in Data
+```{r}
+
+#admin 2
+
+NDVI1admin2 <-read.csv("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/NDVIMean_ts_niger (1981-2000).csv")
+
+NDVI2admin2<-read.csv("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/NDVIMean_ts_niger (2001-2022).csv")
+
+#admin 3
+
+NDVI1admin3 <-read.csv("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/l3NDVIMean_ts_niger (1981-2000).csv")
+
+NDVI2admin3 <- read.csv("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/l3NDVIMean_ts_niger (2001-2022).csv")
+```
+
+Merging Datasets
+```{r}
+NDVIadmin2 <-cbind(NDVI1admin2, NDVI2admin2)
+write.xlsx(NDVIadmin2, "NDVI Admin 2 1981-2022.xlsx")
+
+NDVIadmin3 <-cbind(NDVI1admin3, NDVI2admin3)
+write.xlsx(NDVIadmin3, "NDVI Admin 3 1981-2022.xlsx")
+```
+
+
+Renaming the Columns
+```{r}
+for ( col in 1:ncol(NDVIadmin2)){
+  colnames(NDVIadmin2)[col] <- sub("_NDVI", "", colnames(NDVIadmin2)[col])
+}
+
+for ( col in 1:ncol(NDVIadmin2)){
+ colnames(NDVIadmin2)[col] <- sub("X", "", colnames(NDVIadmin2)[col])
+}
+
+for ( col in 1:ncol(NDVIadmin3)){
+  colnames(NDVIadmin3)[col] <- sub("_NDVI", "", colnames(NDVIadmin3)[col])
+}
+
+for ( col in 1:ncol(NDVIadmin3)){
+  colnames(NDVIadmin3)[col] <- sub("X", "", colnames(NDVIadmin3)[col])
+}
+head(NDVIadmin2)
+
+```
+Remove Duplicate Columns
+```{r}
+NDVIadmin2c <- subset(NDVIadmin2, select = -c(7110, 7112, 7113))
+NDVIadmin3c <- subset(NDVIadmin3, select = -c(14887))
+
+```
+
+
+Convert data from Wide to Long for years 1981 to 2019
+```{r}
+NDVIData2 <- NDVIadmin2c %>%
+  select(admin2Name, admin1Name, admin2Pcod, "19810701": "20191231")
+NDVIDataLong2 <- gather(NDVIData2, Date, NDVI, "19810701":"20191231")
+
+NDVIDataLong2$NDVI <- as.numeric(NDVIDataLong2$NDVI) 
+NDVIDataLong2 <- NDVIDataLong2 %>% 
+  mutate(newNDVI = 0.0001 *NDVI)
+
+
+
+NDVIData3 <- NDVIadmin3c %>%
+  select(adm_03,rowcacode3.1, "19810701": "20191231")
+NDVIDataLong3 <- gather(NDVIData3, Date, NDVI, "19810701":"20191231")
+
+NDVIDataLong3$NDVI <- as.numeric(NDVIDataLong3$NDVI) 
+NDVIDataLong3 <- NDVIDataLong3 %>% 
+  mutate(newNDVI = 0.0001 *NDVI)
+
+```
+
+Convert Characters to Dates
+```{r}
+NDVIDataLong2$Date <- ymd(NDVIDataLong2$Date)
+
+NDVIDataLong3$Date <- ymd(NDVIDataLong3$Date)
+```
+
+Convert Data to Year, Month, Day Columns
+```{r}
+data_admin2 <- NDVIDataLong2 %>%
+  dplyr::mutate(year = lubridate::year(NDVIDataLong2$Date), 
+                month = lubridate::month(NDVIDataLong2$Date), 
+                day = lubridate::day(NDVIDataLong2$Date)) %>%
+  ungroup()
+
+data_admin3 <- NDVIDataLong3 %>%
+  dplyr::mutate(year = lubridate::year(NDVIDataLong3$Date), 
+                month = lubridate::month(NDVIDataLong3$Date), 
+                day = lubridate::day(NDVIDataLong3$Date)) %>%
+  ungroup()
+```
+
+Calculating Max
+```{r}
+admin2NDVI <- data_admin2 %>% 
+group_by(admin2Name, year) %>% mutate(peak_ndvi = max(newNDVI, na.rm = TRUE)) %>% distinct(admin2Name, year, peak_ndvi, newNDVI) %>%
+ungroup()
+
+admin3NDVI <- data_admin3 %>% 
+group_by(adm_03, year) %>% mutate(peak_ndvi = max(newNDVI, na.rm = TRUE)) %>% distinct(adm_03, rowcacode3.1, year, peak_ndvi, newNDVI) %>%
+ungroup()
+```
+
+
+Filtered 1981 to 2010 Baseline Data
+```{r}
+baselineData_admin2 <- admin2NDVI %>% 
+  filter(year >= "1981" & year <= "2010") %>% 
+  group_by(admin2Name) %>%
+  mutate(baselineMean_NDVI = mean(peak_ndvi, na.rm = TRUE),
+            baselineSD_NDVI = sd(peak_ndvi, na.rm = TRUE)) %>% 
+  distinct(baselineMean_NDVI, .keep_all=TRUE) %>%
+  ungroup()
+
+baselineData_admin3 <- admin3NDVI %>% 
+  group_by(adm_03, rowcacode3.1) %>%
+  filter(year >= "1981" & year <= "2010") %>% 
+  mutate(baselineMean_NDVI = mean(peak_ndvi, na.rm = TRUE),
+            baselineSD_NDVI = sd(peak_ndvi, na.rm = TRUE)) %>%
+  distinct(baselineMean_NDVI, .keep_all=TRUE) %>%
+  ungroup()
+```
+
+2011 to 2019 Filtered with baseline z-score
+```{r}
+zscore_admin2 <- admin2NDVI %>% 
+  group_by(admin2Name, year) %>%
+  filter(year >= "2011" & year <= "2019") %>% 
+  ungroup()
+
+datajn_admin2 <- merge(x = baselineData_admin2, y = zscore_admin2, by = "admin2Name") %>%
+  mutate(zscore_peakNDVI = ((peak_ndvi.y - baselineMean_NDVI)/(baselineSD_NDVI)))
+
+
+zscore_admin3 <- admin3NDVI %>% 
+  group_by(adm_03,rowcacode3.1, year) %>%
+  filter(year >= "2011" & year <= "2019") %>% 
+  ungroup()
+
+datajn_admin3 <- merge(x = baselineData_admin3, y = zscore_admin3, by = "adm_03") %>%
+  mutate(zscore_peakNDVI = ((peak_ndvi.y - baselineMean_NDVI)/(baselineSD_NDVI)))
+```
+
+###Maps
+```{r}
+library(sf)
+library(sp)
+library(rgdal)
+nigerMapAdmin2 <- st_read("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/Level 2 (1)/wb_niger_admin2_shapefile/niger_admin2.shp")
+
+nigerMapAdmin3 <- st_read("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/Level 3 (1)/NER_adm03_feb2018.shp")
+```
+
+Merge Data with Shape Files
+```{r}
+library(sf)
+nigerShpMerged_admin2 = full_join(nigerMapAdmin2, datajn_admin2 ,by="admin2Name")
+nigerShpMerged_admin2
+
+nigerShpMerged_admin3 = full_join(nigerMapAdmin3, datajn_admin3 ,by="adm_03")
+nigerShpMerged_admin3
+```
+
+Max NDVI Admin 2 and Admin 3
+```{r}
+ggplot(nigerShpMerged_admin2) + theme_classic() +
+  geom_sf(aes(fill = newNDVI.y), color = NA, alpha = 0.8) +
+  scale_fill_viridis_c( direction = -1) +
+  labs(title="Annual NDVI by Department (Admin 2)", fill = "NDVI" ) +
+  facet_wrap(~year.y)
+
+ggplot(nigerShpMerged_admin3) + theme_classic() +
+  geom_sf(aes(fill = newNDVI.y),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c( direction = -1) +
+  labs(title="Annual NDVI by Commune (Admin 3)", fill = "NDVI" ) +
+  facet_wrap(~year.y)
+```
+z-score NDVI Admin 2 and Admin 3
+```{r}
+nigerShpMerged_admin2 %>% 
+  filter(year.y == 2011 | year.y == 2014 | year.y == 2015| year.y == 2017 | year.y == 2018) %>%
+  ggplot() + theme_classic() +
+  geom_sf(aes(fill = zscore_peakNDVI),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year.y) +
+  labs(title="Annual Z-Score of Peak NDVI by Department (Admin 2)", fill = "z-score" )
+
+nigerShpMerged_admin3 %>% 
+  filter(year.y == 2011 | year.y == 2014 | year.y == 2015| year.y == 2017 | year.y == 2018) %>%
+  ggplot() + theme_classic() +
+  geom_sf(aes(fill = zscore_peakNDVI),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year.y) +
+  labs(title="Annual Z-Score of Peak NDVI by Commune (Admin 3)", fill = "z-score" )
+```
+```{r}
+#Admin 2 Slide 15
+nigerShpMerged_admin2 %>% 
+  filter(year.y == 2011 |year.y == 2014 | year.y == 2015 |year.y == 2017 |year.y == 2018) %>%
+  ggplot() + theme_classic() +
+  geom_sf(aes(fill = zscore_peakNDVI),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year.y, nrow=1) + 
+  labs(title="Annual Z-Score of Peak NDVI by Department (Admin 2)", fill = "z-score" )
+
+#Admin3 Slide 16
+nigerShpMerged_admin3 %>% 
+  filter(year.y == 2011 |year.y == 2014 | year.y == 2015 |year.y == 2017 |year.y == 2018) %>%
+  ggplot() + theme_classic() +
+  geom_sf(aes(fill = zscore_peakNDVI),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year.y, nrow=1) + 
+  labs(title="Annual Z-Score of Peak NDVI by Commune (Admin 3)", fill = "z-score" )
+```
+
+```{r}
+#MaxEVI2017 <- nigerShpMerged_admin2 #%>%
+  #filter(District == "Hwange") %>%
+  ggplot(nigerShpMerged_admin2, aes(x = year.y, y = peak_ndvi.y)) +
+  geom_line(aes(group=1), color = "blue")+
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 315)) +
+  labs(title = "Annual")+
+  xlab("Year")+
+  ylab("Peak NDVI")
+```
+
+
+
+
+
