@@ -29,6 +29,8 @@ library(readxl)
 library(janitor)
 library(rio) # for import export
 library(ggspatial)
+library(sf)
+library(viridis)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
@@ -65,12 +67,18 @@ niger_level2 %>%
           color = "NA",
           aes(fill = as.numeric(total_population_2022)/100000), alpha = 0.95) + #alpha adjusts te transparency
   labs(title = "Population by Département in 2022 (in 100,000s) ",
-       subtitle = paste0("Total estimated population for 2022 = ", scales::comma(total_population_est)), 
-       caption = paste0("Source: Niger Data Grid (https://data.humdata.org/dataset/cod-ps-ner)")) + 
-  # coord_sf() +
+       # subtitle = paste0(
+       caption = paste0("Total estimated population for 2022 = ", scales::comma(total_population_est), 
+         "\nSource: Niger Data Grid (https://data.humdata.org/dataset/cod-ps-ner)")) + 
   scale_fill_viridis(name = "100k People", direction = 1) +
   annotation_scale(location = "br") +
   theme_classic() +
-  theme(#legend.position="bottom",
-        plot.caption = element_text(hjust = 0))
+  theme(legend.position="right",
+        plot.caption = element_text(hjust = 0),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.ticks = element_blank(),
+        rect = element_blank(),
+        axis.line = element_blank()) 
+  
   
