@@ -48,6 +48,8 @@ library(tidyverse)
 library(haven) # for read_dta
 library(tidylog) # for output on operations/changes with select, drop, merges, etc.
 library(rio)
+library(janitor)
+library(sf) # for st_read
 
 library(openxlsx)
 library(readxl)
@@ -127,7 +129,7 @@ for ( col in 1:ncol(pentadDataadmin3)){
 }
 head(pentadDataadmin3)
 
-# Check how many we have and view to check ---- 
+# Check how many cols and rows we have and view to check ---- 
 dim(pentadDataadmin2)
 show <- pentadDataadmin2 %>% select(2970:2987)
 glimpse(show)
@@ -147,7 +149,7 @@ precipitationDataLong2 <-
          key = Date, 
          value = Precipitation, 
          "19810101":"20220121") %>% 
-  mutate(Date = ymd(Date))
+  mutate(Date = ymd(Date)) #convert from char to dates
          # "19810101":"20220121") 
 
 precipitationData3 <-
@@ -160,11 +162,15 @@ precipitationDataLong3 <-
          Date,
          Precipitation,
          "19810101":"20220121") %>% 
-  mutate(Date = ymd(Date))
+  mutate(Date = ymd(Date)) # Create new col with dates instead of chars
 
-# # Convert Characters to Dates, then create columns 
-# precipitationDataLong2$Date <- ymd(precipitationDataLong2$Date)
-# precipitationDataLong3$Date <- ymd(precipitationDataLong3$Date)
+data_admin2 <- 
+  precipitationDataLong2 %>%
+  mutate(year = year(Date), 
+         month = month(Date), 
+         day = day(Date)) %>%
+  ungroup()
+
 
 # if you're using dplyr, don't need to repeat the df name
 # data_admin2 <- 
@@ -174,12 +180,6 @@ precipitationDataLong3 <-
 #                 day = lubridate::day(precipitationDataLong2$Date)) %>%
 #   ungroup()
 
-data_admin2 <- 
-  precipitationDataLong2 %>%
-  mutate(year = year(Date), 
-                month = month(Date), 
-                day = day(Date)) %>%
-  ungroup()
 
 # data_admin3 <- precipitationDataLong3 %>%
 #   dplyr::mutate(year = lubridate::year(precipitationDataLong3$Date), 
@@ -218,7 +218,7 @@ yearData_admin2 <-
            total_precipitation, mean_precipitation, standardDeviation_precipitation) %>%
   ungroup()
 
-# Take the mean over the spatial area ----
+# Take the mean over the spatial area for a given year ----
 yearData_admin1 <-
   yearData_admin2 %>% 
   group_by(admin1Name, year) %>% 
@@ -242,6 +242,7 @@ yearData_admin1  %>%
   remove_chart_clutter +
   theme(legend.position = "right")
 
+# What's the avg rainfall per year in Niger?
 mean(yearData_admin1$total_precip_annual_admin1, na.rm = TRUE)
 
 
@@ -306,43 +307,75 @@ nigerShpMerged_admin2 %>%
 # Generate Z-Scores (Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate baseline dataset
-baselineData_admin2 <- 
+
+# admin2precip <- 
+#   yearData_admin2 %>% 
+#   # group_by(admin2Name, admin2Pcod) %>% # one of these two should be sufficient
+#   group_by(admin2Name) %>%
+#   # filter(year >= "1981" & year <= "2010") %>% 
+#   mutate(baselineMean_precipitation = mean(total_precipitation[year >= "1981" & year <= "2010"], na.rm = TRUE))
+#   # summarise(baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
+#   #           baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
+#   ungroup()
+
+admin2precip <- 
   yearData_admin2 %>% 
-  # group_by(admin2Name, admin2Pcod) %>% # one of these two should be sufficient
-  group_by(admin2Name, admin2Pcod) %>%
-  filter(year >= "1981" & year <= "2010") %>% 
-  summarise(baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
-            baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
-  ungroup()
+  select(admin1Name,admin1Pcod, admin2Name, admin2Pcod, year, total_precipitation) %>% #remove old vars
+    group_by(admin2Name) %>% # group_by(admin2Name, admin2Pcod) %>% # one of these two should be sufficient
+    mutate(baselineMean_precipitation = mean(total_precipitation[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+           baselineSD_precipitation = sd(total_precipitation[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+    group_by(admin2Name, year) %>% 
+    mutate(zscore_precipitation = (total_precipitation - baselineMean_precipitation)/(baselineSD_precipitation)) %>% 
+    ungroup()
 
-# Focus on the "post" time period
-periodData_admin2 <-
-  yearData_admin2 %>% 
-  group_by(admin2Name,admin2Pcod, year) %>%
-  filter(year >= "2011" & year <= "2021") %>% 
-  ungroup()
+# Review the data as a check -- reasonable ranges, expected number of observations, etc?
+admin2precip %>% glimpse()
+admin2precip %>% summary() # -16 is pretty wild!
 
-# Merge the two together
-datajoin_admin2 <- 
-  baselineData_admin2 %>% 
-  left_join(periodData_admin2, by = "admin2Pcod") %>%
-  mutate(zscore_precipitation = (total_precipitation - baselineMean_precipitation)/
-                                   (baselineSD_precipitation))
 
-# Check the distribution of z-scores (seem reasonable?)
-datajoin_admin2  %>% tabyl(zscore_precipitation)
+# You can compare the above and see it's the same without needing to create two different datasets ---- 
+# baselineData_admin2 <- 
+#   yearData_admin2 %>% 
+#   # group_by(admin2Name, admin2Pcod) %>% # one of these two should be sufficient
+#   group_by(admin2Name, admin2Pcod) %>%
+#   filter(year >= "1981" & year <= "2010") %>% 
+#   summarise(baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
+#             baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
+#   ungroup()
 
+# # Focus on the "post" time period
+# periodData_admin2 <-
+#   yearData_admin2 %>% 
+#   group_by(admin2Name,admin2Pcod, year) %>%
+#   filter(year >= "2011" & year <= "2021") %>% 
+#   ungroup()
+# 
+# # Merge the two together
+# datajoin_admin2 <- 
+#   baselineData_admin2 %>% 
+#   left_join(periodData_admin2, by = "admin2Pcod") %>%
+#   mutate(zscore_precipitation = (total_precipitation - baselineMean_precipitation)/
+#                                    (baselineSD_precipitation))
+# 
+# # Check the distribution of z-scores (seem reasonable?)
+# datajoin_admin2  %>% tabyl(zscore_precipitation)
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Z-Score Maps (Admin 3) -----
+# Merge Z-scores with Shapefiles to generate maps-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# First merge in precip scores
 
+# would recommend change name (admin2 is good, but nigerandshapemerged is generic. perhaps admin2precip_zscore_sf (for simple/spatial features))
+nigerShpMerged_admin2 =
+  nigerMapAdmin2 %>% 
+  full_join(admin2precip, by=c("admin2pcod" = "admin2Pcod")) 
 
+# also merge in admin3
+
+# Generate Z-Score Maps (Admin 2 and 3) -----
 nigerShpMerged_admin2 %>% 
-  filter(year %in% c(2011, 2014, 2015, 2017, 2018) %>% 
-           # this is more parsimious, though definitely the other version works, too!
-  # filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>%
+  filter(year %in% c(2011, 2014, 2015, 2017, 2018)) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precipitation),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
@@ -352,24 +385,23 @@ nigerShpMerged_admin2 %>%
     theme(axis.text.x = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks = element_blank(),
-          rect = element_blank()))
+          rect = element_blank())
 
-
-nigerShpMerged_admin3 %>% 
-  filter(year %in% c(2011, 2014, 2015, 2017, 2018) %>% 
-           # this is more parsimious, though definitely the other version works, too!
-           # filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>%
-           ggplot() + 
-           geom_sf(aes(fill = zscore_precipitation),color = NA, alpha = 0.8) +
-           scale_fill_viridis_c(direction = -1) +
-           facet_wrap(~year, nrow = 1) +
-           labs(title="Annual Z-Score Rainfall by  Commune (Admin 3)", 
-                fill = "z-score" ) + 
-           theme_classic() + 
-           theme(axis.text.x = element_blank(),
-                 axis.text.y = element_blank(),
-                 axis.ticks = element_blank(),
-                 rect = element_blank()))
+# nigerShpMerged_admin3 %>% 
+#   filter(year %in% c(2011, 2014, 2015, 2017, 2018) %>% 
+#            # this is more parsimious, though definitely the other version works, too!
+#            # filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>%
+#            ggplot() + 
+#            geom_sf(aes(fill = zscore_precipitation),color = NA, alpha = 0.8) +
+#            scale_fill_viridis_c(direction = -1) +
+#            facet_wrap(~year, nrow = 1) +
+#            labs(title="Annual Z-Score Rainfall by  Commune (Admin 3)", 
+#                 fill = "z-score" ) + 
+#            theme_classic() + 
+#            theme(axis.text.x = element_blank(),
+#                  axis.text.y = element_blank(),
+#                  axis.ticks = element_blank(),
+#                  rect = element_blank()))
 
 
 
@@ -394,75 +426,77 @@ nigerShpMerged_admin3 %>%
 
 # Filtered 1981 to 2010 Baseline Data ----
 
-baselineData_admin2 <- yearData_admin2 %>% 
-  group_by(admin2Name, admin2Pcod) %>%
-  filter(year >= "1981" & year <= "2010") %>% 
-  summarise(baselineTotal_precipitation = sum(total_precipitation, na.rm = TRUE),
-            baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
-            baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
-  ungroup()
+# baselineData_admin2 <- yearData_admin2 %>% 
+#   group_by(admin2Name, admin2Pcod) %>%
+#   filter(year >= "1981" & year <= "2010") %>% 
+#   summarise(baselineTotal_precipitation = sum(total_precipitation, na.rm = TRUE),
+#             baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
+#             baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
+#   ungroup()
+# 
+# baselineData_admin3 <- yearData_admin3 %>% 
+#   group_by(adm_03, rowcacode3) %>%
+#   filter(year >= "1981" & year <= "2010") %>% 
+#   summarise(baselineTotal_precipitation = sum(total_precipitation, na.rm = TRUE),
+#             baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
+#             baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
+#   ungroup()
+# 
+# 
+# # 2011 to 2020 Filtered with baseline z-score
+# ```{r}
+# periodData_admin2 <- yearData_admin2 %>% 
+#   group_by(admin2Name,admin2Pcod, year) %>%
+#   filter(year >= "2011" & year <= "2021") %>% 
+#   ungroup()
+# 
+# 
+# 
+# datajoin_admin2 = merge(x = baselineData_admin2, y = periodData_admin2, by = "admin2Pcod") %>%
+#   mutate(zscore_precipitation = ((total_precipitation - baselineMean_precipitation)/(baselineSD_precipitation)))
+# 
+# 
+# 
+# 
+# periodData_admin3 <- yearData_admin3 %>% 
+#   group_by(adm_03,rowcacode3, year) %>%
+#   filter(year >= "2011" & year <= "2021") %>% 
+#   ungroup()
+# 
+# 
+# 
+# datajoin_admin3 = merge(x = baselineData_admin3, y = periodData_admin3, by = "rowcacode3") %>%
+#   mutate(zscore_precipitation = ((total_precipitation - baselineMean_precipitation)/(baselineSD_precipitation)))
+# ```
+# 
+# 
+# 
+# Total Precipitation by Month Summary
+# ```{r}
+# monthlyData_admin2 <- 
+#   data_admin2 %>% 
+#   group_by(admin2Name,admin2Pcod, month) %>%
+#   filter(year == "2020") %>% 
+#   mutate(monthlyTotal_precipitation = sum(Precipitation, na.rm = TRUE),
+#          monthlyMean_precipitation = mean(Precipitation, na.rm = TRUE)) %>%
+#   ungroup()
+# 
+# 
+# 
+# 
+# monthlyData_admin3 <- data_admin3 %>% 
+#   group_by(adm_03,rowcacode3, month) %>%
+#   filter(year == "2020") %>% 
+#   mutate(monthlyTotal_precipitation = sum(Precipitation, na.rm = TRUE),
+#          monthlyMean_precipitation = mean(Precipitation, na.rm = TRUE)) %>%
+#   ungroup()
+# ```
 
-baselineData_admin3 <- yearData_admin3 %>% 
-  group_by(adm_03, rowcacode3) %>%
-  filter(year >= "1981" & year <= "2010") %>% 
-  summarise(baselineTotal_precipitation = sum(total_precipitation, na.rm = TRUE),
-            baselineMean_precipitation = mean(total_precipitation, na.rm = TRUE),
-            baselineSD_precipitation = sd(total_precipitation, na.rm = TRUE)) %>%
-  ungroup()
 
 
-# 2011 to 2020 Filtered with baseline z-score
-```{r}
-periodData_admin2 <- yearData_admin2 %>% 
-  group_by(admin2Name,admin2Pcod, year) %>%
-  filter(year >= "2011" & year <= "2021") %>% 
-  ungroup()
+# Seasonal Precipitation Summary
 
-
-
-datajoin_admin2 = merge(x = baselineData_admin2, y = periodData_admin2, by = "admin2Pcod") %>%
-  mutate(zscore_precipitation = ((total_precipitation - baselineMean_precipitation)/(baselineSD_precipitation)))
-
-
-
-
-periodData_admin3 <- yearData_admin3 %>% 
-  group_by(adm_03,rowcacode3, year) %>%
-  filter(year >= "2011" & year <= "2021") %>% 
-  ungroup()
-
-
-
-datajoin_admin3 = merge(x = baselineData_admin3, y = periodData_admin3, by = "rowcacode3") %>%
-  mutate(zscore_precipitation = ((total_precipitation - baselineMean_precipitation)/(baselineSD_precipitation)))
-```
-
-
-
-Total Precipitation by Month Summary
-```{r}
-monthlyData_admin2 <- data_admin2 %>% 
-  group_by(admin2Name,admin2Pcod, month) %>%
-  filter(year == "2020") %>% 
-  mutate(monthlyTotal_precipitation = sum(Precipitation, na.rm = TRUE),
-         monthlyMean_precipitation = mean(Precipitation, na.rm = TRUE)) %>%
-  ungroup()
-
-
-
-
-monthlyData_admin3 <- data_admin3 %>% 
-  group_by(adm_03,rowcacode3, month) %>%
-  filter(year == "2020") %>% 
-  mutate(monthlyTotal_precipitation = sum(Precipitation, na.rm = TRUE),
-         monthlyMean_precipitation = mean(Precipitation, na.rm = TRUE)) %>%
-  ungroup()
-```
-
-
-
-Seasonal Precipitation Summary
-```{r}
+# would recommend changing the name to reflect that it's not all months but just a season
 monthlyData_admin2 <- data_admin2 %>% 
   group_by(admin2Name,admin2Pcod, month) %>%
   filter(month >= 5 & month <= 10) %>% 
@@ -472,101 +506,66 @@ monthlyData_admin2 <- data_admin2 %>%
 
 
 
-
-monthlyData_admin3 <- data_admin3 %>% 
-  group_by(adm_03,rowcacode3, month) %>%
-  filter(month >= 5 & month <= 10) %>% 
-  mutate(monthlyTotal_precipitation = sum(Precipitation, na.rm = TRUE),
-         monthlyMean_precipitation = mean(Precipitation, na.rm = TRUE)) %>%
-  ungroup()
-```
-
-
-
-
+# 
+# monthlyData_admin3 <- data_admin3 %>% 
+#   group_by(adm_03,rowcacode3, month) %>%
+#   filter(month >= 5 & month <= 10) %>% 
+#   mutate(monthlyTotal_precipitation = sum(Precipitation, na.rm = TRUE),
+#          monthlyMean_precipitation = mean(Precipitation, na.rm = TRUE)) %>%
+#   ungroup()
 
 #Visuals
 
+# #Bring in Shape Files # bring up front 
+# ```{r}
+# nigerMapAdmin2 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin2/niger_admin2.shp")
+# nigerMapAdmin3 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin3/NER_adm03_feb2018.shp")
+# ```
 
-
-
-#Bring in Shape Files # bring up front 
-```{r}
-nigerMapAdmin2 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin2/niger_admin2.shp")
-nigerMapAdmin3 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin3/NER_adm03_feb2018.shp")
-```
-
-
-
-Merge Data with Shape Files
-```{r}
-nigerShpMerged_admin2 = full_join(nigerMapAdmin2, datajoin_admin2 ,by="admin2Pcod")
-
-
-
-nigerShpMerged_admin3 = full_join(nigerMapAdmin3, datajoin_admin3 ,by="rowcacode3")
-```
-
-
-
-Total Precipitation Admin 2 and Admin 3 Maps + Bar Graph
-```{r}
-ggplot(nigerShpMerged_admin2) + theme_classic() + theme(axis.text.x = element_blank(),axis.text.y = element_blank(),axis.ticks = element_blank(),rect = element_blank()) +
-  geom_sf(aes(fill = total_precipitation), color = NA, alpha = 0.8) +
-  scale_fill_viridis_c( direction = -1) +
-  labs(title="Annual Cumulative Rainfall by Department (Admin 2)", caption = "Data Source: CHIRPS Pentad Precipitation dataset", fill = "Precipitation (mm)" ) +
-  facet_wrap(~year)
-
-
-
-ggplot(nigerShpMerged_admin3) + theme_classic() + theme(axis.text.x = element_blank(),axis.text.y = element_blank(),axis.ticks = element_blank(),rect = element_blank()) +
-  geom_sf(aes(fill = total_precipitation),color = NA, alpha = 0.8) +
-  scale_fill_viridis_c( direction = -1) +
-  labs(title="Annual Cumulative Rainfall by Commune (Admin 3)", caption = "Data Source: CHIRPS Pentad Precipitation dataset", fill = "Precipitation (mm)" ) +
-  facet_wrap(~year)
-
-```
-
-
-
-
-z-score Precipitation Admin 2 and Admin 3
-```{r}
-#Admin 2 Slide 10
+# Total Precipitation Admin 2 and Admin 3 Maps + Bar Graph
 nigerShpMerged_admin2 %>% 
-  filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>%
-  ggplot() + theme_classic() + theme(axis.text.x = element_blank(),axis.text.y = element_blank(),axis.ticks = element_blank(),rect = element_blank()) +
-  geom_sf(aes(fill = zscore_precipitation),color = NA, alpha = 0.8) +
+ggplot() + 
+  geom_sf(aes(fill = total_precipitation),
+          color = NA,
+          alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~year, nrow = 1) +
-  labs(title="Annual Z-Score Rainfall by Department (Admin 2)", fill = "z-score" )
+  labs(title = "Annual Cumulative Rainfall by Department (Admin 2)",
+       caption = "Data Source: CHIRPS Pentad Precipitation dataset",
+       fill = "Precipitation (mm)") +
+  facet_wrap(~year) +
+  theme_classic() + theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    rect = element_blank()) 
 
-
-
-#Admin 3 Slide 10
-nigerShpMerged_admin3 %>% 
-  filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>%
-  ggplot() + theme_classic() + theme(axis.text.x = element_blank(),axis.text.y = element_blank(),axis.ticks = element_blank(),rect = element_blank()) +
-  geom_sf(aes(fill = zscore_precipitation),color = NA, alpha = 0.8) +
+ggplot(nigerShpMerged_admin3) + theme_classic() + theme(
+  axis.text.x = element_blank(),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  rect = element_blank()
+) +
+  geom_sf(aes(fill = total_precipitation),
+          color = NA,
+          alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~year, nrow = 1) +
-  labs(title="Annual Z-Score Rainfall by Commune (Admin 3)", fill = "z-score" )
-```
+  labs(title = "Annual Cumulative Rainfall by Commune (Admin 3)",
+       caption = "Data Source: CHIRPS Pentad Precipitation dataset",
+       fill = "Precipitation (mm)") +
+  facet_wrap( ~ year)
 
 
 
-
-```{r}
-annualPrecip <- yearData_admin2 %>%
+# At National Level -- Admin 0
+annualPrecip <- 
+  yearData_admin2 %>%
   group_by(year) %>%
   mutate(meanAnnualPrecip = mean(total_precipitation)) %>%
   ungroup() %>%
   distinct(year, meanAnnualPrecip)
 
-
-
-#Region Data Slide 7
-ggplot(annualPrecip, aes(x=year, y=meanAnnualPrecip, na.rm=TRUE)) +
-  geom_line() + theme_classic() +
-  labs(title="Average Rainfall by Year", x="Year", y="Average Precipitation (mm)")
-```
+annualPrecip %>% 
+  ggplot(aes(x=year, y=meanAnnualPrecip, na.rm=TRUE)) +
+  geom_line() +
+  labs(title="Average Rainfall by Year", x="Year", y="Average Precipitation (mm)") +
+  theme_classic() 
