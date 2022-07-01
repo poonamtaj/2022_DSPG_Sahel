@@ -1,0 +1,104 @@
+---
+title: "WorkingWithLSMS admin 2"
+author: "MG"
+date: "6/29/2022"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(leaflet)
+library(sf)
+```
+
+Reading LSMS data provided by Dr.Benami
+```{r}
+LSMSdata <-read.csv("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/nigerlsms_11_14_18_slim.csv")
+```
+
+Reading niger_Adm2 list codes 
+```{r}
+admin2listdata<-read_excel("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/niger_adm2_listCode.xlsx")
+```
+
+
+Reading admin2 shape file
+```{r}
+Niger_level2 <- st_read(
+  "C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
+ggplot() + 
+  geom_sf(data = Niger_level2, size = 1, color = "black", fill = "cyan1") + 
+  ggtitle("Niger_level2") + 
+  coord_sf()
+```
+
+Merging LSMS and list codes
+```{r}
+LSMSmergedList<-left_join(LSMSdata,admin2listdata, by='admin2')
+```
+
+spatial data combining latitudes and longitudes
+```{r}
+lsms_sf <- st_as_sf(LSMSmergedList, coords=c("longitude","latitude"), crs="WGS84",na.fail=FALSE)
+```
+
+```{r}
+lsms_median<-lsms_sf%>%group_by(cluster,year)%>% mutate(median_totalexpend=median(pcexp),median_foodexpend=median(pcexp_food),
+                                                           median_nonfoodexp=median(pcexp_nonfood))%>%
+   distinct(median_foodexpend,.keep_all = TRUE)%>%ungroup()
+```
+
+```{r}
+lsms_spatialjoin<-st_join(Niger_level2,lsms_median,left=FALSE)
+```
+
+
+```{r}
+ggplot() + geom_sf(data=Niger_level2,color="NA")+
+  geom_sf(data = lsms_spatialjoin, size = 1, color = "NA", aes(fill=median_foodexpend),alpha=0.5) + 
+  labs(title = "Per Capita Food Expenditure by department (admin2) ", 
+caption = "Gray indicates missing values") + 
+  coord_sf()+
+   scale_fill_viridis(name="Food Expenditure")+
+  theme_classic()+
+  facet_wrap(~year)
+```
+
+```{r}
+ggplot() + geom_sf(data=Niger_level2,color="NA")+
+  geom_sf(data = lsms_spatialjoin, size = 1, color = "NA", aes(fill=median_nonfoodexp),alpha=0.5) + 
+  labs(title = "Per Capita Non-Food Expenditure by department (admin2) ", 
+caption = "Gray indicates missing values") + 
+  coord_sf()+
+   scale_fill_viridis(name="Non-Food Expenditure")+
+  theme_classic()+
+  facet_wrap(~year)
+```
+
+```{r}
+ggplot() + geom_sf(data=Niger_level2,color="NA")+
+  geom_sf(data = lsms_spatialjoin, size = 1, color = "NA", aes(fill=median_totalexpend),alpha=0.5) + 
+  labs(title = "Per Capita Total Expenditure by department (admin2) ", 
+caption = "Gray indicates missing values") + 
+  coord_sf()+
+   scale_fill_viridis(name="Total Expenditure")+
+  theme_classic()+
+  facet_wrap(~year)
+```
+
+log transformation
+```{r}
+lsms_spatialjoin$logfood<-log(lsms_spatialjoin$pcexp_food)
+ggplot() + geom_sf(data=Niger_level2,color="NA")+
+  geom_sf(data = lsms_spatialjoin, size = 1, color = "NA", aes(fill=logfood),alpha=0.5) + 
+  labs(title = "Logarithmic transformation of Per Capita Food Expenditure by department (admin2) ", 
+caption = "Gray indicates missing values") + 
+  coord_sf()+
+   scale_fill_viridis(name="Food-Exp (log scale)")+
+  theme_classic()+
+  facet_wrap(~year)
+```

@@ -5,7 +5,9 @@ date: "6/21/2022"
 output: html_document
 ---
 
-`
+This is not the final code for LSMS data.This is just the collection of ideas that I tried
+
+The final code is in WorkinkWithLSMS for admin 2 and LSMSadmin3 for admin 3
 
 ```{r}
 library(tidyverse)
@@ -42,6 +44,7 @@ Merging LSMS and list codes
 ```{r}
 #LSMSmergedList=merge(x=admin2listdata,y=LSMSdata,by.x="admin2",by.y="admin2",all=TRUE)
 LSMSmergedList<-left_join(admin2listdata, LSMSdata, by='admin2')
+#LSMSmergedList<-left_join(LSMSdata,admin2listdata, by='admin2')
 
 ```
 
@@ -49,12 +52,15 @@ merging shape file and creating maps for 2018
 ```{r}
 library(ggsn)
 library(ggspatial)
+library(viridis)
 ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
 ggplot() + 
   geom_sf(data = ShpMergedLsms, size = 1, color = "black", aes(fill=pcexp)) + 
-  ggtitle("LSMS 2018") + 
+  labs(title = "Total Per Capita Expenditure in 2018", 
+subtitle = "Data from LSMS surveys ", 
+caption = "Gray indicates missing values") + 
   coord_sf()+
-  scale_fill_viridis(name="pcexp",limits=c(40000,750000),breaks=c(170000,340000,
+  scale_fill_viridis(name="pcexp",limits=c(40000,620000),breaks=c(170000,340000,
                                                                        510000))+
    north(ShpMergedLsms, location = "topleft", symbol = 15)+
    annotation_scale()
@@ -64,9 +70,11 @@ library(ggsn)
 ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
 ggplot() + 
   geom_sf(data = ShpMergedLsms, size = 1, color = "black", aes(fill=pcexp_food)) + 
-  ggtitle("LSMS 2018") + 
+  labs(title = "Per Capita Food Expenditure in 2018", 
+subtitle = "Data from LSMS surveys", 
+caption = "Gray indicates missing values") + 
   coord_sf()+
-   scale_fill_viridis(name="pcexp_food",limits=c(8000,750000),breaks=c(170000,340000,
+   scale_fill_viridis(name="Food Expenditure",limits=c(8000,750000),breaks=c(170000,340000,
                                                                        510000))+
    north(ShpMergedLsms, location = "topleft", symbol = 15)+
    annotation_scale()
@@ -77,7 +85,9 @@ library(viridis)
 ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
 ggplot() + 
   geom_sf(data = ShpMergedLsms, size = 1, color = "black", aes(fill=pcexp_nonfood)) + 
-  ggtitle("LSMS 2018") + 
+  labs(title = "Per Capita Non-Food Expenditure in 2018", 
+subtitle = "Data from LSMS surveys among [xxx number of ] households]", 
+caption = "Gray indicates missing values; [zz number of] values winsorized to [XX] percentile") + 
   coord_sf()+
    scale_fill_viridis(name="pcexp_nonfood",limits=c(7000,350000),breaks=c(100000,150000,
                                                                        200000))+
@@ -131,3 +141,93 @@ ggplot(data = LSMSdata, aes(year,pcexp_nonfood,color=year)) +
   ggtitle("Distribution of pcexp_nonfood") 
   
 ```
+```{r}
+ggplot(data = LSMSdata, aes(x=year,y=pcexp_nonfood)) + 
+  geom_line() + 
+  ggtitle("Distribution of pcexp_nonfood") 
+```
+Made histogram to check the distribution of pcexp
+```{r}
+Summary2018 %>% ggplot() + geom_histogram(aes(x = pcexp))
+```
+
+winsorizing the data
+```{r}
+#library(DescTools)
+#try1<-Winsorize(LSMSdata$pcexp, minval = 0, maxval = NULL, probs = c(0.05, 0.95),
+ #         na.rm = FALSE, type = 7)
+```
+
+```{r}
+SpatialJoindf=merge(x=admin2listdata,y=LSMSdata,by.x="admin2",by.y="admin2",all=TRUE)
+#random_joined = st_join(SpatialJoindf, world["name_long"])
+
+
+x<-SpatialJoindf$latitude
+y<-SpatialJoindf$longitude
+
+#plot admin2
+ggplot() +
+  geom_sf(data=Niger_level2) + coord_sf()
+
+#convert lsms to sf
+#drop which has no latitude and longitude
+lsms_nomiss <- SpatialJoindf[!(is.na(SpatialJoindf$latitude)),]
+lsms_sf <- st_as_sf(lsms_nomiss, coords=c("longitude","latitude"), crs=4326)
+lsms_sf_11 <- lsms_sf[lsms_sf$year=="2011",]
+lsms_sf_14 <- lsms_sf[lsms_sf$year=="2014",]
+lsms_sf_18 <- lsms_sf[lsms_sf$year=="2018",]
+
+#graph together
+ggplot() +
+  geom_sf(data=Niger_level2) + 
+  geom_sf(data=lsms_sf_11, aes()) +
+  coord_sf()+
+  ggtitle("2011")
+
+ggplot() +
+  geom_sf(data=Niger_level2) + 
+  geom_sf(data=lsms_sf_14, aes()) +
+  coord_sf()+
+  ggtitle("2014")
+#abala_admin2 <- Niger_level2[Niger_level2$admin2Name=="Abala"]  
+#temp <- st_intersects(abala_admin2, lsms_sf_11)
+
+```
+```{r}
+only2011<-SpatialJoindf %>% filter(year=="2011")%>% arrange(desc(cluster))
+#removedX<-data.frame(only2011)%>%select(-X)
+only2011%>%group_by(cluster,latitude,longitude)%>% summarise(median_foodexpend=median(pcexp_food),
+                                                           median_nonfoodexp=median(pcexp_nonfood))
+#removedX<-data.frame(only2011)%>%select(-X)
+
+```
+
+```{r}
+library(ggsn)
+#ShpMergedLsms=merge(x=Niger_level2,y=LSMSmergedList,by.x="admin2Pcod",by.y="admin2Pcod",all=TRUE)
+medianvalues<-ShpMergedLsms%>%group_by(admin2Pcod) %>% mutate(median_foodexpend=median(pcexp_food),
+                                                           median_nonfoodexp=median(pcexp_nonfood),                                      median_totalexpend=median(pcexp)) %>% 
+  distinct(median_foodexpend,.keep_all = TRUE)
+```
+
+```{r}
+library(DescTools)
+medianvalues$Winsorizeddata<-Winsorize(medianvalues$median_foodexpend,probs = c(0.05, 0.95),
+          na.rm = TRUE, type = 7)  
+ggplot() + 
+  geom_sf(data = medianvalues, size = 1, color = "black", aes(fill=median_foodexpend)) + 
+  labs(title = "Per Capita Food Expenditure in 2018", 
+subtitle = "Data from LSMS surveys", 
+caption = "Gray indicates missing values") + 
+  coord_sf()+
+   scale_fill_viridis(name="Food Expenditure",limits=c(8000,750000),breaks=c(170000,340000,
+                                                                       510000))+
+   north(medianvalues, location = "topleft", symbol = 15)+
+   annotation_scale()
+```
+
+```{r}
+ggplot(medianvalues,aes(x="2018",y=median_foodexpend))+geom_boxplot()
+```
+

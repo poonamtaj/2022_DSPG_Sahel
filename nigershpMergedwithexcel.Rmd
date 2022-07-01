@@ -16,6 +16,7 @@ library(sf)
 setwd("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel")
 mydata <-read_excel("Données EVIAM 15 17 insécurite alimentaire.xlsx")
 head(mydata)
+
 ```
 
 ```{r}
@@ -56,12 +57,14 @@ mydata$departement_name <- sub("Tillaberi", "Tillabéri", mydata$departement_nam
 
 ```{r}
 nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
-ggplot() + 
+Moderate2015<-ggplot() + 
   geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=moderate_part_15)) + 
   ggtitle("Population at Moderate Risk of Food Insecurity in Niger - 2015") + scale_fill_viridis_c()+
   coord_sf()+
   labs(fill = "Percent of Population")+theme_classic()
+Moderate2015
 ```
+
 ```{r}
 nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
 ggplot(data = nigerShpMerged) + 
@@ -73,12 +76,143 @@ ggplot(data = nigerShpMerged) +
 ```
 
 ```{r}
+library(ggforce)
 nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
-ggplot() + 
+Moderate2017<-ggplot() + 
   geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=moderate_part_17)) + 
   ggtitle("Population at Moderate Risk of Food Insecurity in Niger - 2017") + scale_fill_viridis_c()+
   coord_sf()+
   labs(fill = "Percent of Population")+theme_classic()
+Moderate2017
+
 ```
 
+```{r}
+nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
+Atrisk2015<-ggplot() + 
+  geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=arisque_part_15)) + 
+  ggtitle("Population at Risk of Food Insecurity in Niger - 2015") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()
+Atrisk2015
+```
 
+```{r}
+nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
+Atrisk2017<-ggplot() + 
+  geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=arisque_part_17)) + 
+  ggtitle("Population at Risk of Food Insecurity in Niger - 2017") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()
+Atrisk2017
+```
+```{r}
+nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
+Severe2015<-ggplot() + 
+  geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=severe_part_15)) + 
+  ggtitle("Population at Severe Risk of Food Insecurity in Niger - 2015") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()
+Severe2015
+```
+
+```{r}
+nigerShpMerged=merge(x=Niger_level2,y=mydata,by.x="admin2Name",by.y="departement_name",all=TRUE)
+Severe2017<-ggplot() + 
+  geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=severe_part_17)) + 
+  ggtitle("Population at Severe Risk of Food Insecurity in Niger - 2017") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()
+Severe2017
+```
+
+```{r}
+library(patchwork)
+Atrisk2015 + theme(plot.margin = unit(c(0, 0, 5, 0), "cm"))
+Atrisk2015/Moderate2015/Severe2015
+#Atrisk2015+Moderate2015+Severe2015+plot_layout(nrow = 3, byrow = FALSE)
+#facet_matrix(Atrisk2015,Moderate2015,Severe2015)
+```
+```{r}
+library(patchwork)
+Atrisk2017 + theme(plot.margin = unit(c(0, 0, 5, 0), "cm"))
+Atrisk2017/Moderate2017/Severe2017
+```
+```{r}
+ggplot(data = nigerShpMerged,aes( x="2015",y=moderate_part_15)) + geom_boxplot()
+  labs(title="Population at Moderate Risk of Food Insecurity in Niger - 2015")
+```
+```{r}
+admin2listdata<-read_excel("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/niger_adm2_listCode.xlsx")
+```
+
+```{r}
+datawithCode<-left_join(admin2listdata, mydata, by=c("departement_name"="departement_pov"))
+```
+
+```{r}
+library(dplyr)
+Atrisk<-mydata%>%select(departement_name,arisque_part_15,arisque_part_17)%>% rename("2015" = arisque_part_15,"2017" = arisque_part_17)
+AtriskLong<-gather(Atrisk,key="year", value="ATRISK", 2:3)
+```
+
+```{r}
+AtriskmergedShp=merge(x=Niger_level2,y=AtriskLong,by.x="admin2Name",by.y="departement_name",all=TRUE)
+Mapatrisk<-ggplot() + 
+  geom_sf(data = AtriskmergedShp, size = 1, color = "NA", aes(fill=ATRISK)) + 
+  ggtitle("Population at  Risk of Food Insecurity by department (admin2)") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()+
+  facet_wrap(~year)
+Mapatrisk
+```
+maps for moderate risk
+
+```{r}
+library(dplyr)
+Moderaterisk<-mydata%>%select(departement_name,moderate_part_15,moderate_part_17)%>% rename("2015" = moderate_part_15,"2017" = moderate_part_17)
+ModerateriskLong<-gather(Moderaterisk,key="year", value="MODERATERISK", 2:3)
+```
+
+```{r}
+ModerateriskmergedShp=merge(x=Niger_level2,y=ModerateriskLong,by.x="admin2Name",by.y="departement_name",all=TRUE)
+MapModeraterisk<-ggplot() + 
+  geom_sf(data = ModerateriskmergedShp, size = 1, color = "NA", aes(fill=MODERATERISK)) + 
+  ggtitle("Population at Moderate Risk of Food Insecurity by department (admin2)") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()+
+  facet_wrap(~year)
+MapModeraterisk
+```
+
+maps for severe risk
+
+```{r}
+library(dplyr)
+Severerisk<-mydata%>%select(departement_name,severe_part_15,severe_part_17)%>% rename("2015" = severe_part_15,"2017" = severe_part_17)
+SevereriskLong<-gather(Severerisk,key="year", value="SEVERERISK", 2:3)
+```
+
+```{r}
+SevereriskmergedShp=merge(x=Niger_level2,y=SevereriskLong,by.x="admin2Name",by.y="departement_name",all=TRUE)
+MapSevererisk<-ggplot() + 
+  geom_sf(data = SevereriskmergedShp, size = 1, color = "NA", aes(fill=SEVERERISK)) + 
+  ggtitle("Population at Severe Risk of Food Insecurity by department (admin2)") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()+
+  facet_wrap(~year)
+MapSevererisk
+```
+
+Legend at bottom for the presentation
+```{r}
+AtriskmergedShp=merge(x=Niger_level2,y=AtriskLong,by.x="admin2Name",by.y="departement_name",all=TRUE)
+Mapatrisk<-ggplot() + 
+  geom_sf(data = AtriskmergedShp, size = 1, color = "NA", aes(fill=ATRISK)) + 
+  ggtitle("Population at  Risk of Food Insecurity by department (admin2)") + scale_fill_viridis_c()+
+  coord_sf()+
+  labs(fill = "Percent of Population")+theme_classic()+
+  facet_wrap(~year)+theme(legend.position="bottom")
+
+Mapatrisk
+```
