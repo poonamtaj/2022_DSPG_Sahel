@@ -16,6 +16,7 @@ library(tidyverse)
 library(lubridate)
 library(reshape2)
 library(ggplot2)
+library(ggthemes)
 ```
 
 Read in Data
@@ -187,19 +188,25 @@ nigerShpMerged_admin3 = full_join(nigerMapAdmin3, datajn_admin3 ,by="adm_03")
 nigerShpMerged_admin3
 ```
 
-Max NDVI Admin 2 and Admin 3
+NDVI Admin 2 and Admin 3
 ```{r}
-ggplot(nigerShpMerged_admin2) + theme_classic() +
+ggplot(nigerShpMerged_admin2) + theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) +
   geom_sf(aes(fill = newNDVI.y), color = NA, alpha = 0.8) +
   scale_fill_viridis_c( direction = -1) +
   labs(title="Annual NDVI by Department (Admin 2)", fill = "NDVI" ) +
-  facet_wrap(~year.y)
+  facet_wrap(~year.y, nrow=1)
 
-ggplot(nigerShpMerged_admin3) + theme_classic() +
+ggplot(nigerShpMerged_admin3) + theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) +
   geom_sf(aes(fill = newNDVI.y),color = NA, alpha = 0.8) +
   scale_fill_viridis_c( direction = -1) +
   labs(title="Annual NDVI by Commune (Admin 3)", fill = "NDVI" ) +
-  facet_wrap(~year.y)
+  facet_wrap(~year.y, nrow=1)
 ```
 z-score NDVI Admin 2 and Admin 3
 ```{r}
@@ -237,18 +244,6 @@ nigerShpMerged_admin3 %>%
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year.y, nrow=1) + 
   labs(title="Annual Z-Score of Peak NDVI by Commune (Admin 3)", fill = "z-score" )
-```
-
-```{r}
-#MaxEVI2017 <- nigerShpMerged_admin2 #%>%
-  #filter(District == "Hwange") %>%
-  ggplot(nigerShpMerged_admin2, aes(x = year.y, y = peak_ndvi.y)) +
-  geom_line(aes(group=1), color = "blue")+
-  geom_point() +
-  theme(axis.text.x = element_text(angle = 315)) +
-  labs(title = "Annual")+
-  xlab("Year")+
-  ylab("Peak NDVI")
 ```
 
 
