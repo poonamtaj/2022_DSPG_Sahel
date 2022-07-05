@@ -36,7 +36,7 @@ head(pentadData)
 Convert data from Wide to Long for years 1981 to 1994
 ```{r}
 precipitationData <- pentadData %>%
-  select(adm_03, adm_01,"19810101": "20220121")
+  select(adm_03,adm_02,adm_01,rowcacode3, rowcacode2, rowcacode1, "19810101": "20220121")
 precipitationDataLong <- gather(precipitationData, Date, Precipitation, "19810101":"20220121")
 head(precipitationDataLong)
 ```
@@ -58,13 +58,10 @@ Data <- precipitationDataLong %>%
 Total Precipitation by Year Summary
 ```{r}
 yearSum = Data %>% group_by(adm_03, year) %>%
-  summarize(yearTotal_precipitation = sum(Precipitation, na.rm = FALSE),
+  mutate(yearTotal_precipitation = sum(Precipitation, na.rm = FALSE),
             yearMean_precipitation = mean(Precipitation, na.rm = FALSE),
-            yearMedian_precipitation = median(Precipitation, na.rm = FALSE),
-            yearStandardDeviation_precipitation = sd(Precipitation, na.rm = FALSE),
-            yearZScore_precipitation = (yearMean_precipitation/yearStandardDeviation_precipitation),
-            .groups = "drop")
-view(yearSum)
+            yearMedian_precipitation = median(Precipitation, na.rm = FALSE))
+
 ```
 
 Total Precipitation by Month Summary
@@ -74,11 +71,10 @@ monthlySum = Data %>% group_by(adm_03, year, month) %>%
             mean_precipitation = mean(Precipitation, na.rm = FALSE),
             median_precipitation = median(Precipitation, na.rm = FALSE),
             standardDeviation_precipitation = sd(Precipitation, na.rm = FALSE),
-            zScore_precipitation = (mean_precipitation/standardDeviation_precipitation),
-            .groups = "drop")
-view(monthlySum)
+            zScore_precipitation = (mean_precipitation/standardDeviation_precipitation))
 ```
 
+###DO NOT RUN WILL BLOW UP PC
 Seasonal Precipitation Summary
 ```{r}
 seasonalPrecipitation <- monthlySum %>% 
@@ -88,20 +84,33 @@ seasonalPrecipitation <- monthlySum %>%
   summarize(Seasonal_Precipitation = sum(total_precipitation, na.rm = FALSE),
             mean_precipitation = mean(total_precipitation, na.rm = FALSE),
             median_precipitation = median(total_precipitation, na.rm = FALSE),
-            standardDeviation_precipitation = sd(total_precipitation, na.rm = FALSE),
-            zScore_precipitation = (mean_precipitation/standardDeviation_precipitation),)
-  
+            zScore_precipitation = (periodData$baseMean_precipitation/standardDeviation_precipitation_))
+            
 view(seasonalPrecipitation)
 ```
 
 1981 to 2010 Filtered
 ```{r}
-periodData = Data %>% group_by(adm_03) %>%
+periodData = seasonalPrecipitation %>% group_by(adm_03) %>%
   filter(year >= "1981" & year <= "2010") %>% 
-  summarize(Total_precipitation = sum(Precipitation, na.rm = FALSE),
-            Mean_precipitation = mean(Precipitation, na.rm = FALSE),
-            StandardDeviation_precipitation = sd(Precipitation, na.rm = FALSE),
-            ZScore_precipitation = (Mean_precipitation/StandardDeviation_precipitation),
-            .groups = "drop")
-view(periodData)
+  mutate(Total_precipitation = sum(Seasonal_Precipitation, na.rm = FALSE),
+         baseMean_precipitation = mean(Seasonal_Precipitation, na.rm = FALSE),
+         zScore_precipitation = (periodData$baseMean_precipitation/standardDeviation_precipitation_))
 ```
+
+standard deviation and Z score
+
+s<-sqrt(sum((v-mean(v))^2/(length(v)-1)))
+```{r}
+standardDeviation_precipitation_pt1 = (sum(seasonalPrecipitation$Seasonal_Precipitation - periodData$baseMean_precipitation))^2
+standardDeviation_precipitation_pt2 = length(seasonalPrecipitation$Seasonal_Precipitation)-1
+standardDeviation_precipitation_ = sqrt(standardDeviation_precipitation_pt1/standardDeviation_precipitation_pt2)
+
+
+
+
+zScore_precipitation = (periodData$baseMean_precipitation/standardDeviation_precipitation_)
+view(zScore_precipitation)
+```
+
+
