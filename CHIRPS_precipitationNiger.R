@@ -8,53 +8,31 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Clear Environment and Set Options -----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rm(list = ls(all = TRUE))
-
-# Standard ggplot has distracting features - adjust those
-remove_chart_clutter <- 
-  theme(    
-    panel.grid.major = element_blank(),      # Remove panel grid lines
-    panel.grid.minor = element_blank(),      # Remove panel grid lines
-    panel.background = element_blank(),      # Remove panel background
-    axis.line = element_line(colour = "grey"),       # Add axis line
-    axis.title.y = element_text(angle = 0, vjust = 0.5),      # Rotate y axis so don't have to crank head
-    legend.position="bottom"
-  ) 
-
-# Don't show scientific notation
-options(scipen = 999)
-
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Libraries and Options -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 library(tidyverse)
-library(haven) # for read_dta
-library(tidylog) # for output on operations/changes with select, drop, merges, etc.
-library(rio)
+library(tidylog)
 
 library(openxlsx)
 library(readxl)
-library(moderndive) #necessary?
+
 library(readr)
 library(tidyr)
-library(lubridate) # for dates
+library(lubridate)
 
-library(reshape2)
-library(ggplot2) # included in tidyverse
+library(ggplot2)
 library(ggthemes)
 library(stringr)
 library(sf)
+
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 csvData2 <-read.csv("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/rainfallMean_ts_niger_adm2.csv")
 csvData3 <-read.csv("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/rainfallMean_ts_niger_adm3.csv")
 
-#Geospatial Data
-nigerMap2 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin2/niger_admin2.shp")
-nigerMap3 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin3/NER_adm03_feb2018.shp")
+geospatialData2 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin2/niger_admin2.shp")
+geospatialData3 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin3/NER_adm03_feb2018.shp")
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Clean Column Names -----
@@ -78,33 +56,29 @@ for ( col in 1:ncol(csvData3)){
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Convert from Wide to Long Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#admin 1 and 2
 precipData2 <- 
   csvData2 %>%
   select(admin1Name, admin1Pcod, 
          admin2Name, admin2Pcod, "19810101": "20220426")
 
 precipDataLong2 <- 
-  gather(precipData2, 
-         key = Date, 
-         value = Precipitation, 
-         "19810101":"20220121") %>% 
+  pivot_longer(precipData2, 
+         cols = "19810101": "20220426", 
+         names_to = "Date", 
+         values_to = "Precipitation") %>% 
   mutate(Date = ymd(Date))
 
 
-#admin 3
 precipData3 <- 
   csvData3 %>%
   select(adm_03, rowcacode3, "19810101": "20220426")
 
 precipDataLong3 <- 
-  gather(precipData3, 
-         key = Date, 
-         value = Precipitation, 
-         "19810101":"20220121") %>% 
+  pivot_longer(precipData3, 
+               cols = "19810101": "20220426", 
+               names_to = "Date", 
+               values_to = "Precipitation") %>% 
   mutate(Date = ymd(Date))
-
-
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Convert Column Names to Dates and create new columns -----
@@ -175,20 +149,18 @@ yearData1  %>%
   remove_chart_clutter +
   theme(legend.position = "right")
 
+#Average rainfall per year in Niger
 mean(yearData1$total_precip_annual_admin1, na.rm = TRUE)
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 2) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# 1. check to see names for merge (in future can run "clean_names" to avoid case sensitivity)
-names(yearData2)
-names(nigerMap2)
 
 # 2. Merge Precip and  Spatial Information (geometry) by common code
-nigerYearMerged2 = full_join(nigerMap2, 
-                         yearData2,
-                         by = "admin2Pcod")
+nigerYearMerged2 = full_join(geospatialData2, 
+                             yearData2,
+                             by = "admin2Pcod")
 
 # 3. Generate map --- 
 nigerYearMerged2 %>% 
@@ -221,8 +193,7 @@ yearData3 <-
   ungroup()
 
 
-# 2. Merge Precip and  Spatial Information (geometry) by common code
-nigerYearMerged3 = full_join(nigerMap3, 
+nigerYearMerged3 = full_join(geospatialData3, 
                             yearData3,
                             by = "adm_03")
 
@@ -245,38 +216,35 @@ nigerYearMerged3 %>%
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Z-Scores (Admin 2) -----
+# Generate Z-Scores (Admin 2 & Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate baseline dataset
-baselineData2 <- 
+admin2precip <- 
   yearData2 %>% 
-  group_by(admin2Pcod) %>%
-  filter(year >= "1981" & year <= "2010") %>% 
-  summarise(baselineMean_precip = mean(total_precip, na.rm = TRUE),
-            baselineSD_precip = sd(total_precip, na.rm = TRUE)) %>%
+  select(admin2Name, admin2Pcod, year, total_precip) %>%
+  group_by(admin2Pcod) %>% 
+  mutate(baselineMean_precip = mean(total_precip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+         baselineSD_precip = sd(total_precip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+  group_by(admin2Pcod, year) %>% 
+  mutate(zscore_precip = (total_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
   ungroup()
 
-# Focus on the "post" time period
-postData2 <-
-  yearData2 %>% 
-  group_by(admin2Name,admin2Pcod, year) %>%
-  filter(year >= "2011" & year <= "2021") %>% 
+
+admin3precip <- 
+  yearData3 %>% 
+  select(adm_03, rowcacode3 , year, total_precip) %>%
+  group_by(adm_03) %>% 
+  mutate(baselineMean_precip = mean(total_precip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+         baselineSD_precip = sd(total_precip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+  group_by(adm_03, year) %>% 
+  mutate(zscore_precip = (total_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
   ungroup()
 
-# Merge the two together
-datajoin2 <- 
-  baselineData2 %>% 
-  left_join(postData2, by = "admin2Pcod") %>%
-  mutate(zscore_precip = (total_precip - baselineMean_precip)/
-           (baselineSD_precip))
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Z-Score Maps (Admin 2) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# 2. Merge Precip and  Spatial Information (geometry) by common code
-nigerZScoreMerged2 = full_join(nigerMap2, 
-                               datajoin2,
+nigerZScoreMerged2 = full_join(geospatialData2, 
+                               admin2precip,
                                by = "admin2Pcod")
 
 nigerZScoreMerged2 %>% 
@@ -293,39 +261,13 @@ nigerZScoreMerged2 %>%
                  rect = element_blank())
 
 
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Z-Scores (Admin 3) -----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate baseline dataset
-baselineData3 <- 
-  yearData3 %>% 
-  group_by(rowcacode3) %>%
-  filter(year >= "1981" & year <= "2010") %>% 
-  summarise(baselineMean_precip = mean(total_precip, na.rm = TRUE),
-            baselineSD_precip = sd(total_precip, na.rm = TRUE)) %>%
-  ungroup()
 
-# Focus on the "post" time period
-postData3 <-
-  yearData3 %>% 
-  group_by(adm_03,rowcacode3, year) %>%
-  filter(year >= "2011" & year <= "2021") %>% 
-  ungroup()
-
-# Merge the two together
-datajoin3 <- 
-  baselineData3 %>% 
-  left_join(postData3, by = "rowcacode3") %>%
-  mutate(zscore_precip = (total_precip - baselineMean_precip)/
-           (baselineSD_precip))
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Z-Score Maps (Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# 2. Merge Precip and  Spatial Information (geometry) by common code
-nigerZScoreMerged3 = full_join(nigerMap3, 
-                               datajoin3,
+nigerZScoreMerged3 = full_join(geospatialData3, 
+                               admin3precip,
                                by = "rowcacode3")
 
 nigerZScoreMerged3 %>% 
@@ -347,7 +289,7 @@ nigerZScoreMerged3 %>%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 seasonalData2 <- 
   dataAdmin2 %>% 
-  group_by(admin2Name, admin2Pcod, month) %>%
+  group_by(admin2Name, admin2Pcod,year, month) %>%
   filter(month >= 6 & month <= 9) %>%
   mutate(seasonaltotal_precip = sum(Precipitation, na.rm = TRUE),
          seasonalmean_precip = mean(Precipitation, na.rm = TRUE)) %>%
@@ -357,7 +299,7 @@ seasonalData2 <-
 
 seasonalData3 <- 
   dataAdmin3 %>% 
-  group_by(adm_03,rowcacode3, month) %>%
+  group_by(adm_03,rowcacode3, year,month) %>%
   filter(month >= 6 & month <= 9) %>%
   mutate(seasonaltotal_precip = sum(Precipitation, na.rm = TRUE),
          seasonalmean_precip = mean(Precipitation, na.rm = TRUE)) %>%
@@ -368,7 +310,6 @@ seasonalData3 <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Seasonal Data Graphics-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# 2. Merge Precip and  Spatial Information (geometry) by common code
 seasonalMerged2 = full_join(nigerMap2, 
                             seasonalData2,
                             by = "admin2Pcod")
@@ -379,7 +320,7 @@ seasonalMerged2 %>%
   geom_sf(aes(fill = seasonaltotal_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~month, nrow = 1) +
-  labs(title="Seasonal Rainfall by Department", fill = "z-score" ) + 
+  labs(title="Seasonal Rainfall by Department Year 2018", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -403,3 +344,5 @@ seasonalMerged3 %>%
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         rect = element_blank())
+
+
