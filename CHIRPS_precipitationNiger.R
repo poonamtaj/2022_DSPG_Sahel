@@ -310,7 +310,7 @@ seasonalData3 <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Seasonal Data Graphics-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-seasonalMerged2 = full_join(nigerMap2, 
+seasonalMerged2 = full_join(geospatialData2, 
                             seasonalData2,
                             by = "admin2Pcod")
 
@@ -328,7 +328,7 @@ seasonalMerged2 %>%
         rect = element_blank())
 
 #Admin 3
-seasonalMerged3 = full_join(nigerMap3, 
+seasonalMerged3 = full_join(geospatialData3, 
                             seasonalData3,
                             by = "adm_03")
 
@@ -345,4 +345,6 @@ seasonalMerged3 %>%
         axis.ticks = element_blank(),
         rect = element_blank())
 
-
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Function Code Ideas-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
