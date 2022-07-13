@@ -120,13 +120,21 @@ data_admin3 <- NDVIDataLong3 %>%
 Calculating Max
 ```{r}
 admin2NDVI <- data_admin2 %>% 
-group_by(admin2Name, year) %>% mutate(peak_ndvi = max(newNDVI, na.rm = TRUE)) %>% distinct(admin2Name, year, peak_ndvi, newNDVI) %>%
+group_by(admin2Name, year) %>% mutate(peak_ndvi = max(newNDVI, na.rm = TRUE)) %>% distinct(admin1Name, admin2Name, year, peak_ndvi, newNDVI) %>%
 ungroup()
 
 admin3NDVI <- data_admin3 %>% 
 group_by(adm_03, year) %>% mutate(peak_ndvi = max(newNDVI, na.rm = TRUE)) %>% distinct(adm_03, rowcacode3.1, year, peak_ndvi, newNDVI) %>%
 ungroup()
 ```
+
+Creating Dataframe with admin 1 data
+```{r}
+admin1NDVI <- admin2NDVI %>% 
+group_by(admin1Name, year) %>% mutate(peak_ndvi_admin1 = mean(peak_ndvi, na.rm=TRUE)) %>% distinct(admin1Name, year, peak_ndvi_admin1) %>%
+ungroup()
+```
+
 
 
 Filtered 1981 to 2010 Baseline Data
@@ -246,7 +254,12 @@ nigerShpMerged_admin3 %>%
   labs(title="Annual Z-Score of Peak NDVI by Commune (Admin 3)", fill = "z-score" )
 ```
 
+```{r}
+ggplot(admin1NDVI, aes(x=year, y=peak_ndvi_admin1, color=admin1Name, na.rm=TRUE)) +
+  geom_line() +
+  labs(title="Peak NDVI by Region Years 1981 - 2019", x="Year", y="Peak NDVI", color = "Admin 1")
 
+```
 
 
 
