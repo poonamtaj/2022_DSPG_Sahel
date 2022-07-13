@@ -1,0 +1,67 @@
+---
+title: "NigerSHP_merge_excel"
+author: "rileyrudd"
+date: '2022-06-16'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(readxl)
+WBdata <- read_excel("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/WBdata.xlsx")
+```
+
+```{r}
+WBdata$departement_name <- sub("Aguie", "Aguié", WBdata$departement_name)
+WBdata$departement_name <- sub("Bankilare", "Bankilaré", WBdata$departement_name)
+WBdata$departement_name <- sub("Filingue", "Filingué", WBdata$departement_name)
+WBdata$departement_name <- sub("Gotheye", "Gothèye", WBdata$departement_name)
+WBdata$departement_name <- sub("Goure", "Gouré", WBdata$departement_name)
+WBdata$departement_name <- sub("Guidan-Roumdji", "Guidan Roumdji", WBdata$departement_name)
+WBdata$departement_name <- sub("Illela", "Illéla", WBdata$departement_name)
+WBdata$departement_name <- sub("Kantche", "Kantché", WBdata$departement_name)
+WBdata$departement_name <- sub("Maine-Soroa", "Maïné Soroa", WBdata$departement_name)
+WBdata$departement_name <- sub("Tera", "Téra", WBdata$departement_name)
+#WBdata$departement_name <- sub("Tibiri ?Doutchi?", "Tibiri", WBdata$departement_name)
+WBdata$departement_name <- sub("Tibiri .Doutchi.", "Tibiri", WBdata$departement_name)
+
+
+
+WBdata$departement_name <- sub("Tillaberi", "Tillabéri", WBdata$departement_name)
+```
+
+
+```{r}
+
+library(sf)
+NigerLevel2 <- st_read("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/Level 2 (1)/wb_niger_admin2_shapefile/")
+
+```
+Merge Data
+```{r}
+library(ggplot2)
+nigerShpMerged=merge(x=NigerLevel2,y=WBdata,by.x="admin2Name",by.y="departement_name",all=TRUE)
+ggplot() +
+geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=arisque_part_15)) +
+ggtitle("Population at Risk of Food Insecurity in Niger - 2015") + scale_fill_viridis_c()+
+theme_classic() +
+coord_sf() +
+  labs(fill = "Percent of Population")
+```
+
+```{r}
+ggplot() +
+geom_sf(data = nigerShpMerged, size = 1, color = "black", aes(fill=arisque_part_17)) +
+ggtitle("Population at Risk of Food Insecurity in Niger - 2017") + scale_fill_viridis_c()+
+theme_classic() +
+coord_sf() +
+  labs(fill = "Percent of Population")
+```
+
+
+
+
