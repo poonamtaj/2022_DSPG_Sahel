@@ -28,11 +28,12 @@ library(sf)
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-csvData2 <-read.csv("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/rainfallMean_ts_niger_adm2.csv")
-csvData3 <-read.csv("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/rainfallMean_ts_niger_adm3.csv")
+## update the path for data files
+csvData2 <-read.csv("./rainfallMean_ts_niger_adm2.csv")
+csvData3 <-read.csv("./rainfallMean_ts_niger_adm3.csv")
 
-geospatialData2 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin2/niger_admin2.shp")
-geospatialData3 <- st_read("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/niger_admin3/NER_adm03_feb2018.shp")
+geospatialData2 <- st_read("./niger_admin2/niger_admin2.shp")
+geospatialData3 <- st_read("./niger_admin3/NER_adm03_feb2018.shp")
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Clean Column Names -----
@@ -79,6 +80,11 @@ precipDataLong3 <-
                names_to = "Date", 
                values_to = "Precipitation") %>% 
   mutate(Date = ymd(Date))
+
+### to download the dataframe as csv file
+#write.csv(precipDataLong2, "./precipDataLong2.csv", row.names = FALSE)
+#write.csv(precipDataLong3, "./precipDataLong3.csv", row.names = FALSE)
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Convert Column Names to Dates and create new columns -----
@@ -152,6 +158,9 @@ yearData1  %>%
 #Average rainfall per year in Niger
 mean(yearData1$total_precip_annual_admin1, na.rm = TRUE)
 
+### to download the dataframe as csv file
+#write.csv(yearData2, "./yearData2.csv", row.names = FALSE)
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 2) -----
@@ -192,10 +201,12 @@ yearData3 <-
            total_precip, mean_precip, sd_precip) %>%
   ungroup()
 
+### to download the dataframe as csv file
+#write.csv(yearData3, "./yearData3.csv", row.names = FALSE)
 
 nigerYearMerged3 = full_join(geospatialData3, 
                             yearData3,
-                            by = "adm_03")
+                            by = "rowcacode3")
 
 # 3. Generate map --- 
 nigerYearMerged3 %>% 
@@ -239,6 +250,9 @@ admin3precip <-
   mutate(zscore_precip = (total_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
   ungroup()
 
+### to download the dataframe as csv file
+#write.csv(admin2precip, "./admin2precip.csv", row.names = FALSE)
+#write.csv(admin3precip, "./admin3precip.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Z-Score Maps (Admin 2) -----
@@ -306,6 +320,10 @@ seasonalData3 <-
   ungroup() %>%
   distinct(adm_03, rowcacode3, year, month, seasonaltotal_precip,
            seasonalmean_precip)
+
+### to download the dataframe as csv file
+#write.csv(seasonalData2, "./seasonalData2.csv", row.names = FALSE)
+#write.csv(seasonalData3, "./seasonalData3.csv", row.names = FALSE)
   
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Seasonal Data Graphics-----
@@ -330,7 +348,7 @@ seasonalMerged2 %>%
 #Admin 3
 seasonalMerged3 = full_join(geospatialData3, 
                             seasonalData3,
-                            by = "adm_03")
+                            by = "rowcacode3")
 
 seasonalMerged3 %>% 
   filter(year == 2018) %>% 
