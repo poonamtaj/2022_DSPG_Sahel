@@ -181,7 +181,7 @@ ui <- navbarPage(title = "DSPG 2022",
                             p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
                               researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
                               spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
-                            img(src = "precipitation.png", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                            img(src = "precipitation.png", class = "topimage", width = "15%", style = "display: block; margin-left: auto; margin-right: auto;"),
                             h3(strong("Normalized Difference Vegetation Index")),
                             p("The Normalized Difference Vegetative Index (NDVI) dataset is unique in that it bridges the gap between satellite imagery and internal vegetative processes. Satellite
                               sensors measure wavelengths of light absorbed and reflected by green plants; certain pigments in plant leaves strongly absorb wavelengths of visible (red) light. The leaves
