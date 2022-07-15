@@ -53,7 +53,13 @@ mydata <-read_excel("./data/Données EVIAM 15 17 insécurite alimentaire.xlsx")
 Niger_level2 <- st_read(
   "./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
+mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
+#nigerMapAdmin2 <- st_read("./data/shapefiles/niger_admin2.shp")
 
+# 2. Merge Precip and  Spatial Information (geometry) by common code
+nigerShpMerged_admin2_md = full_join(Niger_level2, 
+                                     mydt_ndvi_md,
+                                     by=c("admin2Pcod" = "admin2Pcod"))
 # adjusting the discrepancy in some names due to French accent
 
 mydata$departement_name <- sub("Aguie", "Aguié", mydata$departement_name)
@@ -203,7 +209,15 @@ ui <- navbarPage(title = "DSPG 2022",
                  tabPanel("Drought Index",
                           fluidPage(
                             h3(strong("NDVI , Precipitation")),
-                            withMathJax())),
+                            withMathJax()),
+                          column(4, 
+                                 h4(strong("Description")),
+                                 p("Overall, there is relatively little variation across this time span, indicating that there was little change in vegetation. The reason why the maps may all look the same is that there is little growth and change over time due to unpredictable rainfall and frequent drought. It seems that around 2013 and 2014 the lower regions had an increased vegetation level, which is reflected by increased rainfall during the same years.")
+                          ),
+                          column(8,
+                                 h4(strong("NDVI Maps")),
+                                 leafletOutput("my_leaf", height = "500px")),
+                 ),
                  tabPanel("Welfare Index",
                           fluidPage(
                             h3(strong("Welfare Index")),
@@ -303,6 +317,25 @@ server <- function(input, output) {
   output$food_insecurity_out1<-renderPlot({map_at_risk})
   output$food_insecurity_out2<-renderPlot({map_at_moderate_risk})
   output$food_insecurity_out3<-renderPlot({map_at_severe_risk})
+  
+  output$my_leaf <- renderLeaflet({
+    mypal <- colorNumeric(
+      palette = "viridis",
+      domain = nigerShpMerged_admin2_md$peak_ndvi)
+    
+    leaflet(nigerShpMerged_admin2_md) %>%
+      addTiles() %>%  
+      addPolygons(color = ~mypal(peak_ndvi), weight = 1, smoothFactor = 0.5, 
+                  label = paste("Department -", nigerShpMerged_admin2_md$admin2Name.x,":", "Peak NDVI", round(nigerShpMerged_admin2_md$peak_ndvi, digits = 3)),
+                  opacity = 1.0, fillOpacity = 0.5,
+                  highlightOptions = highlightOptions(color = "black", weight = 2,
+                                                      bringToFront = TRUE)) %>% 
+      addLegend(pal = mypal,position = "bottomright",values = nigerShpMerged_admin2_md$peak_ndvi,
+                opacity = .6,title = paste("Peak NDVI")) 
+    
+    
+    
+  })
 }
 # Run the application 
 shinyApp(ui = ui, server = server)
