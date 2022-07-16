@@ -5,7 +5,10 @@
 # Find out more about building applications with Shiny here:
 #
 #    http://shiny.rstudio.com/
-#
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+######### DSPG SAHEL Project -----------------------------------------------------
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 library(shiny)
 library(leaflet)
 library(tidyverse)
@@ -45,6 +48,8 @@ remove_chart_clutter <-
     axis.title.y = element_text(angle = 0, vjust = 0.5),      # Rotate y axis so don't have to crank head
     legend.position="bottom"
   ) 
+
+#####------------------------------------------------------------- data -------------------------------------------------------------------#####
 
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
@@ -103,6 +108,10 @@ map_at_moderate_risk <- make_maps(var1="moderate_part_15",var2="moderate_part_17
 
 #Severe Risk maps
 map_at_severe_risk <- make_maps(var1="severe_part_15",var2="severe_part_17",val="SEVERERISK",title="Population at Severe Risk of Food Insecurity by department (admin2)")
+
+
+
+#####------------------------------------------------------ ui for shiny app --------------------------------------------------------#######
 
 ui <- navbarPage(title = "DSPG 2022",
                  selected = "overview",
@@ -180,6 +189,8 @@ ui <- navbarPage(title = "DSPG 2022",
                                             )
                                    )
                  ),
+                 
+                 ## Tab Data & Methodology -----------------------------------------------------------
                  tabPanel("Data",
                           fluidPage(
                             h1(strong("Description of Data Sources")),
@@ -205,20 +216,29 @@ ui <- navbarPage(title = "DSPG 2022",
                             p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
                               been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure.  ")),
-                          img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")),
+                          img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")
+                          ),
+                 
+                 ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
                           fluidPage(
                             h3(strong("NDVI , Precipitation")),
                             withMathJax()),
                           column(4, 
                                  h4(strong("Description")),
-                                 p("Overall, there is relatively little variation across this time span, indicating that there was little change in vegetation. The reason why the maps may all look the same is that there is little growth and change over time due to unpredictable rainfall and frequent drought. It seems that around 2013 and 2014 the lower regions had an increased vegetation level, which is reflected by increased rainfall during the same years.")
+                                 p("Overall, there is relatively little variation across this time span, 
+                                   indicating that there was little change in vegetation. The reason why the maps may all look the same is that there is little growth and 
+                                   change over time due to unpredictable rainfall and frequent drought. 
+                                   It seems that around 2013 and 2014 the lower regions had an increased vegetation level, 
+                                   which is reflected by increased rainfall during the same years.")
                           ),
                           column(8,
                                  h4(strong("NDVI Maps")),
                                  leafletOutput("my_leaf", height = "500px")),
                  ),
-                 tabPanel("Welfare Index",
+                
+                 ## Tab Welfare Index --------------------------------------------------------------
+                  tabPanel("Welfare Index",
                           fluidPage(
                             h3(strong("Welfare Index")),
                             withMathJax()),
@@ -252,10 +272,14 @@ ui <- navbarPage(title = "DSPG 2022",
                                      ))
                             
                           )),
+                 
+                 ## Tab Takeaways ---------------------------------------------------------------
                  tabPanel("Takeaways",
                           fluidPage(
                             h3(strong("Takeaways")),
                             withMathJax())),
+                 
+                 ## Tab References --------------------------------------------------------------
                  tabPanel("References", value = "references",
                           column(3),
                           column(6, 
@@ -270,6 +294,8 @@ ui <- navbarPage(title = "DSPG 2022",
                                  p("Sahel adaptive Social Protection Program (ASPP). World Bank. (2020, June 1). Retrieved July 13, 2022, from https://www.worldbank.org/en/programs/sahel-adaptive-social-protection-program-trust-fund "),
                                  p("U.S. Department of State. (2021, June 16). U.S. relations with Niger - United States Department of State. U.S. Department of State. Retrieved July 13, 2022, from https://www.state.gov/u-s-relations-with-niger/ ")
                           )),
+                 
+                 ## Tab Team ---------------------------------------------------------------------
                  tabPanel("Our Team",
                           fluidPage(
                             fluidRow
@@ -311,12 +337,15 @@ ui <- navbarPage(title = "DSPG 2022",
                             )))            
                  
 )
-# Define server logic required to draw a histogram
+
+
+#####-------------------------------------- Define server  -------------------------------------#####
+
 server <- function(input, output) {
   
-  output$food_insecurity_out1<-renderPlot({map_at_risk})
-  output$food_insecurity_out2<-renderPlot({map_at_moderate_risk})
-  output$food_insecurity_out3<-renderPlot({map_at_severe_risk})
+  output$food_insecurity_out1 <- renderPlot({map_at_risk})
+  output$food_insecurity_out2 <- renderPlot({map_at_moderate_risk})
+  output$food_insecurity_out3 <- renderPlot({map_at_severe_risk})
   
   output$my_leaf <- renderLeaflet({
     mypal <- colorNumeric(
@@ -337,5 +366,6 @@ server <- function(input, output) {
     
   })
 }
-# Run the application 
+
+#####---------------------------------- Run the application ----------------------------------#####
 shinyApp(ui = ui, server = server)
