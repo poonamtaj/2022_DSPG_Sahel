@@ -172,10 +172,9 @@ yearData1  %>%
 
 #Average rainfall per year in Niger
 mean(yearData1$total_precip_annual_admin1, na.rm = TRUE)
-
+"rainfallMean_ts_niger_adm2.csv"
 ### to download the dataframe as csv file
-#write.csv(yearData2, "./yearData2.csv", row.names = FALSE)
-
+write.csv(yearData1, "C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/yearData1.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 2) -----
