@@ -1,7 +1,7 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Author: Catherine Back and Elinor Benami
 # Project name: Sahel Adaptive Social Protection Program
-# Date Created: # Thu Jun 30 08:26:20 2022 ------------------------------
+# Date Created: # Wed Jul 20 14:33:13 2022 ------------------------------
 # Date Last Updated:
 # R version: 4.1.3
 # Purpose: Load and Clean Precip Data Files
@@ -18,17 +18,11 @@ library(openxlsx)
 library(readxl)
 
 library(readr)
-library(tidyr)
 library(lubridate)
 
-library(ggplot2)
 library(ggthemes)
 library(stringr)
 library(sf)
-
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Clear Environment and Set Options -----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 remove_chart_clutter <- 
   theme(    
@@ -97,8 +91,8 @@ precipDataLong3 <-
   mutate(Date = ymd(Date))
 
 ### to download the dataframe as csv file
-#write.csv(precipDataLong2, "./precipDataLong2.csv", row.names = FALSE)
-#write.csv(precipDataLong3, "./precipDataLong3.csv", row.names = FALSE)
+write.csv(precipDataLong2, "./precipDataLong2.csv", row.names = FALSE)
+write.csv(precipDataLong3, "./precipDataLong3.csv", row.names = FALSE)
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,18 +144,20 @@ yearData2 <-
 yearData1 <-
   yearData2 %>% 
   group_by(admin1Name, year) %>% 
-  mutate(total_precip_annual_admin1 = mean(total_precip)) %>% 
+  mutate(Precipitation = mean(total_precip)) %>% 
   ungroup() %>% 
-  distinct(admin1Name, total_precip_annual_admin1, year)
+  distinct(admin1Name, Precipitation, year)
+
+colnames(yearData1) <- c('Region','Year','Precipitation')
 
 ### Generate Overall Precipitation  Graphic ---- 
 yearData1  %>% 
   filter(year < 2022) %>% 
-  ggplot(aes(x = year, 
-             y = total_precip_annual_admin1, 
-             color = admin1Name, linetype = admin1Name)) +
+  ggplot(aes(x = Year, 
+             y = Precipitation, 
+             color = Region, linetype = Region)) +
   geom_line() +
-  labs(title = "Total Precipitation (in millimeters) By Administrative Region (Admin 1)", 
+  labs(title = "Total Precipitation (mm) By Administrative Region (Admin 1)", 
        caption = "Data Source: CHIRPS",
        y = "", 
        x = "",
@@ -171,10 +167,12 @@ yearData1  %>%
   theme(legend.position = "right")
 
 #Average rainfall per year in Niger
-mean(yearData1$total_precip_annual_admin1, na.rm = TRUE)
+mean(yearData1$Precipitation, na.rm = TRUE)
 "rainfallMean_ts_niger_adm2.csv"
+
+
 ### to download the dataframe as csv file
-write.csv(yearData1, "C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/yearData1.csv", row.names = FALSE)
+write.csv(yearData1, ".yearData1.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 2) -----
@@ -216,7 +214,7 @@ yearData3 <-
   ungroup()
 
 ### to download the dataframe as csv file
-#write.csv(yearData3, "./yearData3.csv", row.names = FALSE)
+write.csv(yearData3, "./yearData3.csv", row.names = FALSE)
 
 nigerYearMerged3 = full_join(geospatialData3, 
                             yearData3,
@@ -265,8 +263,8 @@ admin3precip <-
   ungroup()
 
 ### to download the dataframe as csv file
-#write.csv(admin2precip, "./admin2precip.csv", row.names = FALSE)
-#write.csv(admin3precip, "./admin3precip.csv", row.names = FALSE)
+write.csv(admin2precip, "./admin2precip.csv", row.names = FALSE)
+write.csv(admin3precip, "./admin3precip.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Z-Score Maps (Admin 2) -----
@@ -336,8 +334,8 @@ seasonalData3 <-
            seasonalmean_precip)
 
 ### to download the dataframe as csv file
-#write.csv(seasonalData2, "./seasonalData2.csv", row.names = FALSE)
-#write.csv(seasonalData3, "./seasonalData3.csv", row.names = FALSE)
+write.csv(seasonalData2, "./seasonalData2.csv", row.names = FALSE)
+write.csv(seasonalData3, "./seasonalData3.csv", row.names = FALSE)
   
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Seasonal Data Graphics-----
@@ -347,7 +345,6 @@ seasonalMerged2 = full_join(geospatialData2,
                             by = "admin2Pcod")
 
 seasonalMerged2 %>% 
-  filter(year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = seasonaltotal_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
@@ -365,7 +362,6 @@ seasonalMerged3 = full_join(geospatialData3,
                             by = "rowcacode3")
 
 seasonalMerged3 %>% 
-  filter(year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = seasonaltotal_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
