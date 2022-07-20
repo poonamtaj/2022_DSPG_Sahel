@@ -477,7 +477,7 @@ admin2ndvi %>% summary()
     ungroup()
  
  #Visuals
- 
+ ##########################
  # Total ndvi Admin 2 and Admin 3 Maps + Bar Graph
  nigerShpMerged_admin2 %>% 
    ggplot() + 
