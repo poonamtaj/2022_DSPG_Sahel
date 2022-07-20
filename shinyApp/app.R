@@ -95,6 +95,29 @@ make_maps<-function(var1,var2,val,title) {
   return(map_out)  
 }
 
+# Create some function plot NDVI
+make_NDVI <- function(yearInput){
+  # read the year and filter out big data for that year
+  NDVI_data <- nigerShpMerged_admin2_md %>% filter(year == yearInput)
+  
+  # make leaflet plot of that data
+  mypal <- colorNumeric(
+    palette = "viridis",
+    domain = NDVI_data$peak_ndvi)
+  
+  NDVI.plt <- leaflet(NDVI_data) %>%
+    addTiles() %>%  
+    addPolygons(color = ~mypal(peak_ndvi), weight = 1, smoothFactor = 0.5, 
+                label = paste("Department -", NDVI_data$admin2Name.x,":", "Peak NDVI", round(NDVI_data$peak_ndvi, digits = 3)),
+                opacity = 1.0, fillOpacity = 0.5,
+                highlightOptions = highlightOptions(color = "black", weight = 2,
+                                                    bringToFront = TRUE)) %>% 
+    addLegend(pal = mypal,position = "bottomright",values = NDVI_data$peak_ndvi,
+              opacity = .6,title = paste("Peak NDVI")) 
+  NDVI.plt
+  
+}
+
 #Atrisk maps
 map_at_risk <- make_maps(var1="arisque_part_15",var2="arisque_part_17",val="ATRISK",title="Population at  Risk of Food Insecurity by department (admin2)")
 
@@ -184,10 +207,14 @@ ui <- navbarPage(title = "DSPG 2022",
                           fluidPage(
                             h1(strong("Description of Data Sources")),
                             h3(strong("Precipitation")),
-                            p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
-                              researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
-                              spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
-                            img(src = "precipitation.png", class = "topimage", width = "15%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                            column(4,
+                                   p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
+                                   researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
+                                   spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
+                            ),
+                            column(8,
+                                   img(src = "precipitation.png", class = "topimage", width = "55%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                            ),
                             h3(strong("Normalized Difference Vegetation Index")),
                             p("The Normalized Difference Vegetative Index (NDVI) dataset is unique in that it bridges the gap between satellite imagery and internal vegetative processes. Satellite
                               sensors measure wavelengths of light absorbed and reflected by green plants; certain pigments in plant leaves strongly absorb wavelengths of visible (red) light. The leaves
@@ -201,6 +228,9 @@ ui <- navbarPage(title = "DSPG 2022",
                               to the norm. When analyzed through time, NDVI can reveal where vegetation is thriving and where it is under stress, as well as changes in vegetation due to human activities such
                               as deforestation, natural disturbances such as wild fires, or changes in plants' phenological stage."),
                             img(src = "ndvi.png", class = "topimage", width = "15%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                            h3(strong("Food Insecurity")),
+                            p("Food insecurity data used in this research comes from EVIAM surveys, and is publicly available on the National Statistics Office. This dataset allows us to view and analyze the 
+                              amount and severity of food insecurity across Niger."),
                             h3(strong("Living Standards Measurement Study")),
                             p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
@@ -216,6 +246,9 @@ ui <- navbarPage(title = "DSPG 2022",
                           ),
                           column(8,
                                  h4(strong("NDVI Maps")),
+                                 sliderInput(inputId = "NDVI_year", label = "Year:",
+                                             min= 1982, max = 2019, value = 1982,
+                                             width = "150%", sep = ""),
                                  leafletOutput("my_leaf", height = "500px")),
                  ),
                  tabPanel("Welfare Index",
@@ -290,7 +323,10 @@ ui <- navbarPage(title = "DSPG 2022",
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
                                      tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)")
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)"),
+                                     h4(strong("Graduate Research Assistant")), tags$br(),
+                                     tags$br(), img(src = "fellow-armine.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Environmental and Natural Resource Economics")
                               ),
                               column(4, align = "center",
                                      h4(strong("Undergraduate Interns")), tags$br(),
@@ -319,20 +355,8 @@ server <- function(input, output) {
   output$food_insecurity_out3<-renderPlot({map_at_severe_risk})
   
   output$my_leaf <- renderLeaflet({
-    mypal <- colorNumeric(
-      palette = "viridis",
-      domain = nigerShpMerged_admin2_md$peak_ndvi)
-    
-    leaflet(nigerShpMerged_admin2_md) %>%
-      addTiles() %>%  
-      addPolygons(color = ~mypal(peak_ndvi), weight = 1, smoothFactor = 0.5, 
-                  label = paste("Department -", nigerShpMerged_admin2_md$admin2Name.x,":", "Peak NDVI", round(nigerShpMerged_admin2_md$peak_ndvi, digits = 3)),
-                  opacity = 1.0, fillOpacity = 0.5,
-                  highlightOptions = highlightOptions(color = "black", weight = 2,
-                                                      bringToFront = TRUE)) %>% 
-      addLegend(pal = mypal,position = "bottomright",values = nigerShpMerged_admin2_md$peak_ndvi,
-                opacity = .6,title = paste("Peak NDVI")) 
-    
+    #1981 could possible be the NA data in 
+    make_NDVI(input$NDVI_year)
     
     
   })
