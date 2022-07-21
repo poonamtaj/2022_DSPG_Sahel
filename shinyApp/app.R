@@ -213,7 +213,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                    spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
                             ),
                             column(8,
-                                   img(src = "precipitation.png", class = "topimage", width = "55%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                   img(src = "precipitation.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;"),
                             ),
                             h3(strong("Normalized Difference Vegetation Index")),
                             p("The Normalized Difference Vegetative Index (NDVI) dataset is unique in that it bridges the gap between satellite imagery and internal vegetative processes. Satellite
@@ -229,13 +229,22 @@ ui <- navbarPage(title = "DSPG 2022",
                               as deforestation, natural disturbances such as wild fires, or changes in plants' phenological stage."),
                             img(src = "ndvi.png", class = "topimage", width = "15%", style = "display: block; margin-left: auto; margin-right: auto;"),
                             h3(strong("Food Insecurity")),
-                            p("Food insecurity data used in this research comes from EVIAM surveys, and is publicly available on the National Statistics Office. This dataset allows us to view and analyze the 
-                              amount and severity of food insecurity across Niger."),
+                            p("In this research we will use the indicator of current economic vulnerability as a proxy for the food insecurity. The current economic vulnerability represents the percentage of
+                              total household expenditures devoted to food over the reference period and is calculated as a ratio of food expenditure to the total expenditure. The identification of food insecure
+                              people in rural areas is based on the analysis of five indicators: the duration of available food stocks, food consumption, the number of TLUs (Tropical Livestock Units), the share
+                              of food expenditure in total expenditure and coping strategies. These indicators reflect the three pillars of food security, namely availability, accessibility and utilization."),
+                            p("Food Insecurity data at the admin 2 level comes from the EVIAM surveys, a joint survey on vulnerability to household food insecurity in Niger for the years 2015 and 2017. In total,
+                              the 2015 survey covered a sample of 21,668 households while in 2017, the survey covered a sample of 18,366 households. The approach adopted in these surveys consisted of collecting
+                              information at the village level and also at the level of rural households."),
                             h3(strong("Living Standards Measurement Study")),
+                            column(4,
                             p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
                               been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure.  ")),
-                          img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")),
+                            ),
+                            column(8,
+                            img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")),
+                            ),
                  tabPanel("Drought Index",
                           fluidPage(
                             h3(strong("NDVI , Precipitation")),
