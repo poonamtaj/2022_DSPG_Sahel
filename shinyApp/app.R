@@ -53,7 +53,7 @@ remove_chart_clutter <-
 
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
-
+annualPrecip <- read_csv("./data/yearData1.csv")
 mydata <-read_excel("./data/Données EVIAM 15 17 insécurite alimentaire.xlsx")
 Niger_level2 <- st_read(
   "./data/wb_niger_admin2_shapefile/niger_admin2.shp")
@@ -225,6 +225,8 @@ ui <- navbarPage(title = "DSPG 2022",
                           fluidPage(
                             h3(strong("NDVI , Precipitation")),
                             withMathJax()),
+                          tabsetPanel(
+                            tabPanel("NDVI", 
                           column(4, 
                                  h4(strong("Description")),
                                  p("Overall, there is relatively little variation across this time span, 
@@ -237,7 +239,24 @@ ui <- navbarPage(title = "DSPG 2022",
                                  h4(strong("NDVI Maps")),
                                  leafletOutput("my_leaf", height = "500px")),
                  ),
-                
+                 tabPanel("Precipitation",
+                          column(4,
+                                 h4(strong("Description")),
+                                 p("Description of the Precipitation timeseries data"),
+                          ),
+                          column(8,
+                                 h4(strong("Maps"),align="center"),
+                                 titlePanel("Precipitation Graph"),
+                                 sidebarLayout(
+                                   sidebarPanel(p("Demo")),
+                                   mainPanel(strong("Annual Precipitation"),
+                                             plotlyOutput("plot1")
+                                             
+                                   )    
+                                 )       
+       
+                          ))
+                          )),
                  ## Tab Welfare Index --------------------------------------------------------------
                   tabPanel("Welfare Index",
                           fluidPage(
@@ -388,11 +407,23 @@ server <- function(input, output) {
       addLegend(pal = mypal,position = "bottomright",values = nigerShpMerged_admin2_md$peak_ndvi,
                 opacity = .6,title = paste("Peak NDVI")) 
     
-    
-    
-    
-    
   })
+    output$plot1 <- renderPlotly({
+    
+      annualPrecip %>%
+        ggplot(aes(x = Year, y = Precipitation, color = Region)) +
+        geom_line()+ 
+        scale_color_viridis_d(option = "H") +
+        labs(title = "Annual Precipitation", 
+             color =  "Region", x = "Year", 
+             y = "Total Precipitation (mm)") + 
+        theme_classic() +
+        plotly()
+    })
+    
+    
+    
+ 
 }
 
 #####---------------------------------- Run the application ----------------------------------#####
