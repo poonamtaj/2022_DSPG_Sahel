@@ -66,6 +66,7 @@ for ( col in 1:ncol(csvData3)){
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Convert from Wide to Long Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+numColumn <- select_if(csvData2, is.numeric)
 precipData2 <- 
   csvData2 %>%
   select(admin1Name, admin1Pcod, 
@@ -152,7 +153,6 @@ colnames(yearData1) <- c('Region','Year','Precipitation')
 
 ### Generate Overall Precipitation  Graphic ---- 
 yearData1  %>% 
-  filter(year < 2022) %>% 
   ggplot(aes(x = Year, 
              y = Precipitation, 
              color = Region, linetype = Region)) +
