@@ -91,8 +91,9 @@ make_maps<-function(var1,var2,val,title) {
   
   # Make Maps side by side
   data_merged_shp=merge(x=Niger_level2,y=data_sub_long,by.x="admin2Name",by.y="departement_name",all=TRUE)
-  map_out<-ggplot() + 
-    geom_sf(data = data_merged_shp, size = 1, color = "NA", aes(fill=val)) + 
+  map_out<-ggplot(data = data_merged_shp,size = 1, color = "NA", aes(fill=val, name=admin2Name,
+                                                                     text=paste("Département: ",admin2Name,"<br>","% Population: ",val)))+
+    geom_sf() +
     ggtitle(title) + scale_fill_viridis_c()+
     coord_sf()+
     labs(fill = "Percent of Population")+theme_classic()+remove_chart_clutter+
@@ -246,21 +247,32 @@ ui <- navbarPage(title = "DSPG 2022",
                             tabPanel("Food Insecurity",
                                      column(4,
                                             h4(strong("Description")),
-                                            p("Decription of food insecurity."),
-                                            p("As background information suggests, it is the drought prone area ,
-                                                hence food insecurity is also prevalent in Niger.Food insecurity is the state of 
-                                                being without reliable access to a sufficient quantity of affordable, nutritious food.
-                                                World Bank data on food insecurity gives us the three main variables to understand magnitude of the food insecurity. 
-                                                population at risk, population at moderate risk , population at severe risk for 
-                                                two years 2015 and 2017."),
-                                            p("We can observe that how food insecurity is changing from 2015 to 2017 and it appears to be 
-                                                 concentrated in the southwest region ( which is about 40-50% of the population).")
+                                            p("Food insecurity is defined as when people lack access to 
+                                                enough wholesome food and don't get the nutrition they require
+                                                to grow normally and live active, healthy lives. Food shortages, 
+                                                low purchasing power, improper food distribution, or improper food 
+                                                utilization at the household level could all be contributing 
+                                                factors to this predicament."),
+                                            p("These maps show the food insecurity data at the Department level(67 departments) 
+                                                which comes from the EVIAM surveys (joint survey on vulnerability to household 
+                                                food insecurity in Niger ) for the years 2015 and 2017. There are three main 
+                                                variables to understand magnitude of the food insecurity: population at risk , 
+                                                population at moderate risk , and population at severe risk."),
+                                            p("If we focus on the graphs , 
+                                                it is observed that food insecurity is concentrated in southwest regions 
+                                                in both 2015 and 2017.If we look at the differences between 2105 and 2017,more share of population 
+                                                being food insecure
+                                                in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an
+                                                upward trend in the percentages of populations with severe,
+                                                moderate and at risk food insecurity."),
+                                            p("To view the share of the food insecure population at different departments ,
+                                                hover over the respective department in the map.")
                                      ),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
-                                            plotOutput("food_insecurity_out1",height="500px"),
-                                            plotOutput("food_insecurity_out2",height="500px"),
-                                            plotOutput("food_insecurity_out3",height="500px"),
+                                            plotlyOutput("food_insecurity_out1",height="500px"),
+                                            plotlyOutput("food_insecurity_out2",height="500px"),
+                                            plotlyOutput("food_insecurity_out3",height="500px"),
                                      )),
                             tabPanel("LSMS",
                                      column(4,
@@ -268,7 +280,10 @@ ui <- navbarPage(title = "DSPG 2022",
                                             p("Description of the LSMS data"),
                                      ),
                                      column(8,
-                                            h4(strong("Maps")),
+                                            h4(strong("Maps"),align="center"),
+                                            radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
+                                              "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                            plotOutput("food_expenditure_out"),
                                      ))
                             
                           )),
@@ -342,10 +357,21 @@ ui <- navbarPage(title = "DSPG 2022",
 #####-------------------------------------- Define server  -------------------------------------#####
 
 server <- function(input, output) {
+  output$food_insecurity_out1<-renderPlotly(ggplotly({map_at_risk},tooltip="text"))
+  output$food_insecurity_out2<-renderPlotly(ggplotly({map_at_moderate_risk},tooltip = "text"))
+  output$food_insecurity_out3<-renderPlotly(ggplotly({map_at_severe_risk},tooltip = "text"))
   
-  output$food_insecurity_out1 <- renderPlot({map_at_risk})
-  output$food_insecurity_out2 <- renderPlot({map_at_moderate_risk})
-  output$food_insecurity_out3 <- renderPlot({map_at_severe_risk})
+  food_expenditure<-reactive({
+    input$food_expenditure
+  })
+  output$food_expenditure_out<-renderImage({
+    if(food_expenditure()=="Admin2"){
+      list(src='www/Admin2_Foodexpenditure.png', align = "center",width=800,height=500)
+    }
+    else if (food_expenditure()=="Admin3"){
+      list(src='www/Admin3_Foodexpenditure.png', align = "center",width=800,height=500)
+    }
+  })
   
   output$my_leaf <- renderLeaflet({
     mypal <- colorNumeric(
@@ -361,6 +387,8 @@ server <- function(input, output) {
                                                       bringToFront = TRUE)) %>% 
       addLegend(pal = mypal,position = "bottomright",values = nigerShpMerged_admin2_md$peak_ndvi,
                 opacity = .6,title = paste("Peak NDVI")) 
+    
+    
     
     
     
