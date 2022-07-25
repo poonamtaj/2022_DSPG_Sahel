@@ -1,0 +1,138 @@
+---
+title: "Webscraping in R - DSPG 2022"
+author: "NDP"
+date: '2022-06-14'
+output: html_document
+adapted from: 'https://www.scrapingbee.com/blog/web-scraping-r/'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Webscraping is tricky for multiple reasons:
+- You have to find and access the correct webpages
+- You need to find and extract relevant elements
+- You may come up against legal or technical constraints to collecting data
+- The location, structure and content of webpages keeps changing
+
+Today we're going to look at how you can use a couple of R packages, together with a Chrome extension, to make webscraping easier and more productive, whether you're trying to collect basic information on connected websites, pull out specific elements of webpages, or even extract online tables to data in R.
+
+## HTML Basics
+
+Let's start by visiting the Wikipedia page for [Leonardo da Vinci](https://en.wikipedia.org/wiki/Leonardo_da_Vinci) in Chrome or Firefox and looking at what HTML code looks like by right-clicking the first paragraph and clicking "Inspect".
+
+HTML uses tags with `<>` to enclose blocks of code and text and specify how to treat or display them. The beginning of an "element" has an element type (p is paragraph text) enclosed by angled brackets (e.g. `<p>`), possibly with additional metadata. The element continues until the closing tag, typically the same as the opening tag but with a `/` before the element type (e.g. `</p>`).
+
+If you click the arrow to the left of a `<p>` element, you can see the tags and elements within that element, which can be nested many layers deep. `<a>` is another key element - it is an anchor, most commonly used to embed links to other webpages or other sections of a webpage. 
+
+Some elements, like `<title>` and `<body>`, are structural. Others, like `<b>` (bold) and `i` (italic) indicate style. But all can be used to find a specific chunk of a webpage to extract.
+
+##Selector Gadget
+
+There is a Chrome extension called [Selector Gadget](https://selectorgadget.com/) that allows you to easily limit down and find the element types to extract only the data you need. 
+
+To use it, go to selectorgadget.com and install the extension. Then, let's return to the Wikipedia page and try to select only the individual tags Leonardo is "Known for" (the sidebar at the top right). Click the selector gadget bookmarklet, then hover over one of the "Known for" items, like painting. When only that element is highlighted, click it. This tells the gadget you want elements like this, and it will highlight in yellow everything it thinks matches. 
+
+If you see things that don't match highlighted, click them to turn them red and tell the gadget "not that". If you see things you want included that aren't highlighted, click those to tell the gadget "that". When you're satisfied, look at the popover bar at the bottom of your window to see (and copy) that element type.
+
+##Parsing webpages in R
+
+Now how do we work with these in R? We start by passing a URL (or vector of URLs to R) and using the `readLines` function to save a flat representation of the code in R's memory. Let's do that with our wikipedia page and take a look at the first few lines.
+
+```{r}
+
+scrape_url <- 'https://en.wikipedia.org/wiki/Leonardo_da_Vinci'
+flat_html <- readLines(con = scrape_url)
+print(flat_html[1:10])
+```
+
+We see lots of html here. Before we go on, we need to install and load a couple of packages. `rvest` is a webscraping library designed to simplify extracting elements. `Rcrawler` is a tool for following links and trees on webpages to gather a collection of related pages.
+
+```{r}
+install.packages("rvest")
+install.packages("Rcrawler")
+library(rvest)
+library(Rcrawler)
+library(XML)
+library(xml2)
+```
+
+Let's start now by trying to get all the "Known for" elements like we had before. We'll use an html parser then pull out a specific element.
+
+```{r}
+parsed_wiki <- read_html(scrape_url)
+wiki_known_by <- parsed_wiki %>%
+  html_elements(".hlist-separated") %>% 
+  html_elements("li")
+wiki_known_by[1]
+```
+We can use other functions to pull out links and other special types (this function below is in XML). Here, we'll make a list of links on the wiki page.
+
+```{r}
+leo_links <- getHTMLLinks(flat_html)
+head(leo_links)
+```
+
+Notice most of these link within the page (the "/wiki..." etc. ones). To remove those and only keep external links, we could use `subset` in `dplyr` (here) or use square bracket notation in base R.
+
+```{r}
+library(dplyr)
+ext_links <- leo_links %>% startsWith("http")
+real_links <- leo_links %>% subset(ext_links)
+head(real_links)
+```
+
+With rvest, you can even scrape data from tables that require selections from dropdown like this [historical climate chart]('http://www.weather.gov.sg/climate-historical-daily').
+
+```{r}
+html_form_page <- 'http://www.weather.gov.sg/climate-historical-daily' %>% read_html()
+
+weatherstation_identity <- html_form_page %>% 
+  html_nodes('button#cityname + ul a') %>% 
+  html_attr('onclick') %>%  
+  sub(".*'(.*)'.*", '\\1', .)
+
+weatherdf <- expand.grid(weatherstation_identity, 
+                  month = sprintf('%02d', 1:12),
+                  year = 2016:2020)
+str(weatherdf)
+```
+
+Because Var1 is the final element of a consistent naming scheme for the pages, we can generate URLs to access the data of interest using this df. For now, we'll keep to only the first 20 pages to minimize the strain on our internet and computers. Lapply will repeat the function on the data passed to it (in this case the pages), so if you run this, you will find 20 csv files in 
+{
+```{r}
+urlPages <- paste0('http://www.weather.gov.sg/files/dailydata/DAILYDATA_', 
+weatherdf$Var1, '_', weatherdf$year, weatherdf$month, '.csv')
+lapply(urlPages[1:20], function(url){download.file(url, basename(url), method = 'curl')})
+```
+That didn't work (our files are empty) although the URLs are correct. Probably, there are some technical measures that have been implemented that we'd need to work around, or else dowload files manually.
+
+Let's try looking at the IMDB for sharknado to see some of how to process a table.
+
+```{r}
+sharknado <- read_html("https://www.imdb.com/title/tt8031422/fullcredits?ref_=tt_cl_sm")
+full_cast_crew <- sharknado %>%
+  html_nodes("table") %>%
+  html_elements("tr") %>%
+  html_elements("a") %>%
+  html_text()
+head(full_cast_crew)
+```
+
+In practice, we'd want to improve this to distinguish cast from names, and maybe subset only important actors, but for now we'll leave it.
+
+The last thing we'll look at is crawling. Rcrawler allows you to specify a list of pages or even use special rules to build the list as you go, then extract specific information from them. Here, we start with a list of scientists and gather their dates of birth and death from wikipedia.
+
+```{r}
+list_of_scientists <- c("Niels Bohr", "Max Born", "Albert Einstein", "Enrico Fermi")
+
+pages_of_interest = paste0('https://en.wikipedia.org/wiki/Special:Search/', gsub(" ", "_", list_of_scientists))
+
+scientist_data <- ContentScraper(Url = pages_of_interest , 
+        XpathPatterns = c("//th","//tr[(((count(preceding-sibling::*) + 1) = 5) and parent::*)]//td","//tr[(((count(preceding-sibling::*) + 1) = 6) and parent::*)]//td"),
+        PatternsName = c("scientist", "dob", "dod"), 
+        asDataFrame = TRUE)
+```
+
+Except this doesn't work anymore either because the format has changed. That's all for now, but explore more by looking up rvest and Rcrawler examples online.s

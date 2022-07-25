@@ -274,7 +274,7 @@ nigerZScoreMerged2 = full_join(geospatialData2,
                                by = "admin2Pcod")
 
 nigerZScoreMerged2 %>% 
-  filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>% 
+  filter(year == 2011 | year == 2014| year == 2018) %>% 
            ggplot() + 
            geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
            scale_fill_viridis_c(direction = -1) +
