@@ -136,10 +136,12 @@ yearData2 <-
   group_by(admin2Name, admin2Pcod, year) %>%
   mutate(total_precip = sum(Precipitation, na.rm = TRUE),
          mean_precip = mean(Precipitation, na.rm = TRUE),
+         median_precip = median(Precipitation, na.rm = TRUE),
          sd_precip = sd(Precipitation, na.rm = TRUE)) %>%
   distinct(admin1Name, admin1Pcod,admin2Name, admin2Pcod, year, 
-           total_precip, mean_precip, sd_precip) %>%
+           total_precip, mean_precip, median_precip, sd_precip) %>%
   ungroup()
+
 
 # Take the mean over the spatial area ----
 yearData1 <-
@@ -173,6 +175,7 @@ mean(yearData1$Precipitation, na.rm = TRUE)
 
 ### to download the dataframe as csv file
 write.csv(yearData1, ".yearData1.csv", row.names = FALSE)
+write.csv(yearData1, ".yearData2.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 2) -----
@@ -198,7 +201,7 @@ nigerYearMerged2 %>%
     axis.text.y = element_blank(),
     axis.ticks = element_blank(),
     rect = element_blank()
-  ) 
+  )
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 3) -----
@@ -208,9 +211,10 @@ yearData3 <-
   group_by(adm_03, rowcacode3, year) %>%
   mutate(total_precip = sum(Precipitation, na.rm = TRUE),
          mean_precip = mean(Precipitation, na.rm = TRUE),
+         median_precip = median(Precipitation, na.rm = TRUE),
          sd_precip = sd(Precipitation, na.rm = TRUE)) %>%
   distinct(adm_03, rowcacode3, year, 
-           total_precip, mean_precip, sd_precip) %>%
+           total_precip, mean_precip,median_precip, sd_precip) %>%
   ungroup()
 
 ### to download the dataframe as csv file
@@ -297,7 +301,7 @@ nigerZScoreMerged3 = full_join(geospatialData3,
                                by = "rowcacode3")
 
 nigerZScoreMerged3 %>% 
-  filter(year == 2011 | year == 2014 | year == 2015| year == 2017 | year == 2018) %>% 
+  filter(year == 2011 | year == 2014| year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
@@ -318,7 +322,8 @@ seasonalData2 <-
   group_by(admin2Name, admin2Pcod,year, month) %>%
   filter(month >= 6 & month <= 9) %>%
   mutate(seasonaltotal_precip = sum(Precipitation, na.rm = TRUE),
-         seasonalmean_precip = mean(Precipitation, na.rm = TRUE)) %>%
+         seasonalmean_precip = mean(Precipitation, na.rm = TRUE),
+         seasonalmedian_precip = median(Precipitation, na.rm = TRUE)) %>%
     ungroup() %>%
   distinct(admin2Name, admin2Pcod, year, month, seasonaltotal_precip,
            seasonalmean_precip)
@@ -328,7 +333,8 @@ seasonalData3 <-
   group_by(adm_03,rowcacode3, year,month) %>%
   filter(month >= 6 & month <= 9) %>%
   mutate(seasonaltotal_precip = sum(Precipitation, na.rm = TRUE),
-         seasonalmean_precip = mean(Precipitation, na.rm = TRUE)) %>%
+         seasonalmean_precip = mean(Precipitation, na.rm = TRUE),
+         seasonalmedian_precip = median(Precipitation, na.rm = TRUE)) %>%
   ungroup() %>%
   distinct(adm_03, rowcacode3, year, month, seasonaltotal_precip,
            seasonalmean_precip)

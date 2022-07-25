@@ -24,14 +24,12 @@ annualPrecip <- read_csv("C:/Users/Catherine/OneDrive/Documents/2022_DSPG_Sahel/
 
 ui <- fluidPage(
   titlePanel("Precipitation Graph"),
-  sidebarLayout(
-    sidebarPanel(p("Demo")),
     mainPanel(strong("Annual Precipitation"),
               plotlyOutput("plot1")
               
     )    
   )       
-)
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
