@@ -211,10 +211,9 @@ yearData3 <-
   group_by(adm_03, rowcacode3, year) %>%
   mutate(total_precip = sum(Precipitation, na.rm = TRUE),
          mean_precip = mean(Precipitation, na.rm = TRUE),
-         median_precip = median(Precipitation, na.rm = TRUE),
          sd_precip = sd(Precipitation, na.rm = TRUE)) %>%
   distinct(adm_03, rowcacode3, year, 
-           total_precip, mean_precip,median_precip, sd_precip) %>%
+           total_precip, mean_precip, sd_precip) %>%
   ungroup()
 
 ### to download the dataframe as csv file
@@ -315,36 +314,95 @@ nigerZScoreMerged3 %>%
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Data -----
+# Generate Seasonal Data (Admin 2 and Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Admin 2
 seasonalData2 <- 
   dataAdmin2 %>% 
-  group_by(admin2Name, admin2Pcod,year, month) %>%
+  group_by(admin2Name, admin2Pcod, year, month) %>%
   filter(month >= 6 & month <= 9) %>%
   mutate(seasonaltotal_precip = sum(Precipitation, na.rm = TRUE),
-         seasonalmean_precip = mean(Precipitation, na.rm = TRUE),
-         seasonalmedian_precip = median(Precipitation, na.rm = TRUE)) %>%
+         seasonalmean_precip = mean(Precipitation, na.rm = TRUE)) %>%
     ungroup() %>%
   distinct(admin2Name, admin2Pcod, year, month, seasonaltotal_precip,
            seasonalmean_precip)
 
+seasonalDataAnnual2 <- 
+  seasonalData2 %>%
+  group_by(admin2Name, admin2Pcod, year) %>%
+  mutate(AnnualPrecip = sum(seasonaltotal_precip)) %>%
+  ungroup() %>%
+  distinct(admin2Name, admin2Pcod, year, AnnualPrecip)
+
+#Admin 3
 seasonalData3 <- 
   dataAdmin3 %>% 
   group_by(adm_03,rowcacode3, year,month) %>%
   filter(month >= 6 & month <= 9) %>%
   mutate(seasonaltotal_precip = sum(Precipitation, na.rm = TRUE),
-         seasonalmean_precip = mean(Precipitation, na.rm = TRUE),
-         seasonalmedian_precip = median(Precipitation, na.rm = TRUE)) %>%
+         seasonalmean_precip = mean(Precipitation, na.rm = TRUE)) %>%
   ungroup() %>%
   distinct(adm_03, rowcacode3, year, month, seasonaltotal_precip,
            seasonalmean_precip)
 
+seasonalDataAnnual3 <- 
+  seasonalData3 %>%
+  group_by(adm_03, rowcacode3, year) %>%
+  mutate(AnnualPrecip = sum(seasonaltotal_precip)) %>%
+  ungroup() %>%
+  distinct(adm_03, rowcacode3, year, AnnualPrecip)
+
 ### to download the dataframe as csv file
 write.csv(seasonalData2, "./seasonalData2.csv", row.names = FALSE)
 write.csv(seasonalData3, "./seasonalData3.csv", row.names = FALSE)
-  
+
+
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Data Graphics-----
+# Generate Seasonal Z-Score Data (Admin 2 and 3) -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+seasonalZscore2 <- 
+  seasonalData2 %>% 
+  select(admin2Name, admin2Pcod, year, month, seasonaltotal_precip) %>%
+  group_by(admin2Pcod) %>% 
+  mutate(baselineMean_precip = mean(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+         baselineSD_precip = sd(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+  group_by(admin2Pcod, year, month) %>% 
+  mutate(zscore_precip = (seasonaltotal_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
+  ungroup()
+
+seasonalZscoreAnnual2 <- 
+  seasonalDataAnnual2 %>% 
+  select(admin2Name, admin2Pcod, year, AnnualPrecip) %>%
+  group_by(admin2Pcod) %>% 
+  mutate(baselineMean_precip = mean(AnnualPrecip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+         baselineSD_precip = sd(AnnualPrecip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+  group_by(admin2Pcod, year) %>% 
+  mutate(zscore_precip = (AnnualPrecip - baselineMean_precip)/(baselineSD_precip)) %>% 
+  ungroup()
+
+#Admin 3
+seasonalZscore3 <- 
+  seasonalData3 %>% 
+  select(adm_03, rowcacode3, year, month, seasonaltotal_precip) %>%
+  group_by(rowcacode3) %>% 
+  mutate(baselineMean_precip = mean(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+         baselineSD_precip = sd(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+  group_by(rowcacode3, year, month) %>% 
+  mutate(zscore_precip = (seasonaltotal_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
+  ungroup()
+
+seasonalZscoreAnnual3 <- 
+  seasonalDataAnnual3 %>% 
+  select(adm_03, rowcacode3, year, AnnualPrecip) %>%
+  group_by(rowcacode3) %>% 
+  mutate(baselineMean_precip = mean(AnnualPrecip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
+         baselineSD_precip = sd(AnnualPrecip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
+  group_by(rowcacode3, year) %>% 
+  mutate(zscore_precip = (AnnualPrecip - baselineMean_precip)/(baselineSD_precip)) %>% 
+  ungroup()
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Seasonal Data Graphics (Admin 2 and 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 seasonalMerged2 = full_join(geospatialData2, 
                             seasonalData2,
@@ -355,7 +413,7 @@ seasonalMerged2 %>%
   geom_sf(aes(fill = seasonaltotal_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~month, nrow = 1) +
-  labs(title="Seasonal Rainfall by Department Year 2018", fill = "z-score" ) + 
+  labs(title="Seasonal Rainfall by Department", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -378,4 +436,80 @@ seasonalMerged3 %>%
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         rect = element_blank())
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Seasonal Z-Score Data Graphics-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+seasonalZScore_Merged2 = full_join(geospatialData2, 
+                                   seasonalZscore2,
+                                   by = "admin2Pcod")
+
+seasonalZScore_Merged2 %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~month, nrow = 1) +
+  labs(title="Seasonal Rainfall Z-Score by Department", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank())
+
+
+seasonalZScore_Merged3 = full_join(geospatialData3, 
+                                   seasonalZscore3,
+                                   by = "rowcacode3")
+
+seasonalZScore_Merged3 %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~month, nrow = 1) +
+  labs(title="Seasonal Rainfall Z-Score by Commune", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank())
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Seasonal Annual Z-Score Data Graphics-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+seasonalZScore_Merged2 = full_join(geospatialData2, 
+                                   seasonalZscoreAnnual2,
+                                   by = "admin2Pcod")
+
+seasonalZScore_Merged2 %>% 
+  filter(year %in% seq(2011, 2021, 1)) %>%
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year) +
+  labs(title="Annual Total of Seasonal Rainfall Z-Score by Department", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank())
+
+
+seasonalZScore_Merged3 = full_join(geospatialData3, 
+                                   seasonalZscoreAnnual3,
+                                   by = "rowcacode3")
+
+seasonalZScore_Merged3 %>% 
+  filter(year %in% seq(2011, 2021, 1)) %>%
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year) +
+  labs(title="Annual Total of Seasonal Rainfall Z-Score by Commune", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank())
+
 
