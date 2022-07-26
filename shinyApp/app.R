@@ -53,10 +53,9 @@ remove_chart_clutter <-
 
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
-annualPrecip <- read_csv("./data/yearData1.csv")
-mydata <-read_excel("./data/Données EVIAM 15 17 insécurite alimentaire.xlsx")
-Niger_level2 <- st_read(
-  "./data/wb_niger_admin2_shapefile/niger_admin2.shp")
+annualPrecip <- read_csv("./data/yearData1_precip.csv")
+mydata <- read_excel("./data/Données EVIAM 15 17 insécurite alimentaire.xlsx")
+Niger_level2 <- st_read("./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
 mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
 #nigerMapAdmin2 <- st_read("./data/shapefiles/niger_admin2.shp")
@@ -65,6 +64,8 @@ mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
 nigerShpMerged_admin2_md = full_join(Niger_level2, 
                                      mydt_ndvi_md,
                                      by=c("admin2Pcod" = "admin2Pcod"))
+
+########## Food Insecurity 2015, 2017
 # adjusting the discrepancy in some names due to French accent
 
 mydata$departement_name <- sub("Aguie", "Aguié", mydata$departement_name)
@@ -246,13 +247,9 @@ ui <- navbarPage(title = "DSPG 2022",
                           ),
                           column(8,
                                  h4(strong("Maps"),align="center"),
-                                 titlePanel("Precipitation Graph"),
-                                 sidebarLayout(
-                                   sidebarPanel(p("Demo")),
-                                   mainPanel(strong("Annual Precipitation"),
+                                 titlePanel(""),
+                                   mainPanel(strong(""),
                                              plotlyOutput("plot1")
-                                             
-                                   )    
                                  )       
        
                           ))
@@ -414,7 +411,7 @@ server <- function(input, output) {
         ggplot(aes(x = Year, y = Precipitation, color = Region)) +
         geom_line()+ 
         scale_color_viridis_d(option = "H") +
-        labs(title = "Annual Precipitation", 
+        labs(title = "Annual Cumulative Precipitation by Region (Admin 1)", 
              color =  "Region", x = "Year", 
              y = "Total Precipitation (mm)") + 
         theme_classic() +
