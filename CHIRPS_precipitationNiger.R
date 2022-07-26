@@ -7,7 +7,6 @@
 # Purpose: Load and Clean Precip Data Files
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Libraries and Options -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,7 +36,6 @@ remove_chart_clutter <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-## update the path for data files
 csvData2 <-read.csv("./rainfallMean_ts_niger_adm2.csv")
 csvData3 <-read.csv("./rainfallMean_ts_niger_adm3.csv")
 
@@ -216,8 +214,6 @@ yearData3 <-
            total_precip, mean_precip, sd_precip) %>%
   ungroup()
 
-### to download the dataframe as csv file
-write.csv(yearData3, "./yearData3.csv", row.names = FALSE)
 
 nigerYearMerged3 = full_join(geospatialData3, 
                             yearData3,
@@ -270,42 +266,37 @@ write.csv(admin2precip, "./admin2precip.csv", row.names = FALSE)
 write.csv(admin3precip, "./admin3precip.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Z-Score Maps (Admin 2) -----
+# Generate Z-Score Maps (Admin 2 & Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nigerZScoreMerged2 = full_join(geospatialData2, 
                                admin2precip,
                                by = "admin2Pcod")
 
 nigerZScoreMerged2 %>% 
-  filter(year == 2011 | year == 2014| year == 2018) %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
            ggplot() + 
            geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
            scale_fill_viridis_c(direction = -1) +
            facet_wrap(~year, nrow = 1) +
-           labs(title="Annual Z-Score Rainfall by Department (Admin 2)", fill = "z-score" ) + 
+           labs(title="Annual Rainfall Z-Score by Department (Mean)", fill = "z-score" ) + 
            theme_classic() + 
            theme(axis.text.x = element_blank(),
                  axis.text.y = element_blank(),
                  axis.ticks = element_blank(),
                  rect = element_blank())
 
-
-
-
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Z-Score Maps (Admin 3) -----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Admin 3
 nigerZScoreMerged3 = full_join(geospatialData3, 
                                admin3precip,
                                by = "rowcacode3")
 
 nigerZScoreMerged3 %>% 
-  filter(year == 2011 | year == 2014| year == 2018) %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
-  labs(title="Annual Z-Score Rainfall by Department (Admin 2)", fill = "z-score" ) + 
+  labs(title="Annual Rainfall Z-Score by Commune (Mean)", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -314,7 +305,7 @@ nigerZScoreMerged3 %>%
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Data (Admin 2 and Admin 3) -----
+# Generate Seasonal/Seasonal by Year Data (Admin 2 and Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #Admin 2
 seasonalData2 <- 
@@ -356,20 +347,15 @@ seasonalDataAnnual3 <-
 write.csv(seasonalData2, "./seasonalData2.csv", row.names = FALSE)
 write.csv(seasonalData3, "./seasonalData3.csv", row.names = FALSE)
 
+### to download the dataframe as csv file
+write.csv(seasonalDataAnnual2, "./seasonalDataAnnual2.csv", row.names = FALSE)
+write.csv(seasonalDataAnnual3, "./seasonalDataAnnual3.csv", row.names = FALSE)
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Z-Score Data (Admin 2 and 3) -----
+# Generate Seasonal by Year Z-Score Data (Admin 2 and 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-seasonalZscore2 <- 
-  seasonalData2 %>% 
-  select(admin2Name, admin2Pcod, year, month, seasonaltotal_precip) %>%
-  group_by(admin2Pcod) %>% 
-  mutate(baselineMean_precip = mean(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
-         baselineSD_precip = sd(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
-  group_by(admin2Pcod, year, month) %>% 
-  mutate(zscore_precip = (seasonaltotal_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
-  ungroup()
-
+#Admin 2
 seasonalZscoreAnnual2 <- 
   seasonalDataAnnual2 %>% 
   select(admin2Name, admin2Pcod, year, AnnualPrecip) %>%
@@ -381,16 +367,6 @@ seasonalZscoreAnnual2 <-
   ungroup()
 
 #Admin 3
-seasonalZscore3 <- 
-  seasonalData3 %>% 
-  select(adm_03, rowcacode3, year, month, seasonaltotal_precip) %>%
-  group_by(rowcacode3) %>% 
-  mutate(baselineMean_precip = mean(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE), 
-         baselineSD_precip = sd(seasonaltotal_precip[year >= "1981" & year <= "2010"], na.rm = TRUE)) %>% 
-  group_by(rowcacode3, year, month) %>% 
-  mutate(zscore_precip = (seasonaltotal_precip - baselineMean_precip)/(baselineSD_precip)) %>% 
-  ungroup()
-
 seasonalZscoreAnnual3 <- 
   seasonalDataAnnual3 %>% 
   select(adm_03, rowcacode3, year, AnnualPrecip) %>%
@@ -401,92 +377,21 @@ seasonalZscoreAnnual3 <-
   mutate(zscore_precip = (AnnualPrecip - baselineMean_precip)/(baselineSD_precip)) %>% 
   ungroup()
 
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Data Graphics (Admin 2 and 3)-----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-seasonalMerged2 = full_join(geospatialData2, 
-                            seasonalData2,
-                            by = "admin2Pcod")
-
-seasonalMerged2 %>% 
-  ggplot() + 
-  geom_sf(aes(fill = seasonaltotal_precip),color = NA, alpha = 0.8) +
-  scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~month, nrow = 1) +
-  labs(title="Seasonal Rainfall by Department", fill = "z-score" ) + 
-  theme_classic() + 
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        rect = element_blank())
-
-#Admin 3
-seasonalMerged3 = full_join(geospatialData3, 
-                            seasonalData3,
-                            by = "rowcacode3")
-
-seasonalMerged3 %>% 
-  ggplot() + 
-  geom_sf(aes(fill = seasonaltotal_precip),color = NA, alpha = 0.8) +
-  scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~month, nrow = 1) +
-  labs(title="Seasonal Rainfall by Commune", fill = "z-score" ) + 
-  theme_classic() + 
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        rect = element_blank())
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Z-Score Data Graphics-----
+# Generate Seasonal by Year Z-Score Data Graphics (Admin 2 & Admin 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-seasonalZScore_Merged2 = full_join(geospatialData2, 
-                                   seasonalZscore2,
-                                   by = "admin2Pcod")
-
-seasonalZScore_Merged2 %>% 
-  ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
-  scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~month, nrow = 1) +
-  labs(title="Seasonal Rainfall Z-Score by Department", fill = "z-score" ) + 
-  theme_classic() + 
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        rect = element_blank())
-
-
-seasonalZScore_Merged3 = full_join(geospatialData3, 
-                                   seasonalZscore3,
-                                   by = "rowcacode3")
-
-seasonalZScore_Merged3 %>% 
-  ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
-  scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~month, nrow = 1) +
-  labs(title="Seasonal Rainfall Z-Score by Commune", fill = "z-score" ) + 
-  theme_classic() + 
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        rect = element_blank())
-
-
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Generate Seasonal Annual Z-Score Data Graphics-----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Admin 2
 seasonalZScore_Merged2 = full_join(geospatialData2, 
                                    seasonalZscoreAnnual2,
                                    by = "admin2Pcod")
 
 seasonalZScore_Merged2 %>% 
-  filter(year == 2011 | year == 2014| year == 2018) %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~year) +
+  facet_wrap(~year, nrow = 1) +
   labs(title="Seasonal Rainfall Z-Score by Department (Mean)", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
@@ -494,22 +399,21 @@ seasonalZScore_Merged2 %>%
         axis.ticks = element_blank(),
         rect = element_blank())
 
-
+#Admin 3
 seasonalZScore_Merged3 = full_join(geospatialData3, 
                                    seasonalZscoreAnnual3,
                                    by = "rowcacode3")
 
 seasonalZScore_Merged3 %>% 
-  filter(year == 2011 | year == 2014| year == 2018) %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
-  facet_wrap(~year) +
+  facet_wrap(~year, nrow = 1) +
   labs(title="Seasonal Rainfall Z-Score by Commune (Mean)", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
         rect = element_blank())
-
 
