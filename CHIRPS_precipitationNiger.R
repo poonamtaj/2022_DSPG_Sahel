@@ -482,12 +482,12 @@ seasonalZScore_Merged2 = full_join(geospatialData2,
                                    by = "admin2Pcod")
 
 seasonalZScore_Merged2 %>% 
-  filter(year %in% seq(2011, 2021, 1)) %>%
+  filter(year == 2011 | year == 2014| year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year) +
-  labs(title="Annual Total of Seasonal Rainfall Z-Score by Department", fill = "z-score" ) + 
+  labs(title="Seasonal Rainfall Z-Score by Department (Mean)", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -500,12 +500,12 @@ seasonalZScore_Merged3 = full_join(geospatialData3,
                                    by = "rowcacode3")
 
 seasonalZScore_Merged3 %>% 
-  filter(year %in% seq(2011, 2021, 1)) %>%
+  filter(year == 2011 | year == 2014| year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year) +
-  labs(title="Annual Total of Seasonal Rainfall Z-Score by Commune", fill = "z-score" ) + 
+  labs(title="Seasonal Rainfall Z-Score by Commune (Mean)", fill = "z-score" ) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
