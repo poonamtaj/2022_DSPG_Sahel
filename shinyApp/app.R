@@ -38,6 +38,7 @@ library(ggrepel)
 library(hrbrthemes)
 library(rmapshaper)
 library(magrittr)
+library(rsconnect)
 
 remove_chart_clutter <- 
   theme(    
@@ -465,10 +466,10 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/Admin2_Foodexpenditure.png', align = "center",width=800,height=500)
+      list(src='www/admin2_foodexpenditure.png', align = "center",width=800,height=500)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/Admin3_Foodexpenditure.png', align = "center",width=800,height=500)
+      list(src='www/admin3_foodexpenditure.png', align = "center",width=800,height=500)
     }
   })
   
