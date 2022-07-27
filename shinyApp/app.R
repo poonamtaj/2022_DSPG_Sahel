@@ -304,6 +304,37 @@ ui <- navbarPage(title = "DSPG 2022",
                             
                           )),
                  
+                 ## Tab Analysis -----------------------------------------------------------
+                 tabPanel("Analysis",
+                          fluidPage(
+                            # h3(strong("Analysis")),
+                            withMathJax()),
+                          fluidRow(
+                            column(
+                              12,
+                              #align="justify",
+                              h1(strong("Correlation Analysis")),
+                              align="center")
+                          ),
+                          br(),
+                          column(4,
+                                 h4(strong("Correlation of Precipitation & NDVI")), align="center",
+                                 img(src = "corr_02.png", class = "topimage", width = "105%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                 p("This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019.")
+                          ),
+                          
+                          
+                          column(4, 
+                                 h4(strong("Correlation of Precipitation & Food Insecurity")), align="center",
+                                 img(src = "corr_03.png", class = "topimage", width = "85%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                 p("Description of correlation between precipitation and food insecurity (vulnerability index)"),
+                          ),
+                          column(4,
+                                 h4(strong("Correlation of NDVI & Food Insecurity")), align="center",
+                                 img(src = "corr_04.png", class = "topimage", width = "80%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                 p("Description of correlation between NDVI and food insecurity (vulnerability index)"),
+                                 
+                          )),
                  ## Tab Takeaways ---------------------------------------------------------------
                  tabPanel("Takeaways",
                           fluidPage(
