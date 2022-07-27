@@ -35,6 +35,8 @@ library(ggrepel)
 library(hrbrthemes)
 library(rmapshaper)
 library(magrittr)
+library(tidyverse)
+library(sp)
 
 remove_chart_clutter <- 
   theme(    
@@ -45,6 +47,10 @@ remove_chart_clutter <-
     axis.title.y = element_text(angle = 0, vjust = 0.5),      # Rotate y axis so don't have to crank head
     legend.position="bottom"
   ) 
+
+#data for ndviline
+annualNDVI <- read_csv("C:/Users/riley/OneDrive/Desktop/My classes/Economics/New folder/DSPG 2022/DSPG_Sahel/Sahel Data/yearData_admin2.csv")
+
 
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
@@ -203,10 +209,11 @@ ui <- navbarPage(title = "DSPG 2022",
                                             )
                                    )
                  ),
-                 tabPanel("Data",
+                 tabPanel("Data & Methodology",
                           fluidPage(
-                            h1(strong("Description of Data Sources")),
+                            h1(strong("Data Sources")),
                             h3(strong("Precipitation")),
+                            fluidRow(
                             column(4,
                                    p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
                                    researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
@@ -214,7 +221,7 @@ ui <- navbarPage(title = "DSPG 2022",
                             ),
                             column(8,
                                    img(src = "precipitation.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                            ),
+                            )),
                             h3(strong("Normalized Difference Vegetation Index")),
                             p("The Normalized Difference Vegetative Index (NDVI) dataset is unique in that it bridges the gap between satellite imagery and internal vegetative processes. Satellite
                               sensors measure wavelengths of light absorbed and reflected by green plants; certain pigments in plant leaves strongly absorb wavelengths of visible (red) light. The leaves
@@ -237,14 +244,24 @@ ui <- navbarPage(title = "DSPG 2022",
                               the 2015 survey covered a sample of 21,668 households while in 2017, the survey covered a sample of 18,366 households. The approach adopted in these surveys consisted of collecting
                               information at the village level and also at the level of rural households."),
                             h3(strong("Living Standards Measurement Study")),
+                            fluidRow(
                             column(4,
                             p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
-                              been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure.  ")),
+                              been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure."),
                             ),
                             column(8,
-                            img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")),
+                            img(src = "lsms.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;")),
                             ),
+                            h1(strong("Methodology")),
+                            h3(strong('Z-Score')),
+                            p("The DSPG team used z-scores to translate historical weather to “anomalies” from normal (xI). Z-scores (Zit) quantify how anomalous a given annual precipitation
+                              amount or NDVI value is by comparing that value (xI) to the mean (x̄) of those values in a prior period (here we used 1981-2010), and dividing by the standard deviation
+                              (si) across that same baseline period."),
+                            h3(strong('Correlation')),
+                            p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Person R correlation
+                              coefficient, which measures the strength of the linear association between the variables.")),
+                          ),
                  tabPanel("Drought Index",
                           fluidPage(
                             h3(strong("NDVI , Precipitation")),
@@ -254,11 +271,9 @@ ui <- navbarPage(title = "DSPG 2022",
                                  p("Overall, there is relatively little variation across this time span, indicating that there was little change in vegetation. The reason why the maps may all look the same is that there is little growth and change over time due to unpredictable rainfall and frequent drought. It seems that around 2013 and 2014 the lower regions had an increased vegetation level, which is reflected by increased rainfall during the same years.")
                           ),
                           column(8,
-                                 h4(strong("NDVI Maps")),
-                                 sliderInput(inputId = "NDVI_year", label = "Year:",
-                                             min= 1982, max = 2019, value = 1982,
-                                             width = "150%", sep = ""),
-                                 leafletOutput("my_leaf", height = "500px")),
+                                 h4(strong("NDVI Maps"))),
+                          plotlyOutput("plot2"),
+                          
                  ),
                  tabPanel("Welfare Index",
                           fluidPage(
@@ -359,6 +374,23 @@ ui <- navbarPage(title = "DSPG 2022",
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
+  output$plot2 <- renderPlotly({
+    
+    
+    annualNDVI %>%
+      ggplot(aes(x = Year, y = Peak_NDVI, color = Region)) +
+      geom_line()+
+      scale_color_viridis_d(option = "H") +
+      labs(title = "Annual Peak NDVI",
+           color =  "Region", x = "Year",
+           y = "Total NDVI") +
+      theme_classic() +
+      plotly()
+  })
+  
+  output$plot1 <- renderPlotly({
+
+  
   output$food_insecurity_out1<-renderPlot({map_at_risk})
   output$food_insecurity_out2<-renderPlot({map_at_moderate_risk})
   output$food_insecurity_out3<-renderPlot({map_at_severe_risk})
@@ -369,6 +401,8 @@ server <- function(input, output) {
     
     
   })
-}
+  }
+)}
 # Run the application 
 shinyApp(ui = ui, server = server)
+
