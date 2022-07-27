@@ -105,7 +105,7 @@ jscode <- "function getUrlVars() {
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 annualPrecip <- read_csv("./data/yearData1_precip.csv")
-mydata <- read_excel("./data/Données EVIAM 15 17 insécurite alimentaire.xlsx")
+mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
 Niger_level2 <- st_read("./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
 mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
