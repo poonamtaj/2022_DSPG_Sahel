@@ -105,6 +105,7 @@ jscode <- "function getUrlVars() {
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 annualPrecip <- read_csv("./data/yearData1_precip.csv")
+annualPrecip_md <- read_csv("./yearAdmin1_md.csv")
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
 Niger_level2 <- st_read("./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
@@ -294,15 +295,53 @@ ui <- navbarPage(title = "DSPG 2022",
                  tabPanel("Precipitation",
                           column(4,
                                  h4(strong("Description")),
-                                 p("Description of the Precipitation timeseries data"),
+                                 p("The total annual precipitation by region line chart shows 
+                                              that there are some regions that recieve more precipitation than others.
+                                              We see a couple peaks in precipitation along different years, 
+                                              specifically in 1994, 1998, and 2020."),
+                                 
+                                 h4(strong("Description")),
+                                 p("The department level shows differences in the z-score
+                                              when we look at the data aggregated using mean versus the data
+                                              aggregated using median. There are high z-scores in the northern regions
+                                              of Niger which are mostly desert. This could be due to the baseline data
+                                              having little rain so when comparing it to more recent years from floods,
+                                              there are outliers scewing the data."),
+                                 p("The commune level shows differences in the z-score
+                                              when we look at the data aggregated using mean versus the data
+                                              aggregated using median. There are high z-scores in the northern regions
+                                               for mean, but using median we can see that there is a region in the middle of
+                                              Niger that recieved more rainfall compared to the baseline data."),
+                                 
+                                 h4(strong("Description")),
+                                 p("We see slight differences in the seasonal precipitation data when looking at
+                                            mean versus median aggregated data. There are high z-scores in the northern region and we see
+                                            that especially in years 2015 and 2018. There was recorded flooding in the year of 2018 so
+                                              this does align with the z-score."),
+                                 p("The commune level shows slight differences in the z-score
+                                              when we look at the data aggregated using mean compared to median. There are high z-scores
+                                              in the northern regions for mean, but using median we can see that there is a region in the 
+                                              middle of Niger that recieved more rainfall compared to the baseline data. We see the greatest
+                                              differences in years 2015."),
                           ),
                           column(8,
                                  h4(strong("Maps"),align="center"),
                                  titlePanel(""),
-                                   mainPanel(strong(""),
-                                             plotlyOutput("plot1")
+                                 mainPanel(strong(""),
+                                           h4(strong("Total Annual Precipitation by Region"), align = "center"),
+                                           plotlyOutput("plot1"),
+                                           plotlyOutput("plot2"),
+                                           h4(strong("Annual Z-Score Precipitation Mean and Median"), align = "center"),
+                                           radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
+                                             "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                           plotOutput("precipitation_out"),
+                                           h4(strong("Seasonal Z-Score Precipitation Mean and Median"), align = "center"),
+                                           radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
+                                             "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
+                                           plotOutput("seasonalPrecip_out")
+                                           
                                  )       
-       
+                                 
                           ))
                           )),
                  ## Tab Welfare Index --------------------------------------------------------------
@@ -500,6 +539,42 @@ server <- function(input, output) {
              y = "Total Precipitation (mm)") + 
         theme_classic() +
         plotly()
+    })
+    output$plot2 <- renderPlotly({
+      
+      annualPrecip_md %>%
+        ggplot(aes(x = Year, y = Precipitation, color = Region)) +
+        geom_line()+ 
+        scale_color_viridis_d(option = "H") +
+        labs(title = "Median",
+             color =  "Region", x = "Year", 
+             y = "Total Precipitation (mm)") + 
+        theme_classic() +
+        plotly()
+    })
+    
+    precipitation <- reactive({
+      input$precipitation
+    })
+    output$precipitation_out<-renderImage({
+      if(precipitation()=="Admin2"){
+        list(src='annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+      }
+      else if (precipitation()=="Admin3"){
+        list(src='annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+      }
+    })
+    
+    seasonalPrecip <- reactive({
+      input$seasonalPrecip
+    })
+    output$seasonalPrecip_out<-renderImage({
+      if(seasonalPrecip()=="Admin2seasonal"){
+        list(src='seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+      }
+      else if (seasonalPrecip()=="Admin3seasonal"){
+        list(src='seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+      }
     })
     
     
