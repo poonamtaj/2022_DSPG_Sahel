@@ -51,6 +51,56 @@ remove_chart_clutter <-
 
 #####------------------------------------------------------------- data -------------------------------------------------------------------#####
 
+prettyblue <- "#232D4B"
+navBarBlue <- '#427EDC'
+options(spinner.color = prettyblue, spinner.color.background = '#ffffff', spinner.size = 3, spinner.type = 1)
+
+colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+# CODE TO DETECT ORIGIN OF LINK AND CHANGE LOGO ACCORDINGLY------
+jscode <- "function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+
+            var mytype = getUrlParam('type','Empty');
+
+            function changeLinks(parameter) {
+                links = document.getElementsByTagName(\"a\");
+
+                for(var i = 0; i < links.length; i++) {
+                   var link = links[i];
+                   var newurl = link.href + '?type=' + parameter;
+                   link.setAttribute('href', newurl);
+                 }
+            }
+
+           var x = document.getElementsByClassName('navbar-brand');
+
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/\">' +
+                              '<img src=\"DSPG_black-01.png\", alt=\"DSPG 2022 Symposium Proceedings\", style=\"height:42px;\">' +
+                              '</a></div>';
+
+             //changeLinks('dspg');
+           } else {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies\">' +
+                              '<img src=\"AEMLogoGatesColorsBlack-11.png\", alt=\"Gates Economic Mobility Case Studies\", style=\"height:42px;\">' +
+                              '</a></div>';
+
+             //changeLinks('economic'); 
+           }
+           "
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 annualPrecip <- read_csv("./data/yearData1_precip.csv")
@@ -404,6 +454,8 @@ ui <- navbarPage(title = "DSPG 2022",
 #####-------------------------------------- Define server  -------------------------------------#####
 
 server <- function(input, output) {
+  # Run JavaScript Code
+  runjs(jscode)
   output$food_insecurity_out1<-renderPlotly(ggplotly({map_at_risk},tooltip="text"))
   output$food_insecurity_out2<-renderPlotly(ggplotly({map_at_moderate_risk},tooltip = "text"))
   output$food_insecurity_out3<-renderPlotly(ggplotly({map_at_severe_risk},tooltip = "text"))
