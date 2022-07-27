@@ -144,6 +144,7 @@ yearData2 <-
 # Take the mean over the spatial area ----
 yearData1 <-
   yearData2 %>% 
+  filter(year %in% seq(1981, 2021, 1)) %>%
   group_by(admin1Name, year) %>% 
   mutate(Precipitation = mean(total_precip)) %>% 
   ungroup() %>% 

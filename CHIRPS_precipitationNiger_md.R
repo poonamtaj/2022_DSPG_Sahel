@@ -14,6 +14,15 @@ library(tidyverse)
 library(sf)
 library(lubridate)
 
+remove_chart_clutter <- 
+  theme(    
+    panel.grid.major = element_blank(),      # Remove panel grid lines
+    panel.grid.minor = element_blank(),      # Remove panel grid lines
+    panel.background = element_blank(),      # Remove panel background
+    axis.line = element_line(colour = "grey"),       # Add axis line
+    axis.title.y = element_text(angle = 0, vjust = 0.5),      # Rotate y axis so don't have to crank head
+    legend.position="bottom"
+  )
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -32,7 +41,7 @@ yearAdmin2_md <-
   mutate(total_precip = sum(Precipitation, na.rm = TRUE),
          median_precip = median(Precipitation, na.rm = TRUE),
          sd_precip = sd(Precipitation, na.rm = TRUE)) %>%
-  distinct(admin2Name, admin2Pcod, year, 
+  distinct(admin1Name, admin1Pcod, admin2Name, admin2Pcod, year, 
            total_precip, median_precip, sd_precip) %>%
   ungroup()
 
@@ -46,7 +55,19 @@ yearAdmin3_md <-
            total_precip, median_precip, sd_precip) %>%
   ungroup()
 
+# Take the median over the spatial area ----
+yearAdmin1_md <-
+  yearAdmin2_md %>% 
+  filter(year %in% seq(1981, 2021, 1)) %>%
+  group_by(admin1Name, year) %>% 
+  mutate(Precipitation = median(total_precip)) %>% 
+  ungroup() %>% 
+  distinct(admin1Name, Precipitation, year)
+
+colnames(yearAdmin1_md) <- c('Region','Year','Precipitation')
+
 ### to download the dataframe as csv file
+write.csv(yearAdmin1_md, "./yearAdmin1_md.csv", row.names = FALSE)
 write.csv(yearAdmin2_md, "./yearAdmin2_md.csv", row.names = FALSE)
 write.csv(yearAdmin3_md, "./yearAdmin3_md.csv", row.names = FALSE)
 
@@ -152,6 +173,24 @@ seasonalAnnualZscore3_md <-
 ### to download the dataframe as csv file
 write.csv(seasonalAnnualZscore3_md, "./seasonalAnnualZscore2_md.csv", row.names = FALSE)
 write.csv(seasonalAnnualZscore3_md, "./seasonalAnnualZscore3_md.csv", row.names = FALSE)
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Overall Precipitation  Graphic ----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+yearAdmin1_md  %>% 
+  ggplot(aes(x = Year, 
+             y = Precipitation, 
+             color = Region, linetype = Region)) +
+  geom_line() +
+  labs(title = "Total Precipitation (mm) By Administrative Region (Admin 1)", 
+       caption = "Data Source: CHIRPS",
+       y = "", 
+       x = "",
+       color = "Region",
+       linetype = "Region") +
+  remove_chart_clutter +
+  theme(legend.position = "right")
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Annual Z-Score Data Graphics (Admin 2 and 3)-----

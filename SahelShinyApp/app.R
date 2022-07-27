@@ -53,7 +53,8 @@ remove_chart_clutter <-
 
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
-annualPrecip <- read_csv("./yearData1.csv")
+annualPrecip <- read_csv("./.yearData1.csv")
+annualPrecip_md <- read_csv("./yearAdmin1_md.csv")
 mydata <- read_excel("./Données EVIAM 15 17 insécurite alimentaire.xlsx")
 Niger_level2 <- st_read("./niger_admin2/niger_admin2.shp")
 
@@ -224,7 +225,7 @@ ui <- navbarPage(title = "DSPG 2022",
                  ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
                           fluidPage(
-                            h3(strong("NDVI , Precipitation")),
+                            h3(strong("Drought Indices")),
                             withMathJax()),
                           tabsetPanel(
                             tabPanel("NDVI", 
@@ -243,12 +244,12 @@ ui <- navbarPage(title = "DSPG 2022",
                             tabPanel("Precipitation",
                                      column(4,
                                             h4(strong("Description")),
-                                            h4(strong("Total Annual Precipitation by Region")),
                                             p("The total annual precipitation by region line chart shows 
                                               that there are some regions that recieve more precipitation than others.
                                               We see a couple peaks in precipitation along different years, 
                                               specifically in 1994, 1998, and 2020."),
-                                            h4(strong("Annual Z-Score Precipitation Mean and Median")),
+                                            
+                                            h4(strong("Description")),
                                             p("The department level shows differences in the z-score
                                               when we look at the data aggregated using mean versus the data
                                               aggregated using median. There are high z-scores in the northern regions
@@ -260,7 +261,8 @@ ui <- navbarPage(title = "DSPG 2022",
                                               aggregated using median. There are high z-scores in the northern regions
                                                for mean, but using median we can see that there is a region in the middle of
                                               Niger that recieved more rainfall compared to the baseline data."),
-                                            h4(strong("Seasonal Z-Score Precipitation Mean and Median")),
+                                            
+                                            h4(strong("Description")),
                                             p("We see slight differences in the seasonal precipitation data when looking at
                                             mean versus median aggregated data. There are high z-scores in the northern region and we see
                                             that especially in years 2015 and 2018. There was recorded flooding in the year of 2018 so
@@ -277,6 +279,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                             mainPanel(strong(""),
                                                       h4(strong("Total Annual Precipitation by Region"), align = "center"),
                                                       plotlyOutput("plot1"),
+                                                      plotlyOutput("plot2"),
                                                       h4(strong("Annual Z-Score Precipitation Mean and Median"), align = "center"),
                                                       radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
                                                         "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
@@ -478,12 +481,25 @@ server <- function(input, output) {
       ggplot(aes(x = Year, y = Precipitation, color = Region)) +
       geom_line()+ 
       scale_color_viridis_d(option = "H") +
-      labs(title = "Annual Cumulative Precipitation by Region (Admin 1)", 
+      labs(title = "Mean",
            color =  "Region", x = "Year", 
            y = "Total Precipitation (mm)") + 
       theme_classic() +
       plotly()
   })
+  output$plot2 <- renderPlotly({
+    
+    annualPrecip_md %>%
+      ggplot(aes(x = Year, y = Precipitation, color = Region)) +
+      geom_line()+ 
+      scale_color_viridis_d(option = "H") +
+      labs(title = "Median",
+           color =  "Region", x = "Year", 
+           y = "Total Precipitation (mm)") + 
+      theme_classic() +
+      plotly()
+  })
+  
   precipitation <- reactive({
     input$precipitation
   })
@@ -495,6 +511,7 @@ server <- function(input, output) {
       list(src='annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
     }
   })
+  
   seasonalPrecip <- reactive({
     input$seasonalPrecip
   })
@@ -506,8 +523,6 @@ server <- function(input, output) {
       list(src='seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
     }
   })
-  
-  
   
 }
 
