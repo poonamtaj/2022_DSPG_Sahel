@@ -105,7 +105,7 @@ jscode <- "function getUrlVars() {
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 annualPrecip <- read_csv("./data/yearData1_precip.csv")
-annualPrecip_md <- read_csv("./yearAdmin1_md.csv")
+annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
 Niger_level2 <- st_read("./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
@@ -558,10 +558,10 @@ server <- function(input, output) {
     })
     output$precipitation_out<-renderImage({
       if(precipitation()=="Admin2"){
-        list(src='annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (precipitation()=="Admin3"){
-        list(src='annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
       }
     })
     
@@ -570,10 +570,10 @@ server <- function(input, output) {
     })
     output$seasonalPrecip_out<-renderImage({
       if(seasonalPrecip()=="Admin2seasonal"){
-        list(src='seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (seasonalPrecip()=="Admin3seasonal"){
-        list(src='seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
       }
     })
     
