@@ -10,3 +10,10 @@ library(haven)
 data <- read_dta('C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/LSMS_Niger_11_14_18.dta')
 ```
 
+```{r}
+mydata <-read_excel("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel/Données EVIAM 15 17 insécurite alimentaire.xlsx")
+mydataa<-mydata%>%select(departement_name,arisque_part_15,arisque_part_17,moderate_part_15,moderate_part_17,
+                        severe_part_15,severe_part_17)
+write.csv(mydataa, 'slim_foodinsecurity.csv')
+```
+
