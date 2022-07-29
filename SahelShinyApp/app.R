@@ -38,6 +38,7 @@ library(ggrepel)
 library(hrbrthemes)
 library(rmapshaper)
 library(magrittr)
+library(rsconnect)
 
 remove_chart_clutter <- 
   theme(    
@@ -51,15 +52,57 @@ remove_chart_clutter <-
 
 #####------------------------------------------------------------- data -------------------------------------------------------------------#####
 
+prettyblue <- "#232D4B"
+navBarBlue <- '#427EDC'
+options(spinner.color = prettyblue, spinner.color.background = '#ffffff', spinner.size = 3, spinner.type = 1)
+
+colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+# CODE TO DETECT ORIGIN OF LINK AND CHANGE LOGO ACCORDINGLY------
+jscode <- "function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+            var mytype = getUrlParam('type','Empty');
+            function changeLinks(parameter) {
+                links = document.getElementsByTagName(\"a\");
+                for(var i = 0; i < links.length; i++) {
+                   var link = links[i];
+                   var newurl = link.href + '?type=' + parameter;
+                   link.setAttribute('href', newurl);
+                 }
+            }
+           var x = document.getElementsByClassName('navbar-brand');
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/\">' +
+                              '<img src=\"DSPG_black-01.png\", alt=\"DSPG 2022 Symposium Proceedings\", style=\"height:42px;\">' +
+                              '</a></div>';
+             //changeLinks('dspg');
+           } else {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies\">' +
+                              '<img src=\"AEMLogoGatesColorsBlack-11.png\", alt=\"Gates Economic Mobility Case Studies\", style=\"height:42px;\">' +
+                              '</a></div>';
+             //changeLinks('economic'); 
+           }
+           "
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
-annualPrecip <- read_csv("./.yearData1.csv")
+annualPrecip <- read_csv("./yearData1.csv")
 annualPrecip_md <- read_csv("./yearAdmin1_md.csv")
-mydata <- read_excel("./Données EVIAM 15 17 insécurite alimentaire.xlsx")
+mydata <- read_excel("./food_insecurity_15_17.xlsx")
 Niger_level2 <- st_read("./niger_admin2/niger_admin2.shp")
 
 mydt_ndvi_md <-read_csv("./admin2ndvi_md.csv")
-
+#nigerMapAdmin2 <- st_read("./data/shapefiles/niger_admin2.shp")
 
 # 2. Merge Precip and  Spatial Information (geometry) by common code
 nigerShpMerged_admin2_md = full_join(Niger_level2, 
@@ -116,7 +159,7 @@ map_at_severe_risk <- make_maps(var1="severe_part_15",var2="severe_part_17",val=
 
 #####------------------------------------------------------ ui for shiny app --------------------------------------------------------#######
 
-ui <- navbarPage(title = "DSPG 2022",
+ui <- navbarPage(title = "SAHEL DSPG 2022",
                  selected = "overview",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
@@ -225,7 +268,7 @@ ui <- navbarPage(title = "DSPG 2022",
                  ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
                           fluidPage(
-                            h3(strong("Drought Indices")),
+                            h3(strong("NDVI , Precipitation")),
                             withMathJax()),
                           tabsetPanel(
                             tabPanel("NDVI", 
@@ -321,8 +364,8 @@ ui <- navbarPage(title = "DSPG 2022",
                                                 upward trend in the percentages of populations with severe,
                                                 moderate and at risk food insecurity."),
                                             p("To view the share of the food insecure population at different departments ,
-                                                hover over the respective department in the map.")
-                                     ),
+                                                hover over the respective department in the map."), 
+                                            align = "justify"),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
                                             plotlyOutput("food_insecurity_out1",height="500px"),
@@ -332,8 +375,20 @@ ui <- navbarPage(title = "DSPG 2022",
                             tabPanel("LSMS",
                                      column(4,
                                             h4(strong("Description")),
-                                            p("Description of the LSMS data"),
-                                     ),
+                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
+                                              premier household survey program, aims to improve the quality of 
+                                              microdata and strengthen household survey systems in client countries
+                                              in order to better inform development policies. Its main objective is to
+                                              promote the creation and adoption of new standards and methods for gathering 
+                                              household data in order to support evidence-based policymaking."),
+                                            p("These maps show the food expenditure data at the Department level and Commune
+                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
+                                              We aggregated it by median because the median is less affected by outliers
+                                              and skewed data than the mean, and is usually the preferred measure of central
+                                              tendency when the distribution is not symmetrical."),
+                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
+                                              It is lower in 2018 as compared to 2011 and 2014."),
+                                            align = "justify"),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
                                             radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
@@ -413,11 +468,13 @@ ui <- navbarPage(title = "DSPG 2022",
                               p("", style = "padding-top:10px;")
                             ),
                             fluidRow(
-                              
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
                                      tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)")
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)"),
+                                     h4(strong("Graduate Research Assistant")), tags$br(),
+                                     tags$br(), img(src = "fellow-armine.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Environmental and Natural Resource Economics")
                               ),
                               column(4, align = "center",
                                      h4(strong("Undergraduate Interns")), tags$br(),
@@ -435,7 +492,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                      img(src = "faculty-susan.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", height = "37%", width = "37%"),  tags$br(),
                                      p(a(href = 'https://aaec.vt.edu/people/faculty/chen-susan.html', 'Dr. Susan Chen', target = '_blank'), "(Virginia Tech, Department of Agricultural and Applied Economics)"),  tags$br()
                               ),
-                            )))            
+                            )))
                  
 )
 
@@ -443,6 +500,8 @@ ui <- navbarPage(title = "DSPG 2022",
 #####-------------------------------------- Define server  -------------------------------------#####
 
 server <- function(input, output) {
+  # Run JavaScript Code
+  runjs(jscode)
   output$food_insecurity_out1<-renderPlotly(ggplotly({map_at_risk},tooltip="text"))
   output$food_insecurity_out2<-renderPlotly(ggplotly({map_at_moderate_risk},tooltip = "text"))
   output$food_insecurity_out3<-renderPlotly(ggplotly({map_at_severe_risk},tooltip = "text"))
@@ -452,10 +511,10 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/Admin2_Foodexpenditure.png', align = "center",width=800,height=500)
+      list(src='www/newfoodexp_admin2.png', align = "center",width=800,height=500)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/Admin3_Foodexpenditure.png', align = "center",width=800,height=500)
+      list(src='www/newfoodexp_admin3.png', align = "center",width=800,height=500)
     }
   })
   
@@ -481,7 +540,7 @@ server <- function(input, output) {
       ggplot(aes(x = Year, y = Precipitation, color = Region)) +
       geom_line()+ 
       scale_color_viridis_d(option = "H") +
-      labs(title = "Mean",
+      labs(title = "Mean", 
            color =  "Region", x = "Year", 
            y = "Total Precipitation (mm)") + 
       theme_classic() +
@@ -523,6 +582,9 @@ server <- function(input, output) {
       list(src='seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
     }
   })
+  
+  
+  
   
 }
 
