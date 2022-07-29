@@ -285,57 +285,26 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                             leafletOutput("my_leaf", height = "500px")),
                             ),
                             tabPanel("Precipitation",
-                                     column(4,
-                                            h4(strong("Description")),
-                                            p("The total annual precipitation by region line chart shows 
+                                     fluidRow(
+                                       column(
+                                          4,
+                                         p(h3("Description")),
+                                         p("The total annual precipitation by region line chart shows 
                                               that there are some regions that recieve more precipitation than others.
                                               We see a couple peaks in precipitation along different years, 
-                                              specifically in 1994, 1998, and 2020."),
-                                            
-                                            h4(strong("Description")),
-                                            p("The department level shows differences in the z-score
-                                              when we look at the data aggregated using mean versus the data
-                                              aggregated using median. There are high z-scores in the northern regions
-                                              of Niger which are mostly desert. This could be due to the baseline data
-                                              having little rain so when comparing it to more recent years from floods,
-                                              there are outliers scewing the data."),
-                                            p("The commune level shows differences in the z-score
-                                              when we look at the data aggregated using mean versus the data
-                                              aggregated using median. There are high z-scores in the northern regions
-                                               for mean, but using median we can see that there is a region in the middle of
-                                              Niger that recieved more rainfall compared to the baseline data."),
-                                            
-                                            h4(strong("Description")),
-                                            p("We see slight differences in the seasonal precipitation data when looking at
-                                            mean versus median aggregated data. There are high z-scores in the northern region and we see
-                                            that especially in years 2015 and 2018. There was recorded flooding in the year of 2018 so
-                                              this does align with the z-score."),
-                                            p("The commune level shows slight differences in the z-score
-                                              when we look at the data aggregated using mean compared to median. There are high z-scores
-                                              in the northern regions for mean, but using median we can see that there is a region in the 
-                                              middle of Niger that recieved more rainfall compared to the baseline data. We see the greatest
-                                              differences in years 2015."),
-                                     ),
-                                     column(8,
-                                            h4(strong("Maps"),align="center"),
-                                            titlePanel(""),
-                                            mainPanel(strong(""),
-                                                      h4(strong("Total Annual Precipitation by Region"), align = "center"),
-                                                      plotlyOutput("plot1"),
-                                                      plotlyOutput("plot2"),
-                                                      h4(strong("Annual Z-Score Precipitation Mean and Median"), align = "center"),
-                                                      radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
-                                                        "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
-                                                      plotOutput("precipitation_out"),
-                                                      h4(strong("Seasonal Z-Score Precipitation Mean and Median"), align = "center"),
-                                                      radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
-                                                        "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
-                                                      plotOutput("seasonalPrecip_out")
-                                                      
-                                            )       
-                                            
-                                     ))
-                          )),
+                                              specifically in 1994, 1998, and 2020."), 
+                                       ),
+                                         column(
+                                           7,
+                                           p(h3("Total Annual Precipitation by Region")),
+                                           plotlyOutput("plot1"),
+                                           plotlyOutput("plot2")
+                                         ),  
+                                       
+                                       
+                                         
+                                       ))
+                            )),
                  ## Tab Welfare Index --------------------------------------------------------------
                  tabPanel("Welfare Index",
                           fluidPage(
