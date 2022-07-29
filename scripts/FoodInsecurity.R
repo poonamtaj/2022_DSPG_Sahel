@@ -33,9 +33,10 @@ remove_chart_clutter <-
 # TODO: coauthors -- change the file here for your path
 setwd("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel")
 mydata <-read_excel("Données EVIAM 15 17 insécurite alimentaire.xlsx")
-Niger_level2 <- st_read(
-  "C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
+niger_level2 <- st_read("C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
 
+mydata <-read_excel("Données EVIAM 15 17 insécurite alimentaire.xlsx")
+niger_level2 <- st_read("C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
 
 # adjusting the discrepancy in some names due to French accent
 
@@ -54,20 +55,26 @@ mydata$departement_name <- sub("Tillaberi", "Tillabéri", mydata$departement_nam
 
 
 #Converting to a function
-make_maps<-function(var1,var2,val,title) {
+make_maps <- function(var1,var2,val,title) {
   #Converting data from wide to long to use facet wrap
   
-  data_sub<-mydata%>%select(departement_name,var1,var2)%>% rename("2015" = var1,"2017" = var2)
-  data_sub_long<-gather(data_sub,key="year", value=val, 2:3)
+  data_sub <- mydata %>% 
+    select(departement_name,var1,var2) %>% 
+    rename("2015" = var1,"2017" = var2)
   
+  data_sub_long <- gather(data_sub,key="year", value=val, 2:3)
   
+  # joining Admin2 shapefile with LSMS data
+  data_merged_shp=merge(x=niger_level2, y=data_sub_long, by.x="admin2Name", by.y="departement_name", all=TRUE)
   # Make Maps side by side
-  data_merged_shp=merge(x=Niger_level2,y=data_sub_long,by.x="admin2Name",by.y="departement_name",all=TRUE)
   map_out<-ggplot() + 
     geom_sf(data = data_merged_shp, size = 1, color = "NA", aes(fill=val)) + 
-    ggtitle(title) + scale_fill_viridis_c()+
-    coord_sf()+
-    labs(fill = "Percent of Population")+theme_classic()+remove_chart_clutter+
+    ggtitle(title) +
+    scale_fill_viridis_c() +
+    coord_sf() +
+    labs(fill = "Percent of Population") +
+    theme_classic() +
+    remove_chart_clutter +
     facet_wrap(~year)
   return(map_out)  
 }
