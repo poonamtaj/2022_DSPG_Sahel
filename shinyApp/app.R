@@ -458,9 +458,18 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           )),
                  ## Tab Takeaways ---------------------------------------------------------------
                  tabPanel("Takeaways",
-                          fluidPage(
-                            h3(strong("Takeaways")),
-                            withMathJax())),
+                          column(3),
+                          column(6,
+                                 h1(strong("Takeaways"), align = "center"),
+                                 p("Comparing data that is aggregated at mean vs median level shows differences 
+                                 in the Z-Score maps the most and not much differences in annual totals. 
+                                 Looking at data that is using admin 2 vs admin 3 its easy
+                                 to see where the data is most significant at a more refined locations. 
+                                 It is easier to spot variation when comparing seasonal rainfall maps versus 
+                                 annual rainfall maps."),
+                                 p("Comparing data that NDVI..."),
+                                 p("Comparing data that LSMS...")
+                          )),
                  
                  ## Tab References --------------------------------------------------------------
                  tabPanel("References", value = "references",
