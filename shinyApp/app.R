@@ -290,7 +290,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           ),
                           column(8,
                                  h4(strong("NDVI Maps")),
-                                 leafletOutput("my_leaf", height = "500px")),
+                                 ),
                  ),
                  tabPanel("Precipitation",
                           column(4,
@@ -526,22 +526,7 @@ server <- function(input, output) {
     }
   })
   
-  output$my_leaf <- renderLeaflet({
-    mypal <- colorNumeric(
-      palette = "viridis",
-      domain = nigerShpMerged_admin2_md$peak_ndvi)
-    
-    leaflet(nigerShpMerged_admin2_md) %>%
-      addTiles() %>%  
-      addPolygons(color = ~mypal(peak_ndvi), weight = 1, smoothFactor = 0.5, 
-                  label = paste("Department -", nigerShpMerged_admin2_md$admin2Name.x,":", "Peak NDVI", round(nigerShpMerged_admin2_md$peak_ndvi, digits = 3)),
-                  opacity = 1.0, fillOpacity = 0.5,
-                  highlightOptions = highlightOptions(color = "black", weight = 2,
-                                                      bringToFront = TRUE)) %>% 
-      addLegend(pal = mypal,position = "bottomright",values = nigerShpMerged_admin2_md$peak_ndvi,
-                opacity = .6,title = paste("Peak NDVI")) 
-    
-  })
+
     output$plot1 <- renderPlotly({
     
       annualPrecip %>%
