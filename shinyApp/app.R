@@ -284,11 +284,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             column(
                               4,
                               p(h4(strong("Description"))),
-                              p("The total annual precipitation by region line charts show
-                                         that there are some regions that recieve more precipitation than others.
-                                         We see a couple peaks in precipitation along different years,
-                                         specifically in 1994, 1998, and 2020. These trends stay similar
-                                           when looking at data aggregated using mean and median."), 
+                              p("The total annual precipitation by region line charts
+                                shows that there are some regions that receive more
+                                precipitation than others. We see a couple peaks in
+                                precipitation along different years; specifically in
+                                1994, 1998, and 2020. These trends stay similar when
+                                looking at data aggregated using mean and aggregated
+                                using median. "), 
                             ),
                             column(
                               7,
@@ -302,17 +304,15 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             column(
                               4,
                               p(h4(strong("Description"))),
-                              p("The department level shows differences in the z-score
-                                             when we look at the data aggregated using mean versus the data
-                                             aggregated using median. There are high z-scores in the northern regions
-                                             of Niger which are mostly desert. This could be due to the baseline data
-                                             having little rain so when comparing it to more recent years from floods,
-                                             there are outliers scewing the data."), 
-                              p("The commune level shows differences in the z-score
-                                              when we look at the data aggregated using mean versus the data
-                                              aggregated using median. There are high z-scores in the northern regions
-                                               for mean, but using median we can see that there is a region in the middle of
-                                              Niger that recieved more rainfall compared to the baseline data."),
+                              p("The department level shows differences in the z-score between the mean
+                                versus median aggregated data. In addition, there are high z-scores in
+                                the northern regions of Niger, which are mostly desert. These scores could
+                                be due to data skewing from flood year outliers as the baseline data had
+                                little rain."), 
+                              p("The commune level shows differences in the z-score score between the data
+                                aggregated using mean and aggregated using median. While there are high z-scores
+                                in the northern regions when using mean, using median shows that there is a region
+                                in the middle of Niger that receives more rainfall compared to the baseline data. "),
                             ),
                             column(
                               7,
@@ -328,13 +328,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               4,
                               p(h4(strong("Description"))),
                               p("We see slight differences in the seasonal precipitation data when looking at
-                                            mean versus median aggregated data. There are high z-scores in the northern region and we see
-                                            that especially in years 2015 and 2018. There was recorded flooding in the year of 2018 so
-                                              this does align with the z-score."), 
-                              p("The commune level shows slight differences in the z-score
-                                              when we look at the data aggregated using mean compared to median. There are high z-scores
-                                              in the northern regions for mean, but using median we can see that there is the largest difference
-                                              when looking at year 2015."),
+                                mean versus median aggregated data. There are high z-scores in the northern
+                                region, especially in the years 2015 and 2018. These results align with records
+                                which indicate flooding in the year of 2018."), 
+                              p("The commune level shows slight differences in the z-score when we look at mean
+                              versus median aggregated data. While there are high z-scores in the northern regions
+                              when using mean, using median we can see that there is the largest difference when
+                              looking at 2015."),
                             ),
                             column(
                               7,
