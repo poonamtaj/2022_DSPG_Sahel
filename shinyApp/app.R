@@ -552,7 +552,7 @@ server <- function(input, output) {
         ggplot(aes(x = Year, y = Precipitation, color = Region)) +
         geom_line()+ 
         scale_color_viridis_d(option = "H") +
-        labs(title = "Annual Cumulative Precipitation by Region (Admin 1)", 
+        labs(title = "Mean", 
              color =  "Region", x = "Year", 
              y = "Total Precipitation (mm)") + 
         theme_classic() +
