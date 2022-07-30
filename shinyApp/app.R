@@ -104,18 +104,19 @@ jscode <- "function getUrlVars() {
            "
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
+### precipitation data
 annualPrecip <- read_csv("./data/yearData1_precip.csv")
 annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
+
+### NDVI data
+mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
+
+### food insecurity data
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
+
+### shapefile
 Niger_level2 <- st_read("./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
-mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
-#nigerMapAdmin2 <- st_read("./data/shapefiles/niger_admin2.shp")
-
-# 2. Merge Precip and  Spatial Information (geometry) by common code
-nigerShpMerged_admin2_md = full_join(Niger_level2, 
-                                     mydt_ndvi_md,
-                                     by=c("admin2Pcod" = "admin2Pcod"))
 
 ########## Food Insecurity 2015, 2017
 # adjusting the discrepancy in some names due to French accent
