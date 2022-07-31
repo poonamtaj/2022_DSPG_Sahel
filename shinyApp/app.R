@@ -365,11 +365,43 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                  ))
                  ),
                  ## Tab Welfare Index --------------------------------------------------------------
-                  tabPanel("Welfare Index",
+                  tabPanel("Consumption",
                           fluidPage(
-                            h3(strong("Welfare Index")),
+                            h3(strong("Consumption")),
                             withMathJax()),
                           tabsetPanel(
+                            tabPanel("LSMS",
+                                     column(4,
+                                            h4(strong("Description")),
+                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
+                                              premier household survey program, aims to improve the quality of 
+                                              microdata and strengthen household survey systems in client countries
+                                              in order to better inform development policies. Its main objective is to
+                                              promote the creation and adoption of new standards and methods for gathering 
+                                              household data in order to support evidence-based policymaking."),
+                                            p("These maps show the food expenditure data at the Department level and Commune
+                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
+                                              We aggregated it by median because the median is less affected by outliers
+                                              and skewed data than the mean, and is usually the preferred measure of central
+                                              tendency when the distribution is not symmetrical."),
+                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
+                                              It is lower in 2018 as compared to 2011 and 2014."),
+                                            align = "justify"),
+                                     column(8,
+                                            h4(strong("Food Expenditure"),align="center"),
+                                            radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
+                                              "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                            plotOutput("food_expenditure_out"),
+                                            
+                                            h4(strong("Total Expenditure"),align="center"),
+                                            radioButtons("total_expenditure", "Select Administrative levels:", width="100%", choices = c(
+                                              "Département (Admin 2)"="total_Admin2","Commune (Admin 3)"="total_Admin3")),
+                                            plotOutput("total_expenditure_out")
+        
+                                            
+                                     )),
+                                   
+                            
                             tabPanel("Food Insecurity",
                                      column(4,
                                             h4(strong("Description")),
@@ -393,38 +425,17 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                                 moderate and at risk food insecurity."),
                                             p("To view the share of the food insecure population at different departments ,
                                                 hover over the respective department in the map."), 
-                                     align = "justify"),
+                                            align = "justify"),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
                                             plotlyOutput("food_insecurity_out1",height="500px"),
                                             plotlyOutput("food_insecurity_out2",height="500px"),
                                             plotlyOutput("food_insecurity_out3",height="500px"),
-                                     )),
-                            tabPanel("LSMS",
-                                     column(4,
-                                            h4(strong("Description")),
-                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
-                                              premier household survey program, aims to improve the quality of 
-                                              microdata and strengthen household survey systems in client countries
-                                              in order to better inform development policies. Its main objective is to
-                                              promote the creation and adoption of new standards and methods for gathering 
-                                              household data in order to support evidence-based policymaking."),
-                                            p("These maps show the food expenditure data at the Department level and Commune
-                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
-                                              We aggregated it by median because the median is less affected by outliers
-                                              and skewed data than the mean, and is usually the preferred measure of central
-                                              tendency when the distribution is not symmetrical."),
-                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
-                                              It is lower in 2018 as compared to 2011 and 2014."),
-                                            align = "justify"),
-                                     column(8,
-                                            h4(strong("Maps"),align="center"),
-                                            radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
-                                              "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
-                                            plotOutput("food_expenditure_out"),
                                      ))
-                            
                           )),
+
+                            
+                
                  
                  ## Tab Analysis -----------------------------------------------------------
                  tabPanel("Analysis",
@@ -548,10 +559,22 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/newfoodexp_admin2.png', align = "center",width=800,height=500)
+      list(src='www/latest_foodexp_admin2.png', align = "center",width=800,height=500)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/newfoodexp_admin3.png', align = "center",width=800,height=500)
+      list(src='www/latest_foodexp_admin3.png', align = "center",width=800,height=500)
+    }
+  })
+  
+  total_expenditure<-reactive({
+    input$total_expenditure
+  })
+  output$total_expenditure_out<-renderImage({
+    if(total_expenditure()=="total_Admin2"){
+      list(src='www/total_expend_admin2.png', align = "center",width=800,height=500)
+    }
+    else if (total_expenditure()=="total_Admin3"){
+      list(src='www/total_expend_admin3.png', align = "center",width=800,height=500)
     }
   })
   
