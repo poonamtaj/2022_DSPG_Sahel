@@ -450,24 +450,28 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               align="center")
                           ),
                           br(),
+                
+                          fluidRow( 
                           column(4,
                                  h4(strong("Correlation of Precipitation & NDVI")), align="center",
                                  img(src = "corr_02.png", class = "topimage", width = "105%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                                 p("This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019.")
-                          ),
-                          
+                                 ),
                           
                           column(4, 
-                                 h4(strong("Correlation of Precipitation & Food Insecurity")), align="center",
-                                 img(src = "corr_03.png", class = "topimage", width = "85%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                                 p("Description of correlation between precipitation and food insecurity (vulnerability index)"),
-                          ),
+                                 h4(strong("Correlation of Precipitation & Share of Food Expenditure")), align="center",
+                                 img(src = "corr_precipZ_fdecp_adm2.png", class = "topimage", width = "82%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                ),
                           column(4,
-                                 h4(strong("Correlation of NDVI & Food Insecurity")), align="center",
-                                 img(src = "corr_04.png", class = "topimage", width = "80%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                                 p("Description of correlation between NDVI and food insecurity (vulnerability index)"),
-                                 
-                          )),
+                                 h4(strong("Correlation of NDVI & Share of Food Expenditure")), align="center",
+                                 img(src = "corr_ndviZ_fdecp_adm2.png", class = "topimage", width = "90%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                )),
+                 br(),
+                 fluidRow(
+                   column(12,
+                          h4(strong("Description")),
+                          p("Description of correlation between NDVI and share of food expenditure. This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019."),
+                   )),
+),
                  ## Tab Takeaways ---------------------------------------------------------------
                  tabPanel("Takeaways",
                           column(3),
