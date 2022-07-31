@@ -104,18 +104,19 @@ jscode <- "function getUrlVars() {
            "
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
+### precipitation data
 annualPrecip <- read_csv("./data/yearData1_precip.csv")
 annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
+
+### NDVI data
+mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
+
+### food insecurity data
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
+
+### shapefile
 Niger_level2 <- st_read("./data/wb_niger_admin2_shapefile/niger_admin2.shp")
 
-mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
-#nigerMapAdmin2 <- st_read("./data/shapefiles/niger_admin2.shp")
-
-# 2. Merge Precip and  Spatial Information (geometry) by common code
-nigerShpMerged_admin2_md = full_join(Niger_level2, 
-                                     mydt_ndvi_md,
-                                     by=c("admin2Pcod" = "admin2Pcod"))
 
 ########## Food Insecurity 2015, 2017
 # adjusting the discrepancy in some names due to French accent
@@ -167,31 +168,31 @@ map_at_severe_risk <- make_maps(var1="severe_part_15",var2="severe_part_17",val=
 
 #####------------------------------------------------------ ui for shiny app --------------------------------------------------------#######
 
-ui <- navbarPage(title = "DSPG 2022",
+ui <- navbarPage(title = "SAHEL DSPG 2022",
                  selected = "overview",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
                  useShinyjs(),
                  ## Tab Overview -----------------------------------------------------------
                  tabPanel("Overview", value = "overview",
-                                   fluidRow(style = "margin: 2px;",
-                                            align = "center",
-                                            br(""),
-                                            h1(strong("Sensing Drought in the Sahel for household resilience")),
-                                            h4("Data Science for the Public Good Program"),
-                                            h4("Virginia Tech"),
-                                            h4("Department of Agricultural and Applied Economics")
-                                   ),
-                                   fluidRow(style = "margin: 6px;",
-                                            column(4,
-                                                   h2(strong("Project Overview"), align = "center"),
-                                                   p("Decades of economic research has shown that without effective social protection, 
+                          fluidRow(style = "margin: 2px;",
+                                   align = "center",
+                                   br(""),
+                                   h1(strong("Sensing Drought in the Sahel for household resilience")),
+                                   h4("Data Science for the Public Good Program"),
+                                   h4("Virginia Tech"),
+                                   h4("Department of Agricultural and Applied Economics")
+                          ),
+                          fluidRow(style = "margin: 6px;",
+                                   column(4,
+                                          h2(strong("Project Overview"), align = "center"),
+                                          p("Decades of economic research has shown that without effective social protection, 
                                           extreme weather in sub-Saharan Africa has resulted in people resorting to harmful coping 
                                           strategies, including removing children from school, skipping meals, and selling off assets. 
                                           These coping strategies further perpetuate the poverty cycle, preventing future generations from
                                           achieving a higher quality of life. Weather trends in the past few decades have also shown that 
                                           the number of people exposed to drought in the Sahel has increased."),
-                                                   p("The Data Science for the Public 
+                                          p("The Data Science for the Public 
                                           Good (DSPG) project seeks to help break the link between drought and distress, by identifying where 
                                           droughts have created greatest harms. The research team is supporting stakeholder The World Bank’s 
                                           Sahel Adaptive Protection Program, who is looking to use readily available data on drought conditions 
@@ -201,36 +202,36 @@ ui <- navbarPage(title = "DSPG 2022",
                                           The DSPG team will be using publicly available data on historical drought indicators, including precipitation and 
                                           biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country 
                                             of Niger. ")), 
-                                            column(4,
-                                                   h2(strong("Introduction to The Sahel"), align = "center"),
-                                                   p("The Sahel is a band of territory in Africa that stretches the length of the continent, from the Atlantic coast of Senegal
+                                   column(4,
+                                          h2(strong("Introduction to The Sahel"), align = "center"),
+                                          p("The Sahel is a band of territory in Africa that stretches the length of the continent, from the Atlantic coast of Senegal
                                             and Mauritania to the Red Sea coast of Eritrea, acting as a buffer zone between the Sahara Desert in the North and the
                                             Savannas in the South. The country of Niger is located in the middle of the Sahel, neighboring Mali, Chad, and Nigeria.
                                             Niger is split into three distinct zones, a desert zone in the North, an intermediate zone in the center, and a cultivated
                                             zone in the South where a greater part of the 22-million person population is concentrated. As over 80% of the land is 
                                             covered by uninhabitable desert, 94% of the population lives on just 35% of the land. Niger does not have many large cities,
                                             only roughly 19% of the population lives in urban areas."),
-                                                   img(src = "niger.png", class = "topimage", width = "60%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                                                   p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
+                                          img(src = "niger.png", class = "topimage", width = "60%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                          p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
                                             withdrew from the French Community in 1960, proclaiming independence. Hamani Diori led a single-party dictatorship until he was
                                             overthrown in a coup in 1974. Niger has long struggled to maintain peace within its changing government, with minimal resources
                                             and insufficient funding. Niger’s present republic is responsible for regulating its 7 regions, further divided into 36 departments
                                             and 265 communes. "),
-                                                   p("The economy in Niger centers on subsistence (rain-fed) crops, livestock, and uranium deposits. Agriculture contributes 40% of the
+                                          p("The economy in Niger centers on subsistence (rain-fed) crops, livestock, and uranium deposits. Agriculture contributes 40% of the
                                             GDP and provides livelihoods for over 80% of the population. Despite the reliance on the agriculture industry, agricultural production
                                             is constrained to the short rainy season, with limited access to irrigation. Niger is highly exposed to climatic shocks such as drought;
                                             the frequency and severity of these shocks is expected to increase due to climate change. Considering the dependence on agriculture and
                                             the frequency of drought, Niger is a high poverty and food insecure country with low living standards, leaving the country as one of the
                                             poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index.")),
-                                            column(4,
-                                                   h2(strong("Recent History"), align = "center"),
-                                                   p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
+                                   column(4,
+                                          h2(strong("Recent History"), align = "center"),
+                                          p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
                                             by popular vote. Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
                                             rate of just 19%. The healthcare system is also inadequate, due to a lack of both financial and human capital. Niger is one of the poorest
                                             countries in the world, with a GDP per capita of 895 USD in 2015. The desert terrain and frequent drought faced by the people of Niger create
                                             significant obstacles in alleviating poverty. Weather shocks were found to decrease household consumption by 31-48%, create large movement in
                                             food prices, and have a negative effect on technology adoption."),
-                                                   p("Niger is a member of multiple international organizations, including the United Nations, International Monetary Fund, World Bank, etcetera; and
+                                          p("Niger is a member of multiple international organizations, including the United Nations, International Monetary Fund, World Bank, etcetera; and
                                             receives substantial humanitarian assistance. In 2011, the Government of Niger began a national safety net system organized in the Office of the
                                             Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions. This system is supported by the Sahel
                                             Adaptive Social Protection Program (SASPP), launched by the World Bank in 2014 with the goal of developing adaptive social protection systems in
@@ -240,8 +241,8 @@ ui <- navbarPage(title = "DSPG 2022",
                                             design rationales that it would help households better prepare themselves against future shocks; creating a more proactive system rather than only
                                             responding
                                             to existing shocks."),
-                                            )
                                    )
+                          )
                  ),
                  
                  ## Tab Data & Methodology -----------------------------------------------------------
@@ -271,85 +272,136 @@ ui <- navbarPage(title = "DSPG 2022",
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
                               been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure.  ")),
                           img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")
-                          ),
+                 ),
                  
                  ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
                           fluidPage(
-                            h3(strong("NDVI , Precipitation")),
+                            h3(strong("Drought Indices")),
                             withMathJax()),
                           tabsetPanel(
+                            tabPanel("Precipitation",
+                                     fluidRow(
+                                       column(
+                                         4,
+                                         p(h4(strong("Description"))),
+                                         p("The total annual precipitation by region line charts
+                                shows that there are some regions that receive more
+                                precipitation than others. We see a couple peaks in
+                                precipitation along different years; specifically in
+                                1994, 1998, and 2020. These trends stay similar when
+                                looking at data aggregated using mean and aggregated
+                                using median. "), 
+                                       ),
+                                       column(
+                                         7,
+                                         p(h4(strong("Total Annual Precipitation by Region"))),
+                                         plotlyOutput("plot1"),
+                                         plotlyOutput("plot2")
+                                       ),  
+                                     ), 
+                                     
+                                     fluidRow(
+                                       column(
+                                         4,
+                                         p(h4(strong("Description"))),
+                                         p("The department level shows differences in the z-score between the mean
+                                versus median aggregated data. In addition, there are high z-scores in
+                                the northern regions of Niger, which are mostly desert. These scores could
+                                be due to data skewing from flood year outliers as the baseline data had
+                                little rain."), 
+                                         p("The commune level shows differences in the z-score score between the data
+                                aggregated using mean and aggregated using median. While there are high z-scores
+                                in the northern regions when using mean, using median shows that there is a region
+                                in the middle of Niger that receives more rainfall compared to the baseline data. "),
+                                       ),
+                                       column(
+                                         7,
+                                         p(h4(strong("Annual Z-Score Precipitation Mean and Median"))),
+                                         radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
+                                           "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                         plotOutput("precipitation_out")
+                                       ),  
+                                     ),
+                                     
+                                     fluidRow(
+                                       column(
+                                         4,
+                                         p(h4(strong("Description"))),
+                                         p("We see slight differences in the seasonal precipitation data when looking at
+                                mean versus median aggregated data. There are high z-scores in the northern
+                                region, especially in the years 2015 and 2018. These results align with records
+                                which indicate flooding in the year of 2018."), 
+                                         p("The commune level shows slight differences in the z-score when we look at mean
+                              versus median aggregated data. While there are high z-scores in the northern regions
+                              when using mean, using median we can see that there is the largest difference when
+                              looking at 2015."),
+                                       ),
+                                       column(
+                                         7,
+                                         p(h4(strong("Seasonal Z-Score Precipitation Mean and Median"))),
+                                         radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
+                                           "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
+                                         plotOutput("seasonalPrecip_out")
+                                       ),  
+                                     )
+                                     
+                                     
+                            ),
                             tabPanel("NDVI", 
-                          column(4, 
-                                 h4(strong("Description")),
-                                 p("Overall, there is relatively little variation across this time span, 
+                                     column(4, 
+                                            h4(strong("Description")),
+                                            p("Overall, there is relatively little variation across this time span, 
                                    indicating that there was little change in vegetation. The reason why the maps may all look the same is that there is little growth and 
                                    change over time due to unpredictable rainfall and frequent drought. 
                                    It seems that around 2013 and 2014 the lower regions had an increased vegetation level, 
                                    which is reflected by increased rainfall during the same years.")
-                          ),
-                          column(8,
-                                 h4(strong("NDVI Maps")),
-                                 leafletOutput("my_leaf", height = "500px")),
+                                     ),
+                                     column(8,
+                                            h4(strong("NDVI Maps")),
+                                     ), 
+                                     
+                                     
+                            ))
                  ),
-                 tabPanel("Precipitation",
-                          column(4,
-                                 h4(strong("Description")),
-                                 p("The total annual precipitation by region line chart shows 
-                                              that there are some regions that recieve more precipitation than others.
-                                              We see a couple peaks in precipitation along different years, 
-                                              specifically in 1994, 1998, and 2020."),
-                                 
-                                 h4(strong("Description")),
-                                 p("The department level shows differences in the z-score
-                                              when we look at the data aggregated using mean versus the data
-                                              aggregated using median. There are high z-scores in the northern regions
-                                              of Niger which are mostly desert. This could be due to the baseline data
-                                              having little rain so when comparing it to more recent years from floods,
-                                              there are outliers scewing the data."),
-                                 p("The commune level shows differences in the z-score
-                                              when we look at the data aggregated using mean versus the data
-                                              aggregated using median. There are high z-scores in the northern regions
-                                               for mean, but using median we can see that there is a region in the middle of
-                                              Niger that recieved more rainfall compared to the baseline data."),
-                                 
-                                 h4(strong("Description")),
-                                 p("We see slight differences in the seasonal precipitation data when looking at
-                                            mean versus median aggregated data. There are high z-scores in the northern region and we see
-                                            that especially in years 2015 and 2018. There was recorded flooding in the year of 2018 so
-                                              this does align with the z-score."),
-                                 p("The commune level shows slight differences in the z-score
-                                              when we look at the data aggregated using mean compared to median. There are high z-scores
-                                              in the northern regions for mean, but using median we can see that there is a region in the 
-                                              middle of Niger that recieved more rainfall compared to the baseline data. We see the greatest
-                                              differences in years 2015."),
-                          ),
-                          column(8,
-                                 h4(strong("Maps"),align="center"),
-                                 titlePanel(""),
-                                 mainPanel(strong(""),
-                                           h4(strong("Total Annual Precipitation by Region"), align = "center"),
-                                           plotlyOutput("plot1"),
-                                           plotlyOutput("plot2"),
-                                           h4(strong("Annual Z-Score Precipitation Mean and Median"), align = "center"),
-                                           radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
-                                             "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
-                                           plotOutput("precipitation_out"),
-                                           h4(strong("Seasonal Z-Score Precipitation Mean and Median"), align = "center"),
-                                           radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
-                                             "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
-                                           plotOutput("seasonalPrecip_out")
-                                           
-                                 )       
-                                 
-                          ))
-                          )),
                  ## Tab Welfare Index --------------------------------------------------------------
-                  tabPanel("Welfare Index",
+                 tabPanel("Consumption",
                           fluidPage(
-                            h3(strong("Welfare Index")),
+                            h3(strong("Consumption")),
                             withMathJax()),
                           tabsetPanel(
+                            tabPanel("LSMS",
+                                     column(4,
+                                            h4(strong("Description")),
+                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
+                                              premier household survey program, aims to improve the quality of 
+                                              microdata and strengthen household survey systems in client countries
+                                              in order to better inform development policies. Its main objective is to
+                                              promote the creation and adoption of new standards and methods for gathering 
+                                              household data in order to support evidence-based policymaking."),
+                                            p("These maps show the food expenditure data at the Department level and Commune
+                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
+                                              We aggregated it by median because the median is less affected by outliers
+                                              and skewed data than the mean, and is usually the preferred measure of central
+                                              tendency when the distribution is not symmetrical."),
+                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
+                                              It is lower in 2018 as compared to 2011 and 2014."),
+                                            align = "justify"),
+                                     column(8,
+                                            h4(strong("Food Expenditure"),align="center"),
+                                            radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
+                                              "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                            plotOutput("food_expenditure_out"),
+                                            
+                                            h4(strong("Total Expenditure"),align="center"),
+                                            radioButtons("total_expenditure", "Select Administrative levels:", width="100%", choices = c(
+                                              "Département (Admin 2)"="total_Admin2","Commune (Admin 3)"="total_Admin3")),
+                                            plotOutput("total_expenditure_out")
+                                            
+                                            
+                                     )),
+                            
+                            
                             tabPanel("Food Insecurity",
                                      column(4,
                                             h4(strong("Description")),
@@ -373,38 +425,17 @@ ui <- navbarPage(title = "DSPG 2022",
                                                 moderate and at risk food insecurity."),
                                             p("To view the share of the food insecure population at different departments ,
                                                 hover over the respective department in the map."), 
-                                     align = "justify"),
+                                            align = "justify"),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
                                             plotlyOutput("food_insecurity_out1",height="500px"),
                                             plotlyOutput("food_insecurity_out2",height="500px"),
                                             plotlyOutput("food_insecurity_out3",height="500px"),
-                                     )),
-                            tabPanel("LSMS",
-                                     column(4,
-                                            h4(strong("Description")),
-                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
-                                              premier household survey program, aims to improve the quality of 
-                                              microdata and strengthen household survey systems in client countries
-                                              in order to better inform development policies. Its main objective is to
-                                              promote the creation and adoption of new standards and methods for gathering 
-                                              household data in order to support evidence-based policymaking."),
-                                            p("These maps show the food expenditure data at the Department level and Commune
-                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
-                                              We aggregated it by median because the median is less affected by outliers
-                                              and skewed data than the mean, and is usually the preferred measure of central
-                                              tendency when the distribution is not symmetrical."),
-                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
-                                              It is lower in 2018 as compared to 2011 and 2014."),
-                                            align = "justify"),
-                                     column(8,
-                                            h4(strong("Maps"),align="center"),
-                                            radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
-                                              "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
-                                            plotOutput("food_expenditure_out"),
                                      ))
-                            
                           )),
+                 
+                 
+                 
                  
                  ## Tab Analysis -----------------------------------------------------------
                  tabPanel("Analysis",
@@ -439,9 +470,18 @@ ui <- navbarPage(title = "DSPG 2022",
                           )),
                  ## Tab Takeaways ---------------------------------------------------------------
                  tabPanel("Takeaways",
-                          fluidPage(
-                            h3(strong("Takeaways")),
-                            withMathJax())),
+                          column(3),
+                          column(6,
+                                 h1(strong("Takeaways"), align = "center"),
+                                 p("Comparing data that is aggregated at mean vs median level shows differences 
+                                 in the Z-Score maps the most and not much differences in annual totals. 
+                                 Looking at data that is using admin 2 vs admin 3 its easy
+                                 to see where the data is most significant at a more refined locations. 
+                                 It is easier to spot variation when comparing seasonal rainfall maps versus 
+                                 annual rainfall maps."),
+                                 p("Comparing data that NDVI..."),
+                                 p("Comparing data that LSMS...")
+                          )),
                  
                  ## Tab References --------------------------------------------------------------
                  tabPanel("References", value = "references",
@@ -476,11 +516,13 @@ ui <- navbarPage(title = "DSPG 2022",
                               p("", style = "padding-top:10px;")
                             ),
                             fluidRow(
-                              
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
                                      tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)")
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)"),
+                                     h4(strong("Graduate Research Assistant")), tags$br(),
+                                     tags$br(), img(src = "fellow-armine.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Environmental and Natural Resource Economics")
                               ),
                               column(4, align = "center",
                                      h4(strong("Undergraduate Interns")), tags$br(),
@@ -498,7 +540,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                      img(src = "faculty-susan.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", height = "37%", width = "37%"),  tags$br(),
                                      p(a(href = 'https://aaec.vt.edu/people/faculty/chen-susan.html', 'Dr. Susan Chen', target = '_blank'), "(Virginia Tech, Department of Agricultural and Applied Economics)"),  tags$br()
                               ),
-                            )))            
+                            )))
                  
 )
 
@@ -517,81 +559,78 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/newfoodexp_admin2.png', align = "center",width=800,height=500)
+      list(src='www/latest_foodexp_admin2.png', align = "center",width=800,height=500)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/newfoodexp_admin3.png', align = "center",width=800,height=500)
+      list(src='www/latest_foodexp_admin3.png', align = "center",width=800,height=500)
     }
   })
   
-  output$my_leaf <- renderLeaflet({
-    mypal <- colorNumeric(
-      palette = "viridis",
-      domain = nigerShpMerged_admin2_md$peak_ndvi)
-    
-    leaflet(nigerShpMerged_admin2_md) %>%
-      addTiles() %>%  
-      addPolygons(color = ~mypal(peak_ndvi), weight = 1, smoothFactor = 0.5, 
-                  label = paste("Department -", nigerShpMerged_admin2_md$admin2Name.x,":", "Peak NDVI", round(nigerShpMerged_admin2_md$peak_ndvi, digits = 3)),
-                  opacity = 1.0, fillOpacity = 0.5,
-                  highlightOptions = highlightOptions(color = "black", weight = 2,
-                                                      bringToFront = TRUE)) %>% 
-      addLegend(pal = mypal,position = "bottomright",values = nigerShpMerged_admin2_md$peak_ndvi,
-                opacity = .6,title = paste("Peak NDVI")) 
-    
+  total_expenditure<-reactive({
+    input$total_expenditure
   })
-    output$plot1 <- renderPlotly({
+  output$total_expenditure_out<-renderImage({
+    if(total_expenditure()=="total_Admin2"){
+      list(src='www/total_expend_admin2.png', align = "center",width=800,height=500)
+    }
+    else if (total_expenditure()=="total_Admin3"){
+      list(src='www/total_expend_admin3.png', align = "center",width=800,height=500)
+    }
+  })
+  
+  
+  output$plot1 <- renderPlotly({
     
-      annualPrecip %>%
-        ggplot(aes(x = Year, y = Precipitation, color = Region)) +
-        geom_line()+ 
-        scale_color_viridis_d(option = "H") +
-        labs(title = "Annual Cumulative Precipitation by Region (Admin 1)", 
-             color =  "Region", x = "Year", 
-             y = "Total Precipitation (mm)") + 
-        theme_classic() +
-        plotly()
-    })
-    output$plot2 <- renderPlotly({
-      
-      annualPrecip_md %>%
-        ggplot(aes(x = Year, y = Precipitation, color = Region)) +
-        geom_line()+ 
-        scale_color_viridis_d(option = "H") +
-        labs(title = "Median",
-             color =  "Region", x = "Year", 
-             y = "Total Precipitation (mm)") + 
-        theme_classic() +
-        plotly()
-    })
+    annualPrecip %>%
+      ggplot(aes(x = Year, y = Precipitation, color = Region)) +
+      geom_line()+ 
+      scale_color_viridis_d(option = "H") +
+      labs(title = "Mean", 
+           color =  "Region", x = "Year", 
+           y = "Total Precipitation (mm)") + 
+      theme_classic() +
+      plotly()
+  })
+  output$plot2 <- renderPlotly({
     
-    precipitation <- reactive({
-      input$precipitation
-    })
-    output$precipitation_out<-renderImage({
-      if(precipitation()=="Admin2"){
-        list(src='www/annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
-      }
-      else if (precipitation()=="Admin3"){
-        list(src='www/annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
-      }
-    })
-    
-    seasonalPrecip <- reactive({
-      input$seasonalPrecip
-    })
-    output$seasonalPrecip_out<-renderImage({
-      if(seasonalPrecip()=="Admin2seasonal"){
-        list(src='www/seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
-      }
-      else if (seasonalPrecip()=="Admin3seasonal"){
-        list(src='www/seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
-      }
-    })
-    
-    
-    
- 
+    annualPrecip_md %>%
+      ggplot(aes(x = Year, y = Precipitation, color = Region)) +
+      geom_line()+ 
+      scale_color_viridis_d(option = "H") +
+      labs(title = "Median",
+           color =  "Region", x = "Year", 
+           y = "Total Precipitation (mm)") + 
+      theme_classic() +
+      plotly()
+  })
+  
+  precipitation <- reactive({
+    input$precipitation
+  })
+  output$precipitation_out<-renderImage({
+    if(precipitation()=="Admin2"){
+      list(src='www/annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+    }
+    else if (precipitation()=="Admin3"){
+      list(src='www/annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+    }
+  })
+  
+  seasonalPrecip <- reactive({
+    input$seasonalPrecip
+  })
+  output$seasonalPrecip_out<-renderImage({
+    if(seasonalPrecip()=="Admin2seasonal"){
+      list(src='www/seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+    }
+    else if (seasonalPrecip()=="Admin3seasonal"){
+      list(src='www/seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+    }
+  })
+  
+  
+  
+  
 }
 
 #####---------------------------------- Run the application ----------------------------------#####
