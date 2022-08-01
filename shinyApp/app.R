@@ -109,8 +109,9 @@ annualPrecip <- read_csv("./data/yearData1_precip.csv")
 annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
 
 ### NDVI data
-mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
-
+#mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
+annualndvi <- read_csv("./data/ndviyearData_admin1.csv")
+annualndvi_md <- read_csv("./data/ndviyearAdmin1_md.csv")
 ### food insecurity data
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
 
@@ -350,20 +351,27 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           
                           
                  ),
-                          tabPanel("NDVI", 
-                                   column(4, 
-                                          h4(strong("Description")),
-                                          p("Overall, there is relatively little variation across this time span, 
-                                   indicating that there was little change in vegetation. The reason why the maps may all look the same is that there is little growth and 
-                                   change over time due to unpredictable rainfall and frequent drought. 
-                                   It seems that around 2013 and 2014 the lower regions had an increased vegetation level, 
-                                   which is reflected by increased rainfall during the same years.")
-                                   ),
-                                   column(8,
-                                          h4(strong("NDVI Maps")),
-                                   ), 
-                          
-                          
+                 
+                 tabPanel("NDVI", 
+                            
+                            fluidRow(
+                              column(4,
+                                     p(h4(strong("Description"))),
+                                     p("The annual peak NDVI by region line charts show that there are significant peaks
+                                         during 1994 and 2004. The stark peak during 1994 is reflected in precipitation data,
+                                         however the peak in 2004 is unsupported by precipitation. The trends across time are
+                                         similar when aggregated using mean and median."),
+                              ),
+                              column(7,
+                                     p(h4(strong("Peak Annual NDVI by Region"))),
+                                     plotlyOutput("plot3"),
+                                     plotlyOutput("plot4")
+                              ),
+                            ),
+                            br(),
+                            
+                            
+                            
                  ))
                  ),
                  ## Tab Welfare Index --------------------------------------------------------------
@@ -638,6 +646,29 @@ server <- function(input, output) {
     })
     
     
+    output$plot3 <- renderPlotly({
+      annualndvi %>%
+        ggplot(aes(x = Year, y = NDVI, color = Region)) +
+        geom_line()+ 
+        scale_color_viridis_d(option = "H") +
+        labs(title = "Mean", 
+             color =  "Region", x = "Year", 
+             y = "Peak NDVI") + 
+        theme_classic() +
+        plotly()
+    })
+    
+    output$plot4 <- renderPlotly({
+      annualndvi_md %>%
+        ggplot(aes(x = Year, y = NDVI, color = Region)) +
+        geom_line()+ 
+        scale_color_viridis_d(option = "H") +
+        labs(title = "Median",
+             color =  "Region", x = "Year", 
+             y = "Peak NDVI") + 
+        theme_classic() +
+        plotly()
+    }) 
     
  
 }
