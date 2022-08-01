@@ -378,7 +378,8 @@ seasonalZscoreAnnual3 <-
   mutate(zscore_precip = (AnnualPrecip - baselineMean_precip)/(baselineSD_precip)) %>% 
   ungroup()
 
-
+write.csv(seasonalZscoreAnnual2, "./seasonalZscoreAnnual2.csv", row.names = FALSE)
+write.csv(seasonalZscoreAnnual3, "./seasonalZscoreAnnual3.csv", row.names = FALSE)
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Seasonal by Year Z-Score Data Graphics (Admin 2 & Admin 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
