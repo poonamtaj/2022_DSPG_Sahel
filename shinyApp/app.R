@@ -564,10 +564,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
                                      tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering PhD)"),
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering)"),
                                      h4(strong("Graduate Research Assistant")), tags$br(),
                                      tags$br(), img(src = "fellow-armine.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Environmental and Natural Resource Economics")
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Environmental and Natural Resource Economics)")
                               ),
                               column(4, align = "center",
                                      h4(strong("Undergraduate Interns")), tags$br(),
@@ -585,7 +585,16 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                      img(src = "faculty-susan.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", height = "37%", width = "37%"),  tags$br(),
                                      p(a(href = 'https://aaec.vt.edu/people/faculty/chen-susan.html', 'Dr. Susan Chen', target = '_blank'), "(Virginia Tech, Department of Agricultural and Applied Economics)"),  tags$br()
                               ),
-                            )))
+                            ),
+                              
+                            br(),
+                              fluidRow(style = "margin-left: 100px; margin-right: 100px;",
+                                       h4(strong("Project Stakeholders"), align = "center"),
+                                       p("The World Bank"),
+                                       p(em("Disclaimer: "),("This project is an academic exercise conducted by VT-Data Science for the Public Good. The findings, interpretations, and conclusions expressed here do not necessarily reflect the views of the World Bank."))
+                                       
+                              ),
+                            ))
                  
 )
 
