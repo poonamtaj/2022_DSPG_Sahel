@@ -651,7 +651,7 @@ tabPanel("Takeaways",
                             fluidRow(
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
-                                     tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
+                                     tags$br(), img(src = "fellow-poonam.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
                                      tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Biological Systems Engineering)"),
                                      h4(strong("Graduate Research Assistant")), tags$br(),
                                      tags$br(), img(src = "fellow-armine.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
