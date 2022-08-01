@@ -376,8 +376,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               column(
                                 4,
                                 p(h4(strong("Description"))),
-                                p("NDVI."), 
-                                p("NDVI. "),
+                                p("Annual Z-Score NDVI data is mapped to compare mean and median aggregation. 
+                                As NDVI data is a comparison to historical measures, there is little change in
+                                vegetation over time in the northern desert regions as shown in the maps. As such,
+                                the variation is concentrated in the southern regions."),
+                                p("In both administrative levels the median data shows more variation in regions
+                                as it accounts for any outliers in the data, also reflected by the narrower scale
+                                of z-score."),
                               ),
                               column(
                                 7,
@@ -394,8 +399,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               column(
                                 4,
                                 p(h4(strong("Description"))),
-                                p("NDVI."), 
-                                p("NDVI."),
+                                p("Similar to annual data, variation is generally concentrated in the southern regions
+                                  regardless of mean or median aggregation. There are higher z-scores in the southern
+                                  region on the 2018 map, which aligns with records reporting flooding during 2018."), 
+                                p("The commune level maps aggregated by mean include outliers in a few communes that
+                                  skew the scale of z-score, washing out the maps. Median data, accounting for
+                                  outliers, is more visually representative when mapped. Interestingly, z-scores
+                                  were slightly lower in 2015 despite flooding recorded during that year."),
                               ),
                               column(
                                 7,
