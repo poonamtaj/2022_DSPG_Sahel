@@ -270,7 +270,9 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             h3(strong("Living Standards Measurement Study")),
                             p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
-                              been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure.  ")),
+                              been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure.3859 households were surveyed in 2011, 3627 households
+                              were surveyed in 2014 and 6024 households were surveyed in 2018.When we aggregated at median level, we got 50 observations in 2011 as well as 2014 and 61 observations in 2018 at
+                              Department level (admin 2) while 96 observations in 2011 and 2014 and 232 observations in 2018 at Commune level (admin 3).  ")),
                           img(src = "lsms.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;")
                           ),
                  
@@ -379,21 +381,24 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                               in order to better inform development policies. Its main objective is to
                                               promote the creation and adoption of new standards and methods for gathering 
                                               household data in order to support evidence-based policymaking."),
-                                            p("These maps show the food expenditure data at the Department level and Commune
+                                            p("These maps show the food expenditure and total expenditure data at the Department level and Commune
                                               level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
                                               We aggregated it by median because the median is less affected by outliers
                                               and skewed data than the mean, and is usually the preferred measure of central
-                                              tendency when the distribution is not symmetrical."),
+                                              tendency when the distribution is not symmetrical. When we aggregated at median level, 
+                                              we got 50 observations in 2011 as well as 2014 and 61 observations in 2018 at Department level (admin 2)
+                                              while 96 observations in 2011 and 2014 and 232 observations in 2018 at Commune level (admin 3)."),
                                             p(" We analyzed that per capita food expenditures have been lowest in the southern region.
-                                              It is lower in 2018 as compared to 2011 and 2014."),
+                                              It is lower in 2018 as compared to 2011 and 2014 at both admin levels. We also observed that total expenditures are
+                                              lowest in southern regions and highest in northwest regions at both admin levels. "),
                                             align = "justify"),
                                      column(8,
-                                            h4(strong("Food Expenditure"),align="center"),
+                                            h4(strong("Food Expenditure")),
                                             radioButtons("food_expenditure", "Select Administrative levels:", width="100%", choices = c(
                                               "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
                                             plotOutput("food_expenditure_out"),
                                             
-                                            h4(strong("Total Expenditure"),align="center"),
+                                            h4(strong("Total Expenditure")),
                                             radioButtons("total_expenditure", "Select Administrative levels:", width="100%", choices = c(
                                               "Département (Admin 2)"="total_Admin2","Commune (Admin 3)"="total_Admin3")),
                                             plotOutput("total_expenditure_out")
@@ -416,7 +421,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                                 food insecurity in Niger ) for the years 2015 and 2017. There are three main 
                                                 variables to understand magnitude of the food insecurity: population at risk , 
                                                 population at moderate risk , and population at severe risk."),
-                                            p("If we focus on the graphs , 
+                                            p("If we focus on the maps , 
                                                 it is observed that food insecurity is concentrated in southwest regions 
                                                 in both 2015 and 2017.If we look at the differences between 2105 and 2017,more share of population 
                                                 being food insecure
@@ -563,10 +568,10 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/latest_foodexp_admin2.png', align = "center",width=800,height=500)
+      list(src='www/latest_foodexp_admin2.png', align = "center",width=725,height=425)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/latest_foodexp_admin3.png', align = "center",width=800,height=500)
+      list(src='www/latest_foodexp_admin3.png', align = "center",width=725,height=425)
     }
   })
   
@@ -575,10 +580,10 @@ server <- function(input, output) {
   })
   output$total_expenditure_out<-renderImage({
     if(total_expenditure()=="total_Admin2"){
-      list(src='www/total_expend_admin2.png', align = "center",width=800,height=500)
+      list(src='www/total_expend_admin2.png', align = "center",width=725,height=425)
     }
     else if (total_expenditure()=="total_Admin3"){
-      list(src='www/total_expend_admin3.png', align = "center",width=800,height=500)
+      list(src='www/total_expend_admin3.png', align = "center",width=725,height=425)
     }
   })
   
