@@ -146,7 +146,7 @@ yearData1 <-
   yearData2 %>% 
   filter(year %in% seq(1981, 2021, 1)) %>%
   group_by(admin1Name, year) %>% 
-  mutate(Precipitation = mean(total_precip)) %>% 
+  mutate(Precipitation = round(mean(total_precip),digits = 1)) %>% 
   ungroup() %>% 
   distinct(admin1Name, Precipitation, year)
 
