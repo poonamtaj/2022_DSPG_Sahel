@@ -105,7 +105,7 @@ jscode <- "function getUrlVars() {
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 ### precipitation data
-annualPrecip <- read_csv("./data/.yearData1.csv")
+annualPrecip <- read_csv("./data/yearData1_precip.csv")
 annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
 
 ### NDVI data
@@ -552,7 +552,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                  we have kept observations only from departments that are covered in 2018 LSMS household survey 61 out of 67 total departments in Niger. We observe that correlation precipitation and NDVI z-scores are positively correlated except in 2017. 
                                  The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02). There is a year-to-year change in this relationship in strength and the direction."), 
                                p("Figures 2 and 3 shows correlation graphs between share of per capita food expenditure with annual precipitation z-score and NDVI z-score respectively. The share of per capita food expenditure is obtained from LSMS data after aggregating at department level
-                                 taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure. The statistical significance also varies in each year.
+                                 taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure.
                                  Such low or no correlation could be a result of aggregation at a higher administrative unit due to which we might be losing the relationship that is measured at household level. "), align="justify",
                                 )),
                       br(),
@@ -587,7 +587,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at commune level (admin 3) in figures 4, 5, and 6. 
                                 In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), 
                               p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62) with statistical significance. 
-                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), 
+                                Whereas 2015 and 2017 shows very zero correlation but in different direction. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), 
                               p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation with high statistical significance. 
                                 This again directs us towards the aggregation effect which was done at commune level (admin 3). Hence it would be interesting to observe similar relationship at the disaggregated level, 
                                 enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger."), align="justify",
@@ -613,7 +613,7 @@ tabPanel("Takeaways",
                 p("Next Steps: Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource
                                    stress index and soil moisture, which may exhibit greater correspondence with agricultural drought conditions. We will also disaggregate
                                    the food insecurity data to focus on smaller administrative units that may illustrate greater variation over space. Another option is to
-                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships."), align = "justify",
+                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships. This research will work on to include "), align = "justify",
          )),
                  
                  ## Tab References --------------------------------------------------------------
