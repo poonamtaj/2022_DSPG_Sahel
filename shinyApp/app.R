@@ -586,9 +586,9 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               h4(strong("Description")),
                               p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at commune level (admin 3) in figures 4, 5, and 6. 
                                 In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), 
-                              p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62) with statistical significance. 
+                              p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62). 
                                 Whereas 2015 and 2017 shows very zero correlation but in different direction. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), 
-                              p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation with high statistical significance. 
+                              p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation. 
                                 This again directs us towards the aggregation effect which was done at commune level (admin 3). Hence it would be interesting to observe similar relationship at the disaggregated level, 
                                 enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger."), align="justify",
                  )),
@@ -602,7 +602,7 @@ tabPanel("Takeaways",
                                    (mean versus median, admin 2 versus admin 3). There are a few notable exceptions in particular years to further investigate,
                                    including a peak in NDVI data in 2004 that is not reflected in precipitation data. Additionally, there is a significant peak in
                                    NDVI data in 1994 that is somewhat reflected in precipitation data, but not to the same severity. "),
-                p("Comparing Drought and Welfare Indices: Although NDVI and Precipitation appear to positively correlate with one another, we observe
+                p("Comparing Drought and COnsumption: Although NDVI and Precipitation appear to positively correlate with one another, we observe
                                    very low correlation between drought indices and share of food expenditure. This limited relationship may be a result from the high
                                    degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions. This finding guided
                                    the process of determining next steps to gain a better understanding of the true relationship between drought and welfare."),
@@ -613,7 +613,7 @@ tabPanel("Takeaways",
                 p("Next Steps: Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource
                                    stress index and soil moisture, which may exhibit greater correspondence with agricultural drought conditions. We will also disaggregate
                                    the food insecurity data to focus on smaller administrative units that may illustrate greater variation over space. Another option is to
-                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships. This research will work on to include "), align = "justify",
+                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships. This research will work on to include a 20km buffer around the LSMS enumeration areas to address spatial aggregation question"), align = "justify",
          )),
                  
                  ## Tab References --------------------------------------------------------------
