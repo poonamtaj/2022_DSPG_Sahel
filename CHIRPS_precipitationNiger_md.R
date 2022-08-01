@@ -60,7 +60,7 @@ yearAdmin1_md <-
   yearAdmin2_md %>% 
   filter(year %in% seq(1981, 2021, 1)) %>%
   group_by(admin1Name, year) %>% 
-  mutate(Precipitation = median(total_precip)) %>% 
+  mutate(Precipitation = round(median(total_precip), digits = 1)) %>% 
   ungroup() %>% 
   distinct(admin1Name, Precipitation, year)
 
