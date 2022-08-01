@@ -39,23 +39,6 @@ seasonalPrecipMedian_admin3 <-read.csv("./seasonalAnnualZscore3_md.csv")
 geospatialData2 <- st_read("./niger_admin2/niger_admin2.shp")
 geospatialData3 <- st_read("./niger_admin3/NER_adm03_feb2018.shp")
 
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Load NDVI Data -----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#Annual Precipitation Data
-#annualNDVIMean_admin2 <-read.csv("./admin2precip.csv")
-#annualNDVIMean_admin3 <-read.csv("./admin3precip.csv")
-
-annualNDVIMedian_admin2 <-read_excel("./annualNDVIZScoreAdmin2_md.xlsx")
-annualNDVIMedian_admin3 <-read_excel("./annualNDVIZScoreAdmin3_md.xlsx")
-
-#Seasonal Precipitation Data
-#seasonalNDVIMean_admin2 <-read.csv("./seasonalZscoreAnnual2.csv")
-#seasonalNDVIMean_admin3 <-read.csv("./seasonalZscoreAnnual3.csv")
-
-#seasonalNDVIMedian_admin2 <-read_excel("./seasonalNDVIZscore2_md.xlsx")
-seasonalNDVIMedian_admin3 <-read_excel("./seasonalNDVIZscore3_md.xlsx")
-
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Precipitation Annual Mean Z-Score Maps (Admin 2 & Admin 3) -----
@@ -212,13 +195,13 @@ seasonalPrecipMedianDepartment <-
         rect = element_blank())
 
 #Admin 3
-seasonalZScoreMerged3_md = full_join(geospatialData3, 
+seasonalZScore_Merged3_md = full_join(geospatialData3, 
                                      seasonalPrecipMedian_admin3,
                                      by = "adm_03")
 
 
 seasonalPrecipMedianCommune <-
-  seasonalZScoreMerged3_md %>% 
+  seasonalZScore_Merged3_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -250,6 +233,24 @@ ggarrange(seasonalPrecipMeanCommune, seasonalPrecipMedianCommune, ncol=1, common
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Load NDVI Data -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Annual Precipitation Data
+annualNDVIMean_admin2 <-read_excel("./annualndvimean2.xlsx")
+annualNDVIMean_admin3 <-read_excel("./annualndvimean3.xlsx")
+
+annualNDVIMedian_admin2 <-read_excel("./annualNDVIZScoreAdmin2_md.xlsx")
+annualNDVIMedian_admin3 <-read_excel("./annualNDVIZScoreAdmin3_md.xlsx")
+
+#Seasonal Precipitation Data
+seasonalNDVIMean_admin2 <-read_excel("./seasonalndvimean2.xlsx")
+seasonalNDVIMean_admin3 <-read_excel("./seasonalndvimean3.xlsx")
+
+seasonalNDVIMedian_admin2 <-read_excel("./seasonalNDVIAdmin2_md.xlsx")
+seasonalNDVIMedian_admin3 <-read_excel("./seasonalNDVIZscore3_md.xlsx")
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate NDVI Annual Mean Z-Score Maps (Admin 2 & Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nigerNDVIZScoreMerged2 = full_join(geospatialData2,
@@ -260,7 +261,7 @@ annualNDVIMeanDepartment <-
   nigerNDVIZScoreMerged2 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Mean", fill = "z-score" ) + 
@@ -274,13 +275,13 @@ annualNDVIMeanDepartment <-
 #Admin 3
 nigerNDVIZScoreMerged3 = full_join(geospatialData3,
                                    annualNDVIMean_admin3,
-                                   by = "rowcacode3")
+                                   by = "adm_03")
 
 annualNDVIMeanCommune <-
   nigerNDVIZScoreMerged3 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Mean", fill = "z-score" ) + 
@@ -304,7 +305,7 @@ seasonalNDVIMeanDepartment <-
   seasonalNDVIZScore_Merged2 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Mean", fill = "z-score" ) + 
@@ -318,13 +319,13 @@ seasonalNDVIMeanDepartment <-
 #Admin 3
 seasonalNDVIZScore_Merged3 = full_join(geospatialData3,
                                        seasonalNDVIMean_admin3,
-                                       by = "rowcacode3")
+                                       by = "adm_03")
 
 seasonalNDVIMeanCommune <-
   seasonalNDVIZScore_Merged3 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Mean", fill = "z-score" ) + 
@@ -347,7 +348,7 @@ annualNDVIMedianDepartment <-
   annualNDVIZScoreMerged2_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Median", fill = "z-score" ) + 
@@ -368,7 +369,7 @@ annualNDVIMedianCommune <-
   annualNDVIZScoreMerged3_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Median", fill = "z-score" ) + 
@@ -392,7 +393,7 @@ seasonalNDVIMedianDepartment <-
   seasonalNDVIZScore_Merged2_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Median", fill = "z-score" ) + 
@@ -413,7 +414,7 @@ seasonalNDVIMedianCommune <-
   seasonalNDVIZScoreMerged3_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Median", fill = "z-score" ) + 
