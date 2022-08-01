@@ -594,7 +594,7 @@ tabPanel("Takeaways",
                                    (mean versus median, admin 2 versus admin 3). There are a few notable exceptions in particular years to further investigate,
                                    including a peak in NDVI data in 2004 that is not reflected in precipitation data. Additionally, there is a significant peak in
                                    NDVI data in 1994 that is somewhat reflected in precipitation data, but not to the same severity. "),
-                p("Comparing Drought and COnsumption: Although NDVI and Precipitation appear to positively correlate with one another, we observe
+                p("Comparing Drought and Consumption: Although NDVI and Precipitation appear to positively correlate with one another, we observe
                                    very low correlation between drought indices and share of food expenditure. This limited relationship may be a result from the high
                                    degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions. This finding guided
                                    the process of determining next steps to gain a better understanding of the true relationship between drought and welfare."),
