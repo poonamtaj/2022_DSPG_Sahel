@@ -16,6 +16,7 @@ library(lubridate)
 library(cowplot)
 library(ggplot2)
 library(ggpubr)
+library(readxl)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Precipitation Data -----
@@ -45,15 +46,15 @@ geospatialData3 <- st_read("./niger_admin3/NER_adm03_feb2018.shp")
 #annualNDVIMean_admin2 <-read.csv("./admin2precip.csv")
 #annualNDVIMean_admin3 <-read.csv("./admin3precip.csv")
 
-annualNDVIMedian_admin2 <-read.csv("./annualNDVIZScoreAdmin2_md.csv")
-annualNDVIMedian_admin3 <-read.csv("./annualNDVIZScoreAdmin3_md.csv")
+annualNDVIMedian_admin2 <-read_excel("./annualNDVIZScoreAdmin2_md.xlsx")
+annualNDVIMedian_admin3 <-read_excel("./annualNDVIZScoreAdmin3_md.xlsx")
 
 #Seasonal Precipitation Data
 #seasonalNDVIMean_admin2 <-read.csv("./seasonalZscoreAnnual2.csv")
 #seasonalNDVIMean_admin3 <-read.csv("./seasonalZscoreAnnual3.csv")
 
-#seasonalNDVIMedian_admin2 <-read.csv("./seasonalNDVIZscore2_md.csv")
-seasonalNDVIMedian_admin3 <-read.csv("./seasonalNDVIZscore3_md.csv")
+#seasonalNDVIMedian_admin2 <-read_excel("./seasonalNDVIZscore2_md.xlsx")
+seasonalNDVIMedian_admin3 <-read_excel("./seasonalNDVIZscore3_md.xlsx")
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,12 +252,12 @@ ggarrange(seasonalPrecipMeanCommune, seasonalPrecipMedianCommune, ncol=1, common
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate NDVI Annual Mean Z-Score Maps (Admin 2 & Admin 3) -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nigerZScoreMerged2 = full_join(geospatialData2, 
-                               annualPrecipMean_admin2,
-                               by = "admin2Pcod")
+nigerNDVIZScoreMerged2 = full_join(geospatialData2,
+                                   annualNDVIMean_admin2,
+                                   by = "admin2Pcod")
 
-annualPrecipMeanDepartment <-
-  nigerZScoreMerged2 %>% 
+annualNDVIMeanDepartment <-
+  nigerNDVIZScoreMerged2 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -271,12 +272,12 @@ annualPrecipMeanDepartment <-
         rect = element_blank())
 
 #Admin 3
-nigerZScoreMerged3 = full_join(geospatialData3, 
-                               annualPrecipMean_admin3,
-                               by = "rowcacode3")
+nigerNDVIZScoreMerged3 = full_join(geospatialData3,
+                                   annualNDVIMean_admin3,
+                                   by = "rowcacode3")
 
-annualPrecipMeanCommune <-
-  nigerZScoreMerged3 %>% 
+annualNDVIMeanCommune <-
+  nigerNDVIZScoreMerged3 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -295,12 +296,12 @@ annualPrecipMeanCommune <-
 # Generate NDVI Seasonal Mean Z-Score Data Graphics (Admin 2 & Admin 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #Admin 2
-seasonalZScore_Merged2 = full_join(geospatialData2, 
-                                   seasonalPrecipMean_admin2,
-                                   by = "admin2Pcod")
+seasonalNDVIZScore_Merged2 = full_join(geospatialData2,
+                                       seasonalNDVIMean_admin2,
+                                       by = "admin2Pcod")
 
-seasonalPrecipMeanDepartment <-
-  seasonalZScore_Merged2 %>% 
+seasonalNDVIMeanDepartment <-
+  seasonalNDVIZScore_Merged2 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -315,12 +316,12 @@ seasonalPrecipMeanDepartment <-
         rect = element_blank())
 
 #Admin 3
-seasonalZScore_Merged3 = full_join(geospatialData3, 
-                                   seasonalPrecipMean_admin3,
-                                   by = "rowcacode3")
+seasonalNDVIZScore_Merged3 = full_join(geospatialData3,
+                                       seasonalNDVIMean_admin3,
+                                       by = "rowcacode3")
 
-seasonalPrecipMeanCommune <-
-  seasonalZScore_Merged3 %>% 
+seasonalNDVIMeanCommune <-
+  seasonalNDVIZScore_Merged3 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -338,12 +339,12 @@ seasonalPrecipMeanCommune <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate NDVI Annual Median Z-Score Data Graphics (Admin 2 and 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-annualZScoreMerged2_md = full_join(geospatialData2, 
-                                   annualPrecipMedian_admin2,
-                                   by= "admin2Pcod")
+annualNDVIZScoreMerged2_md = full_join(geospatialData2,
+                                       annualNDVIMedian_admin2,
+                                       by= "admin2Pcod")
 
-annualPrecipMedianDepartment <-
-  annualZScoreMerged2_md %>% 
+annualNDVIMedianDepartment <-
+  annualNDVIZScoreMerged2_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -358,13 +359,13 @@ annualPrecipMedianDepartment <-
         rect = element_blank())
 
 #Admin 3
-annualZScoreMerged3_md = full_join(geospatialData3, 
-                                   annualPrecipMedian_admin3,
-                                   by = "adm_03")
+annualNDVIZScoreMerged3_md = full_join(geospatialData3,
+                                       annualNDVIMedian_admin3,
+                                       by = "adm_03")
 
 
-annualPrecipMedianCommune <-
-  annualZScoreMerged3_md %>% 
+annualNDVIMedianCommune <-
+  annualNDVIZScoreMerged3_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -382,13 +383,13 @@ annualPrecipMedianCommune <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate NDVI Seasonal Median Z-Score Data Graphics (Admin 2 and 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-seasonalZScore_Merged2_md = full_join(geospatialData2, 
-                                      seasonalPrecipMedian_admin2,
-                                      by = "admin2Name")
+seasonalNDVIZScore_Merged2_md = full_join(geospatialData2,
+                                          seasonalNDVIMedian_admin2,
+                                          by = "admin2Name")
 
 
-seasonalPrecipMedianDepartment <-
-  seasonalZScore_Merged2_md %>% 
+seasonalNDVIMedianDepartment <-
+  seasonalNDVIZScore_Merged2_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -403,13 +404,13 @@ seasonalPrecipMedianDepartment <-
         rect = element_blank())
 
 #Admin 3
-seasonalZScoreMerged3_md = full_join(geospatialData3, 
-                                     seasonalPrecipMedian_admin3,
-                                     by = "adm_03")
+seasonalNDVIZScoreMerged3_md = full_join(geospatialData3,
+                                         seasonalNDVIMedian_admin3,
+                                         by = "adm_03")
 
 
-seasonalPrecipMedianCommune <-
-  seasonalZScoreMerged3_md %>% 
+seasonalNDVIMedianCommune <-
+  seasonalNDVIZScoreMerged3_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
@@ -428,14 +429,14 @@ seasonalPrecipMedianCommune <-
 # Generate NDVI Graphics Admin2/Admin3 and Seasonal/Annual-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #Annual Admin 2
-ggarrange(annualPrecipMeanDepartment, annualPrecipMedianDepartment, ncol=1, common.legend = TRUE, legend="right")
+ggarrange(annualNDVIMeanDepartment, annualNDVIMedianDepartment, ncol=1, common.legend = TRUE, legend="right")
 
 #Annual Admin 3
-ggarrange(annualPrecipMeanCommune, annualPrecipMedianCommune, ncol=1, common.legend = TRUE, legend="right")
+ggarrange(annualNDVIMeanCommune, annualNDVIMedianCommune, ncol=1, common.legend = TRUE, legend="right")
 
 #Seasonal Admin 2
-ggarrange(seasonalPrecipMeanDepartment, seasonalPrecipMedianDepartment, ncol=1, common.legend = TRUE, legend="right")
+ggarrange(seasonalNDVIMeanDepartment, seasonalNDVIMedianDepartment, ncol=1, common.legend = TRUE, legend="right")
 
 #Seasonal Admin 3
-ggarrange(seasonalPrecipMeanCommune, seasonalPrecipMedianCommune, ncol=1, common.legend = TRUE, legend="right")
+ggarrange(seasonalNDVIMeanCommune, seasonalNDVIMedianCommune, ncol=1, common.legend = TRUE, legend="right")
 
