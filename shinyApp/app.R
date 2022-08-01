@@ -447,43 +447,71 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                      ))
                           )),
 
-                            
-                
-                 
+             
                  ## Tab Analysis -----------------------------------------------------------
                  tabPanel("Analysis",
                           fluidPage(
                             # h3(strong("Analysis")),
                             withMathJax()),
                           fluidRow(
-                            column(
-                              12,
+                            column(12,
                               #align="justify",
-                              h1(strong("Correlation Analysis")),
+                              h2(strong("Correlation Analysis at Department level")),
                               align="center")
                           ),
                           br(),
                 
                           fluidRow( 
                           column(4,
-                                 h4(strong("Correlation of Precipitation & NDVI")), align="center",
-                                 img(src = "corr_02.png", class = "topimage", width = "105%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                 h4(strong("Precipitation & NDVI")), align="center",
+                                 img(src = "corr_preip_ndvi_adm2_61.png", class = "topimage", width = "110%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                  ),
                           
                           column(4, 
-                                 h4(strong("Correlation of Precipitation & Share of Food Expenditure")), align="center",
+                                 h4(strong("Precipitation & Share of Food Expenditure")), align="center",
                                  img(src = "corr_precipZ_fdecp_adm2.png", class = "topimage", width = "82%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                 ),
                           column(4,
-                                 h4(strong("Correlation of NDVI & Share of Food Expenditure")), align="center",
+                                 h4(strong("NDVI & Share of Food Expenditure")), align="center",
                                  img(src = "corr_ndviZ_fdecp_adm2.png", class = "topimage", width = "90%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                 )),
-                 br(),
-                 fluidRow(
-                   column(12,
-                          h4(strong("Description")),
-                          p("Description of correlation between NDVI and share of food expenditure. This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019."),
-                   )),
+                       br(),
+                       fluidRow(
+                         column(12,
+                               h4(strong("Description")),
+                               p("Description of correlation between NDVI and share of food expenditure. This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019."),
+                                )),
+                      br(),
+                       fluidRow(
+                         column(12,
+                          #align="justify",
+                          h2(strong("Correlation Analysis at Commune level")),
+                          align="center")
+                               ),
+                      br(),
+                 
+                       fluidRow( 
+                          column(4,
+                          h4(strong("Precipitation & NDVI")), align="center",
+                          img(src = "corr_preip_ndvi_adm3_248.png", class = "topimage", width = "107%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                 ),
+                   
+                          column(4, 
+                          h4(strong("Precipitation & Share of Food Expenditure")), align="center",
+                          img(src = "corr_precipZ_fdecp_adm3.png", class = "topimage", width = "87%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                 ),
+                          column(4,
+                          h4(strong("NDVI & Share of Food Expenditure")), align="center",
+                          img(src = "corr_ndviZ_fdecp_adm3.png", class = "topimage", width = "90%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                )
+                          ),
+                     br(),
+                     
+                      fluidRow(
+                        column(12,
+                              h4(strong("Description")),
+                              p("Description of correlation between NDVI and share of food expenditure. This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019."),
+                 )),
 ),
                  ## Tab Takeaways ---------------------------------------------------------------
                  tabPanel("Takeaways",
