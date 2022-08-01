@@ -463,23 +463,30 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                 
                           fluidRow( 
                           column(4,
-                                 h4(strong("Precipitation & NDVI")), align="center",
+                                 h4(strong("1. Precipitation & NDVI")), align="center",
                                  img(src = "corr_preip_ndvi_adm2_61.png", class = "topimage", width = "110%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                  ),
                           
                           column(4, 
-                                 h4(strong("Precipitation & Share of Food Expenditure")), align="center",
+                                 h4(strong("2. Precipitation & Share of Food Expenditure")), align="center",
                                  img(src = "corr_precipZ_fdecp_adm2.png", class = "topimage", width = "82%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                 ),
                           column(4,
-                                 h4(strong("NDVI & Share of Food Expenditure")), align="center",
+                                 h4(strong("3. NDVI & Share of Food Expenditure")), align="center",
                                  img(src = "corr_ndviZ_fdecp_adm2.png", class = "topimage", width = "90%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                 )),
                        br(),
                        fluidRow(
                          column(12,
                                h4(strong("Description")),
-                               p("Description of correlation between NDVI and share of food expenditure. This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019."),
+                               p("In this section we are performing correlation analysis using Pearson Correlation Coefficient method. At the top of each plot, we can find the statistical significance (p) value besides Pearson correlation coefficient (r) and number of observations (n).
+                                 In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), align="justify",
+                               p("The first correlation plot is between annual cumulative precipitation z-score and annual NDVI z-score at Department level (admin 2) for select years 2011, 2014, 2015, 2017, and 2018. To have coherence and better understand correlation, 
+                                 we have kept observations only from departments that are covered in 2018 LSMS household survey 61 out of 67 total departments in Niger. We observe that correlation precipitation and NDVI z-scores are positively correlated except in 2017. 
+                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02) with low significance. There is a year-to-year change in this relationship in strength and the direction."), align="justify",
+                               p("Figures 2 and 3 shows correlation graphs between share of per capita food expenditure with annual precipitation z-score and NDVI z-score respectively. The share of per capita food expenditure is obtained from LSMS data after aggregating at department level
+                                 taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure. The statistical significance also varies in each year.
+                                 Such low or no correlation could be a result of aggregation at a higher administrative unit due to which we might be losing the relationship that is measured at household level. "), align="justify",
                                 )),
                       br(),
                        fluidRow(
@@ -492,16 +499,16 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                  
                        fluidRow( 
                           column(4,
-                          h4(strong("Precipitation & NDVI")), align="center",
+                          h4(strong("4. Precipitation & NDVI")), align="center",
                           img(src = "corr_preip_ndvi_adm3_248.png", class = "topimage", width = "107%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                  ),
                    
                           column(4, 
-                          h4(strong("Precipitation & Share of Food Expenditure")), align="center",
+                          h4(strong("5. Precipitation & Share of Food Expenditure")), align="center",
                           img(src = "corr_precipZ_fdecp_adm3.png", class = "topimage", width = "87%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                  ),
                           column(4,
-                          h4(strong("NDVI & Share of Food Expenditure")), align="center",
+                          h4(strong("6. NDVI & Share of Food Expenditure")), align="center",
                           img(src = "corr_ndviZ_fdecp_adm3.png", class = "topimage", width = "90%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                 )
                           ),
@@ -510,7 +517,14 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                       fluidRow(
                         column(12,
                               h4(strong("Description")),
-                              p("Description of correlation between NDVI and share of food expenditure. This plot represents the correlation between two variables, precipitation and NDVI at Department lelvel from year 2011 to 2019."),
+                              p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at Commune level (admin 3) in figures 4, 5 and 6. 
+                                In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), align="justify",
+                              p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62) with statistical significance. 
+                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. 2018 appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), align="justify",
+                              p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation with high statistical significance. 
+                                This again directs us towards the aggregation effect which was done at commune level (admin 3). Hence it would be interesting to observe similar relationship at the disaggregated level, 
+                                enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger.
+                                We can further conduct other statistical analysis such as regression to examine the causal relationship. "), align="justify",
                  )),
 ),
                  ## Tab Takeaways ---------------------------------------------------------------
