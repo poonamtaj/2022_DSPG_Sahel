@@ -15,6 +15,7 @@ library(sf)
 library(lubridate)
 library(cowplot)
 library(ggplot2)
+library(ggpubr)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
@@ -214,9 +215,18 @@ seasonalPrecipMedianCommune <-
         rect = element_blank())
 
 
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Combined by Admin and Seasonal vs Annual Graphics (Admin 2 and 3)-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Annual Admin 2
+ggarrange(annualPrecipMeanDepartment, annualPrecipMedianDepartment, ncol=1, common.legend = TRUE, legend="right")
 
+#Annual Admin 3
+ggarrange(annualPrecipMeanCommune, annualPrecipMedianCommune, ncol=1, common.legend = TRUE, legend="right")
 
+#Seasonal Admin 2
+ggarrange(seasonalPrecipMeanDepartment, seasonalPrecipMedianDepartment, ncol=1, common.legend = TRUE, legend="right")
 
-plot_grid(
-  annualPrecipMeanDepartment, annualPrecipMedianDepartment ,ncol = 1 + 
-  theme(legend.position = "none")
+#Seasonal Admin 3
+ggarrange(seasonalPrecipMeanCommune, seasonalPrecipMedianCommune, ncol=1, common.legend = TRUE, legend="right")
+
