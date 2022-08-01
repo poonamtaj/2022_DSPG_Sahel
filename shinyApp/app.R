@@ -573,9 +573,15 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                  Looking at data that is using admin 2 vs admin 3 its easy
                                  to see where the data is most significant at a more refined locations. 
                                  It is easier to spot variation when comparing seasonal rainfall maps versus 
-                                 annual rainfall maps."),
+                                 annual rainfall maps."), 
                                  p("Comparing data that NDVI..."),
-                                 p("Comparing data that LSMS...")
+                                 p("Comparing per capita food expenditures and total expenditures aggregated at median level, we analyzed that per capita food expenditures have been lowest in the southern region and lower in 2018 as compared to 2011 and 2014 at both admin levels. 
+                                   We also observed that total expenditures are lowest in southern regions and highest in northwest regions at both admin levels"),
+                                 p("Although NDVI and Precipitation appear to positively correlate with one another, especially in 2011 and 2014 when droughts were reported, we observe very low correlation between drought indices (precipitation and NDVI) and 
+                                 share of food expenditure. This limited relationship may be a result from the high degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions."),
+                                 p("Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource stress index and soil moisture may also exhibit greater correspondence with agricultural drought conditions, to 
+                                 disaggregate the food insecurity data to focus on smaller administrative units that would illustrate greater variation over space, and to evaluate alternative approaches to measure correspondence that may account for nonlinear relationships
+")
                           )),
                  
                  ## Tab References --------------------------------------------------------------
