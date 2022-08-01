@@ -498,26 +498,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             tabPanel("Food Insecurity",
                                      column(4,
                                             h4(strong("Description")),
-                                            p("Food insecurity is defined as when people lack access to 
-                                                enough wholesome food and don't get the nutrition they require
-                                                to grow normally and live active, healthy lives. Food shortages, 
-                                                low purchasing power, improper food distribution, or improper food 
-                                                utilization at the household level could all be contributing 
-                                                factors to this predicament."),
-                                            p("These maps show the food insecurity data at the Department level(67 departments) 
-                                                which comes from the EVIAM surveys (joint survey on vulnerability to household 
-                                                food insecurity in Niger ) for the years 2015 and 2017. There are three main 
-                                                variables to understand magnitude of the food insecurity: population at risk , 
-                                                population at moderate risk, and population at severe risk."),
-                                            p("If we focus on the maps, 
-                                                it is observed that food insecurity is concentrated in southwest regions 
-                                                in both 2015 and 2017.If we look at the differences between 2105 and 2017, more share of population 
-                                                being food insecure
-                                                in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an
-                                                upward trend in the percentages of populations with severe,
-                                                moderate and at risk food insecurity."),
-                                            p("To view the share of the food insecure population at different departments, 
-                                              hover over the respective department in the map."), 
+                                            p("Food insecurity is defined as when people lack access to enough wholesome food and don't get the nutrition they require to grow normally and live active healthy lives. 
+                                              Food shortages, low purchasing power, improper food distribution, or improper food utilization at the household level could all be contributing factors to this predicament."),
+                                            p("These maps show the food insecurity data at the Department level(67 departments) which comes from the EVIAM surveys (joint survey on vulnerability to household food insecurity in Niger) for the years 2015 and 2017. 
+                                              There are three main variables to understand the magnitude of food insecurity: the population at risk, the population at moderate risk, and the population at severe risk."),
+                                            p("If we focus on the maps, it is observed that food insecurity is concentrated in southwest regions in both 2015 and 2017. If we look at the differences between 2105 and 2017, 
+                                              more share of the population was food insecure in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an upward trend in the percentages of populations with severe, moderate, and at-risk food insecurity."),
+                                            p("To view the share of the food insecure population in different departments, hover over the respective department on the map."), 
                                             align = "justify"),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
@@ -559,7 +546,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                        fluidRow(
                          column(12,
                                h4(strong("Description")),
-                               p("In this section we are performing correlation analysis using Pearson Correlation Coefficient method. At the top of each plot, we can find the Pearson's correlation coefficient (r) and number of observations (n).
+                               p("In this section we are conducting correlation analysis with Pearson's Correlation Coefficient method. At the top of each plot, we can find the Pearson's correlation coefficient (r), confidence interval (CI), and number of observations (n).
                                  In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), 
                                p("The first correlation plot is between annual cumulative precipitation z-score and annual NDVI z-score at Department level (admin 2) for select years 2011, 2014, 2015, 2017, and 2018. To have coherence and better understand correlation, 
                                  we have kept observations only from departments that are covered in 2018 LSMS household survey 61 out of 67 total departments in Niger. We observe that correlation precipitation and NDVI z-scores are positively correlated except in 2017. 
