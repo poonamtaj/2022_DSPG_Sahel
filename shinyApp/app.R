@@ -176,74 +176,77 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                  useShinyjs(),
                  ## Tab Overview -----------------------------------------------------------
                  tabPanel("Overview", value = "overview",
-                                   fluidRow(style = "margin: 2px;",
-                                            align = "center",
-                                            br(""),
-                                            h1(strong("Sensing Drought in the Sahel for household resilience")),
-                                            h4("Data Science for the Public Good Program"),
-                                            h4("Virginia Tech"),
-                                            h4("Department of Agricultural and Applied Economics")
-                                   ),
-                                   fluidRow(style = "margin: 6px;",
-                                            column(4,
-                                                   h2(strong("Project Overview"), align = "center"),
-                                                   p("Decades of economic research has shown that without effective social protection, 
+                          fluidRow(style = "margin: 2px;",
+                                   align = "center",
+                                   br(""),
+                                   h1(strong("Sensing Drought in the Sahel for household resilience")),
+                                   h4("Data Science for the Public Good Program"),
+                                   h4("Virginia Tech"),
+                                   h4("Department of Agricultural and Applied Economics")
+                          ),
+                          fluidRow(style = "margin: 6px;",
+                                   column(4,
+                                          h2(strong("Project Overview"), align = "center"),
+                                          p("Decades of economic research has shown that without effective social protection, 
                                           extreme weather in sub-Saharan Africa has resulted in people resorting to harmful coping 
-                                          strategies, including removing children from school, skipping meals, and selling off assets. 
+                                          strategies, including removing children from school, skipping meals, and selling off assets (Premand 2020). 
                                           These coping strategies further perpetuate the poverty cycle, preventing future generations from
                                           achieving a higher quality of life. Weather trends in the past few decades have also shown that 
-                                          the number of people exposed to drought in the Sahel has increased."),
-                                                   p("The Data Science for the Public 
+                                          the number of people exposed to drought in the Sahel has increased (Sahel Adaptive Social Protection Program 2020)."),
+                                          p("The Data Science for the Public 
                                           Good (DSPG) project seeks to help break the link between drought and distress, by identifying where 
                                           droughts have created greatest harms. The research team is supporting stakeholder The World Bank’s 
                                           Sahel Adaptive Protection Program, who is looking to use readily available data on drought conditions 
                                           to determine the most efficient use of funding to aid those at greatest risk at a more rapid pace than 
-                                          before. Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
+                                          before (Sahel Adaptive Social Protection Program 2020). Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
                                           by developing targeting mechanisms, identifying the most vulnerable and quickly scaling up programs when needed.
                                           The DSPG team will be using publicly available data on historical drought indicators, including precipitation and 
                                           biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country 
-                                            of Niger. ")), 
-                                            column(4,
-                                                   h2(strong("Introduction to The Sahel"), align = "center"),
-                                                   p("The Sahel is a band of territory in Africa that stretches the length of the continent, from the Atlantic coast of Senegal
+                                            of Niger. "),
+                                          p("Key questions include examining correlation between precipitation and NDVI drought indices, followed by determining the relationship between drought
+                                          and welfare data, using food insecurity as proxy. Lastly, we would like to examine whether aggregating data to different scales, such as mean and median,
+                                          will provide any additional insight into the relationships between the four datasets.")), 
+                                   column(4,
+                                          h2(strong("Introduction to The Sahel"), align = "center"),
+                                          p("The Sahel is a band of territory in Africa that stretches the length of the continent, from the Atlantic coast of Senegal
                                             and Mauritania to the Red Sea coast of Eritrea, acting as a buffer zone between the Sahara Desert in the North and the
                                             Savannas in the South. The country of Niger is located in the middle of the Sahel, neighboring Mali, Chad, and Nigeria.
                                             Niger is split into three distinct zones, a desert zone in the North, an intermediate zone in the center, and a cultivated
-                                            zone in the South where a greater part of the 22-million person population is concentrated. As over 80% of the land is 
+                                            zone in the South where a greater part of the 22-million person population is concentrated (Laya 2021). As over 80% of the land is 
                                             covered by uninhabitable desert, 94% of the population lives on just 35% of the land. Niger does not have many large cities,
-                                            only roughly 19% of the population lives in urban areas."),
-                                                   img(src = "niger.png", class = "topimage", width = "60%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                                                   p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
+                                            only roughly 19% of the population lives in urban areas (Central Intelligence Agency 2022)."),
+                                          img(src = "niger.png", class = "topimage", width = "60%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                                          p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
                                             withdrew from the French Community in 1960, proclaiming independence. Hamani Diori led a single-party dictatorship until he was
                                             overthrown in a coup in 1974. Niger has long struggled to maintain peace within its changing government, with minimal resources
                                             and insufficient funding. Niger’s present republic is responsible for regulating its 7 regions, further divided into 36 departments
                                             and 265 communes. "),
-                                                   p("The economy in Niger centers on subsistence (rain-fed) crops, livestock, and uranium deposits. Agriculture contributes 40% of the
-                                            GDP and provides livelihoods for over 80% of the population. Despite the reliance on the agriculture industry, agricultural production
+                                          p("The economy in Niger centers on subsistence (rain-fed) crops, livestock, and uranium deposits. Agriculture contributes 40% of the
+                                            GDP and provides livelihoods for over 80% of the population (Central Intelligence Agency 2022). Despite the reliance on the agriculture industry, agricultural production
                                             is constrained to the short rainy season, with limited access to irrigation. Niger is highly exposed to climatic shocks such as drought;
                                             the frequency and severity of these shocks is expected to increase due to climate change. Considering the dependence on agriculture and
                                             the frequency of drought, Niger is a high poverty and food insecure country with low living standards, leaving the country as one of the
-                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index.")),
-                                            column(4,
-                                                   h2(strong("Recent History"), align = "center"),
-                                                   p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
-                                            by popular vote. Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
+                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index (Laya 2021).")),
+                                   column(4,
+                                          h2(strong("Recent History"), align = "center"),
+                                          p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
+                                            by popular vote (Central Intelligence Agency 2022). Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
                                             rate of just 19%. The healthcare system is also inadequate, due to a lack of both financial and human capital. Niger is one of the poorest
                                             countries in the world, with a GDP per capita of 895 USD in 2015. The desert terrain and frequent drought faced by the people of Niger create
                                             significant obstacles in alleviating poverty. Weather shocks were found to decrease household consumption by 31-48%, create large movement in
-                                            food prices, and have a negative effect on technology adoption."),
-                                                   p("Niger is a member of multiple international organizations, including the United Nations, International Monetary Fund, World Bank, etcetera; and
+                                            food prices, and have a negative effect on technology adoption (Laya 2021)."),
+                                          p("Niger is a member of multiple international organizations, including the United Nations, International Monetary Fund, World Bank, etcetera; and
                                             receives substantial humanitarian assistance. In 2011, the Government of Niger began a national safety net system organized in the Office of the
-                                            Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions. This system is supported by the Sahel
+                                            Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions (Nicole 2019). This system is supported by the Sahel
                                             Adaptive Social Protection Program (SASPP), launched by the World Bank in 2014 with the goal of developing adaptive social protection systems in
                                             six Sahel countries to help poor and vulnerable households become more resilient to the effects of climate change. Presently, the program is entering
-                                            a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs. The cash
-                                            transfer program involves providing small, regular, and unconditional transfers targeted to poor households, selected based on a proxy-means test. This
+                                            a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs (Sahel Adaptive Social Protection Program 2019).
+                                            The cash transfer program involves providing small, regular, and unconditional transfers targeted to poor households, selected based on a proxy-means test. This
                                             design rationales that it would help households better prepare themselves against future shocks; creating a more proactive system rather than only
                                             responding
                                             to existing shocks."),
-                                            )
                                    )
+                          )
                  ),
                  
                  ## Tab Data & Methodology -----------------------------------------------------------
@@ -506,10 +509,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                                 which comes from the EVIAM surveys (joint survey on vulnerability to household 
                                                 food insecurity in Niger ) for the years 2015 and 2017. There are three main 
                                                 variables to understand magnitude of the food insecurity: population at risk , 
-                                                population at moderate risk , and population at severe risk."),
-                                            p("If we focus on the maps , 
+                                                population at moderate risk, and population at severe risk."),
+                                            p("If we focus on the maps, 
                                                 it is observed that food insecurity is concentrated in southwest regions 
-                                                in both 2015 and 2017.If we look at the differences between 2105 and 2017,more share of population 
+                                                in both 2015 and 2017.If we look at the differences between 2105 and 2017, more share of population 
                                                 being food insecure
                                                 in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an
                                                 upward trend in the percentages of populations with severe,
@@ -557,11 +560,11 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                        fluidRow(
                          column(12,
                                h4(strong("Description")),
-                               p("In this section we are performing correlation analysis using Pearson Correlation Coefficient method. At the top of each plot, we can find the statistical significance (p) value besides Pearson correlation coefficient (r) and number of observations (n).
+                               p("In this section we are performing correlation analysis using Pearson Correlation Coefficient method. At the top of each plot, we can find the Pearson's correlation coefficient (r) and number of observations (n).
                                  In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), align="justify",
                                p("The first correlation plot is between annual cumulative precipitation z-score and annual NDVI z-score at Department level (admin 2) for select years 2011, 2014, 2015, 2017, and 2018. To have coherence and better understand correlation, 
                                  we have kept observations only from departments that are covered in 2018 LSMS household survey 61 out of 67 total departments in Niger. We observe that correlation precipitation and NDVI z-scores are positively correlated except in 2017. 
-                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02) with low significance. There is a year-to-year change in this relationship in strength and the direction."), align="justify",
+                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02). There is a year-to-year change in this relationship in strength and the direction."), align="justify",
                                p("Figures 2 and 3 shows correlation graphs between share of per capita food expenditure with annual precipitation z-score and NDVI z-score respectively. The share of per capita food expenditure is obtained from LSMS data after aggregating at department level
                                  taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure. The statistical significance also varies in each year.
                                  Such low or no correlation could be a result of aggregation at a higher administrative unit due to which we might be losing the relationship that is measured at household level. "), align="justify",
@@ -605,25 +608,27 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                  )),
 ),
                  ## Tab Takeaways ---------------------------------------------------------------
-                 tabPanel("Takeaways",
-                          column(3),
-                          column(6,
-                                 h1(strong("Takeaways"), align = "center"),
-                                 p("Comparing data that is aggregated at mean vs median level shows differences 
-                                 in the Z-Score maps the most and not much differences in annual totals. 
-                                 Looking at data that is using admin 2 vs admin 3 its easy
-                                 to see where the data is most significant at a more refined locations. 
-                                 It is easier to spot variation when comparing seasonal rainfall maps versus 
-                                 annual rainfall maps."), 
-                                 p("Comparing data that NDVI..."),
-                                 p("Comparing per capita food expenditures and total expenditures aggregated at median level, we analyzed that per capita food expenditures have been lowest in the southern region and lower in 2018 as compared to 2011 and 2014 at both admin levels. 
-                                   We also observed that total expenditures are lowest in southern regions and highest in northwest regions at both admin levels"),
-                                 p("Although NDVI and Precipitation appear to positively correlate with one another, especially in 2011 and 2014 when droughts were reported, we observe very low correlation between drought indices (precipitation and NDVI) and 
-                                 share of food expenditure. This limited relationship may be a result from the high degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions."),
-                                 p("Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource stress index and soil moisture may also exhibit greater correspondence with agricultural drought conditions, to 
-                                 disaggregate the food insecurity data to focus on smaller administrative units that would illustrate greater variation over space, and to evaluate alternative approaches to measure correspondence that may account for nonlinear relationships
-")
-                          )),
+tabPanel("Takeaways",
+         column(3),
+         column(6,
+                h1(strong("Takeaways"), align = "center"),
+                p("Comparing Precipitation and NDVI: As expected, precipitation and NDVI data generally correlate over every level of aggregation
+                                   (mean versus median, admin 2 versus admin 3). There are a few notable exceptions in particular years to further investigate,
+                                   including a peak in NDVI data in 2004 that is not reflected in precipitation data. Additionally, there is a significant peak in
+                                   NDVI data in 1994 that is somewhat reflected in precipitation data, but not to the same severity. "),
+                p("Comparing Drought and Welfare Indices: Although NDVI and Precipitation appear to positively correlate with one another, we observe
+                                   very low correlation between drought indices and share of food expenditure. This limited relationship may be a result from the high
+                                   degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions. This finding guided
+                                   the process of determining next steps to gain a better understanding of the true relationship between drought and welfare."),
+                p("Aggregation by Mean Versus Median: Comparing data that is aggregated at mean vs median level shows differences in the z-score maps
+                                   more so than in annual totals. Most notable with NDVI mapping, median data accounts for outliers to better visually represent data,
+                                   whereas mapping using mean appears washed out. Additionally, looking at data by commune rather than department shows more variation
+                                   in refined locations. "),
+                p("Next Steps: Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource
+                                   stress index and soil moisture, which may exhibit greater correspondence with agricultural drought conditions. We will also disaggregate
+                                   the food insecurity data to focus on smaller administrative units that may illustrate greater variation over space. Another option is to
+                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships.")
+         )),
                  
                  ## Tab References --------------------------------------------------------------
                  tabPanel("References", value = "references",
