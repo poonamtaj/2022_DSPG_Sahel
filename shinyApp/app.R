@@ -303,6 +303,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               plotlyOutput("plot2")
                             ),  
                           ), 
+                          br(),
                           
                           fluidRow(
                             column(
@@ -326,6 +327,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               plotOutput("precipitation_out")
                             ),  
                           ),
+                          br(),
                           
                           fluidRow(
                             column(
@@ -368,7 +370,41 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                      plotlyOutput("plot4")
                               ),
                             ),
-                            br(),
+                          br(),
+                          
+                            fluidRow(
+                              column(
+                                4,
+                                p(h4(strong("Description"))),
+                                p("NDVI."), 
+                                p("NDVI. "),
+                              ),
+                              column(
+                                7,
+                                p(h4(strong("Annual Z-Score NDVI Mean and Median"))),
+                                radioButtons("NDVI", "Select Administrative levels:", width="100%", choices = c(
+                                  "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                plotOutput("NDVI_out")
+                              ),  
+                            ),
+                          br(),
+                          br(),
+                          
+                            fluidRow(
+                              column(
+                                4,
+                                p(h4(strong("Description"))),
+                                p("NDVI."), 
+                                p("NDVI."),
+                              ),
+                              column(
+                                7,
+                                p(h4(strong("Seasonal Z-Score NDVI Mean and Median"))),
+                                radioButtons("seasonalNDVI", "Select Administrative levels:", width="100%", choices = c(
+                                  "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
+                                plotOutput("seasonalNDVI_out")
+                              ),  
+                            )
                             
                             
                             
@@ -720,7 +756,28 @@ server <- function(input, output) {
         theme_classic() +
         plotly()
     }) 
-    
+    NDVI <- reactive({
+      input$NDVI
+    })
+    output$NDVI_out<-renderImage({
+      if(NDVI()=="Admin2"){
+        list(src='www/Annualzscorendvibydepartmentcomparisons.png', align = "center",width=800,height=500)
+      }
+      else if (NDVI()=="Admin3"){
+        list(src='www/Annualndvizscorebycommunecomparisons.png', align = "center",width=800,height=500)
+      }
+    })
+    seasonalNDVI <- reactive({
+      input$seasonalNDVI
+    })
+    output$seasonalNDVI_out<-renderImage({
+      if(seasonalNDVI()=="Admin2seasonal"){
+        list(src='www/seasonalzscorendvibydepartmentcomparisons.png', align = "center",width=800,height=500)
+      }
+      else if (seasonalNDVI()=="Admin3seasonal"){
+        list(src='www/seasonalzscorendvibycommunecomparisons.png', align = "center",width=800,height=500)
+      }
+    })
  
 }
 
