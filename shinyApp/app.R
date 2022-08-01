@@ -105,7 +105,7 @@ jscode <- "function getUrlVars() {
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 ### precipitation data
-annualPrecip <- read_csv("./data/yearData1_precip.csv")
+annualPrecip <- read_csv("./data/yearData1.csv")
 annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
 
 ### NDVI data
