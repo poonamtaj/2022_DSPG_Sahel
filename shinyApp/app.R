@@ -454,22 +454,20 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             tabPanel("LSMS",
                                      column(4,
                                             h4(strong("Description")),
-                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
-                                              premier household survey program, aims to improve the quality of 
-                                              microdata and strengthen household survey systems in client countries
-                                              in order to better inform development policies. Its main objective is to
-                                              promote the creation and adoption of new standards and methods for gathering 
-                                              household data in order to support evidence-based policymaking."),
-                                            p("These maps show the food expenditure and total expenditure data at the Department level and Commune
-                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
-                                              We aggregated it by median because the median is less affected by outliers
-                                              and skewed data than the mean, and is usually the preferred measure of central
-                                              tendency when the distribution is not symmetrical. When we aggregated at median level, 
-                                              we got 50 observations in 2011 as well as 2014 and 61 observations in 2018 at Department level (admin 2)
-                                              while 96 observations in 2011 and 2014 and 232 observations in 2018 at Commune level (admin 3)."),
-                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
-                                              It is lower in 2018 as compared to 2011 and 2014 at both admin levels. We also observed that total expenditures are
-                                              lowest in southern regions and highest in northwest regions at both admin levels. "),
+                                            p("The Living Standards Measurement Study (LSMS), the World Bank's premier household survey program, 
+                                              aims to improve the quality of microdata and strengthen household survey systems in client countries
+                                              in order to better inform development policies. It's main objective is to promote the creation and 
+                                              adoption of new standards and methods for gathering household data in order to support evidence-based
+                                              policymaking."),
+                                            p("These maps show the food expenditure and total expenditure data at the Department level and Commune level
+                                              which comes from the LSMS surveys for the years 2011, 2014, and 2018. We aggregated it by median because the
+                                              median is less affected by outliers and skewed data than the mean, and is usually the preferred measure of central
+                                              tendency when the distribution is not symmetrical. When we aggregated at median level, we got 50 observations in 2011 
+                                              as well as 2014 and 61 observations in 2018 at Department level (admin 2) while 96 observations in 2011 and 2014 and 232 
+                                              observations in 2018 at Commune level (admin 3)."),
+                                            p("We analyzed that per capita food expenditures have been lowest in the southern region. It is lower in 2018 as
+                                              compared to 2011 and 2014 at both admin levels. We also observed that total expenditures are lowest in southern
+                                              regions and highest in northwest regions at both admin levels. "),
                                             align = "justify"),
                                      column(8,
                                             h4(strong("Food Expenditure")),
@@ -703,10 +701,10 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/latest_foodexp_admin2.png', align = "center",width=725,height=425)
+      list(src='www/deflated_foodexp_admin2.png', align = "center",width=725,height=425)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/latest_foodexp_admin3.png', align = "center",width=725,height=425)
+      list(src='www/deflated_foodexp_admin3.png', align = "center",width=725,height=425)
     }
   })
   
@@ -715,10 +713,10 @@ server <- function(input, output) {
   })
   output$total_expenditure_out<-renderImage({
     if(total_expenditure()=="total_Admin2"){
-      list(src='www/total_expend_admin2.png', align = "center",width=725,height=425)
+      list(src='www/deflated_totalexp_admin2.png', align = "center",width=725,height=425)
     }
     else if (total_expenditure()=="total_Admin3"){
-      list(src='www/total_expend_admin3.png', align = "center",width=725,height=425)
+      list(src='www/deflated_totalexp_admin3.png', align = "center",width=725,height=425)
     }
   })
   
