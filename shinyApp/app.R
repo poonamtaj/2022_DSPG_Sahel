@@ -296,9 +296,9 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                      img(src = "lsms.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;")),
                             ),
                             h1(strong("Methodology")),
-                            h3(strong('Z-Score')),
-                            p("The DSPG team used z-scores to translate historical weather to “anomalies” from normal (xI). Z-scores (Zit) quantify how anomalous a given annual precipitation
-                              amount or NDVI value is by comparing that value (xI) to the mean (x̄) of those values in a prior period (here we used 1981-2010), and dividing by the standard deviation
+                            h3(strong('Standardized Measure')),
+                            p("The DSPG team used z-scores to translate historical weather to “anomalies” from normal (xi) as a standaridized measure. Z-scores (Zit) quantify how anomalous a given annual precipitation
+                              amount or NDVI value is by comparing that value (xi) to the mean (x̄) of those values in a prior period (here we used 1981-2010), and dividing by the standard deviation
                               (si) across that same baseline period."),
                             h3(strong('Correlation')),
                             p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Person R correlation
