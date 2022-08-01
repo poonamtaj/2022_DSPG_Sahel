@@ -801,10 +801,10 @@ server <- function(input, output) {
     })
     output$NDVI_out<-renderImage({
       if(NDVI()=="Admin2"){
-        list(src='www/Annualzscorendvibydepartmentcomparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (NDVI()=="Admin3"){
-        list(src='www/Annualndvizscorebycommunecomparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
       }
     })
     seasonalNDVI <- reactive({
@@ -815,7 +815,7 @@ server <- function(input, output) {
         list(src='www/seasonalNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (seasonalNDVI()=="Admin3seasonal"){
-        list(src='www/seasonalzscorendvibycommunecomparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
       }
     })
  
