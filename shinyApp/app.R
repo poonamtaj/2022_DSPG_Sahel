@@ -226,7 +226,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                             is constrained to the short rainy season, with limited access to irrigation. Niger is highly exposed to climatic shocks such as drought;
                                             the frequency and severity of these shocks is expected to increase due to climate change. Considering the dependence on agriculture and
                                             the frequency of drought, Niger is a high poverty and food insecure country with low living standards, leaving the country as one of the
-                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index (Laya 2021).")),
+                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index (Laya 2021).")), align = "justify",
                                    column(4,
                                           h2(strong("Recent History"), align = "center"),
                                           p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
@@ -243,8 +243,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                             a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs (Sahel Adaptive Social Protection Program 2019).
                                             The cash transfer program involves providing small, regular, and unconditional transfers targeted to poor households, selected based on a proxy-means test. This
                                             design rationales that it would help households better prepare themselves against future shocks; creating a more proactive system rather than only
-                                            responding
-                                            to existing shocks."),
+                                            responding to existing shocks."), align = "justify",
                                    )
                           )
                  ),
@@ -303,7 +302,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               (si) across that same baseline period."),
                             h3(strong('Correlation')),
                             p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Person R correlation
-                              coefficient, which measures the strength of the linear association between the variables.")),
+                              coefficient, which measures the strength of the linear association between the variables."), align = "justify",),
                  ),
                  ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
@@ -378,7 +377,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               versus median aggregated data. While there are high z-scores in the northern regions
                               when using mean, using median we can see that there is the largest difference when
                               looking at 2015."),
-                            ),
+                            ), 
                             column(
                               7,
                               p(h4(strong("Seasonal Z-Score Precipitation Mean and Median"))),
@@ -443,7 +442,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                   skew the scale of z-score, washing out the maps. Median data, accounting for
                                   outliers, is more visually representative when mapped. Interestingly, z-scores
                                   were slightly lower in 2015 despite flooding recorded during that year."),
-                              ),
+                              ), 
                               column(
                                 7,
                                 p(h4(strong("Seasonal Z-Score NDVI Mean and Median"))),
@@ -561,10 +560,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                          column(12,
                                h4(strong("Description")),
                                p("In this section we are performing correlation analysis using Pearson Correlation Coefficient method. At the top of each plot, we can find the Pearson's correlation coefficient (r) and number of observations (n).
-                                 In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), align="justify",
+                                 In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), 
                                p("The first correlation plot is between annual cumulative precipitation z-score and annual NDVI z-score at Department level (admin 2) for select years 2011, 2014, 2015, 2017, and 2018. To have coherence and better understand correlation, 
                                  we have kept observations only from departments that are covered in 2018 LSMS household survey 61 out of 67 total departments in Niger. We observe that correlation precipitation and NDVI z-scores are positively correlated except in 2017. 
-                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02). There is a year-to-year change in this relationship in strength and the direction."), align="justify",
+                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02). There is a year-to-year change in this relationship in strength and the direction."), 
                                p("Figures 2 and 3 shows correlation graphs between share of per capita food expenditure with annual precipitation z-score and NDVI z-score respectively. The share of per capita food expenditure is obtained from LSMS data after aggregating at department level
                                  taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure. The statistical significance also varies in each year.
                                  Such low or no correlation could be a result of aggregation at a higher administrative unit due to which we might be losing the relationship that is measured at household level. "), align="justify",
@@ -599,9 +598,9 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                         column(12,
                               h4(strong("Description")),
                               p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at commune level (admin 3) in figures 4, 5, and 6. 
-                                In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), align="justify",
+                                In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), 
                               p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62) with statistical significance. 
-                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), align="justify",
+                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), 
                               p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation with high statistical significance. 
                                 This again directs us towards the aggregation effect which was done at commune level (admin 3). Hence it would be interesting to observe similar relationship at the disaggregated level, 
                                 enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger."), align="justify",
@@ -627,7 +626,7 @@ tabPanel("Takeaways",
                 p("Next Steps: Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource
                                    stress index and soil moisture, which may exhibit greater correspondence with agricultural drought conditions. We will also disaggregate
                                    the food insecurity data to focus on smaller administrative units that may illustrate greater variation over space. Another option is to
-                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships.")
+                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships."), align = "justify",
          )),
                  
                  ## Tab References --------------------------------------------------------------
