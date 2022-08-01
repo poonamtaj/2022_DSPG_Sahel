@@ -813,7 +813,7 @@ server <- function(input, output) {
     })
     output$seasonalNDVI_out<-renderImage({
       if(seasonalNDVI()=="Admin2seasonal"){
-        list(src='www/seasonalzscorendvibydepartmentcomparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (seasonalNDVI()=="Admin3seasonal"){
         list(src='www/seasonalzscorendvibycommunecomparisons.png', align = "center",width=800,height=500)
