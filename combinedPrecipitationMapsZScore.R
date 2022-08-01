@@ -1,0 +1,222 @@
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Author: Catherine Back
+# Project name: Sahel Adaptive Social Protection Program
+# Date Created: # Wed Jul 20 14:33:13 2022 ------------------------------
+# Date Last Updated:
+# R version: 4.1.3
+# Purpose: Combine Median and Mean Precipitation Z-Score Data
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Load Libraries -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+library(tidyverse)
+library(sf)
+library(lubridate)
+library(cowplot)
+library(ggplot2)
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Load Data -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Annual Precipitation Data
+annualPrecipMean_admin2 <-read.csv("./admin2precip.csv")
+annualPrecipMean_admin3 <-read.csv("./admin3precip.csv")
+
+annualPrecipMedian_admin2 <-read.csv("./annualZScoreAdmin2_md.csv")
+annualPrecipMedian_admin3 <-read.csv("./annualZScoreAdmin3_md.csv")
+
+#Seasonal Precipitation Data
+seasonalPrecipMean_admin2 <-read.csv("./seasonalZscoreAnnual2.csv")
+seasonalPrecipMean_admin3 <-read.csv("./seasonalZscoreAnnual3.csv")
+
+seasonalPrecipMedian_admin2 <-read.csv("./seasonalAnnualZscore2_md.csv")
+seasonalPrecipMedian_admin3 <-read.csv("./seasonalAnnualZscore3_md.csv")
+
+#Geospatial Data
+geospatialData2 <- st_read("./niger_admin2/niger_admin2.shp")
+geospatialData3 <- st_read("./niger_admin3/NER_adm03_feb2018.shp")
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Annual Mean Z-Score Maps (Admin 2 & Admin 3) -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nigerZScoreMerged2 = full_join(geospatialData2, 
+                               annualPrecipMean_admin2,
+                               by = "admin2Pcod")
+
+annualPrecipMeanDepartment <-
+  nigerZScoreMerged2 %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Mean", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+#Admin 3
+nigerZScoreMerged3 = full_join(geospatialData3, 
+                               annualPrecipMean_admin3,
+                               by = "rowcacode3")
+
+annualPrecipMeanCommune <-
+  nigerZScoreMerged3 %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Mean", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Seasonal Mean Z-Score Data Graphics (Admin 2 & Admin 3)-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Admin 2
+seasonalZScore_Merged2 = full_join(geospatialData2, 
+                                   seasonalPrecipMean_admin2,
+                                   by = "admin2Pcod")
+
+seasonalPrecipMeanDepartment <-
+  seasonalZScore_Merged2 %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Mean", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+#Admin 3
+seasonalZScore_Merged3 = full_join(geospatialData3, 
+                                   seasonalPrecipMean_admin3,
+                                   by = "rowcacode3")
+
+seasonalPrecipMeanCommune <-
+  seasonalZScore_Merged3 %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Mean", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Annual Median Z-Score Data Graphics (Admin 2 and 3)-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+annualZScoreMerged2_md = full_join(geospatialData2, 
+                                   annualPrecipMedian_admin2,
+                                   by= "admin2Pcod")
+
+annualPrecipMedianDepartment <-
+  annualZScoreMerged2_md %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Median", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+#Admin 3
+annualZScoreMerged3_md = full_join(geospatialData3, 
+                                   annualPrecipMedian_admin3,
+                                   by = "adm_03")
+
+
+annualPrecipMedianCommune <-
+  annualZScoreMerged3_md %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Median", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Generate Seasonal Median Z-Score Data Graphics (Admin 2 and 3)-----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+seasonalZScore_Merged2_md = full_join(geospatialData2, 
+                                      seasonalPrecipMedian_admin2,
+                                      by = "admin2Name")
+
+
+seasonalPrecipMedianDepartment <-
+  seasonalZScore_Merged2_md %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Median", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+#Admin 3
+seasonalZScoreMerged3_md = full_join(geospatialData3, 
+                                     seasonalPrecipMedian_admin3,
+                                     by = "adm_03")
+
+
+seasonalPrecipMedianCommune <-
+  seasonalZScoreMerged3_md %>% 
+  filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
+  ggplot() + 
+  geom_sf(aes(fill = zscore_precip),color = NA, alpha = 0.8) +
+  scale_fill_viridis_c(direction = -1) +
+  facet_wrap(~year, nrow = 1) +
+  labs(title="Median", fill = "z-score" ) + 
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        rect = element_blank())
+
+
+
+
+
+plot_grid(
+  annualPrecipMeanDepartment, annualPrecipMedianDepartment ,ncol = 1 + 
+  theme(legend.position = "none")
