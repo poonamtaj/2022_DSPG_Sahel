@@ -329,6 +329,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             ),  
                           ), 
                           br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
                           
                           fluidRow(
                             column(
@@ -353,6 +357,11 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             ),  
                           ),
                           br(),
+                          br(),
+                          br(),
+                          br(),
+                          br(),
+                          
                           
                           fluidRow(
                             column(
@@ -751,10 +760,10 @@ server <- function(input, output) {
     })
     output$precipitation_out<-renderImage({
       if(precipitation()=="Admin2"){
-        list(src='www/annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualPrecipZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (precipitation()=="Admin3"){
-        list(src='www/annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualPrecipZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
       }
     })
     
@@ -763,10 +772,10 @@ server <- function(input, output) {
     })
     output$seasonalPrecip_out<-renderImage({
       if(seasonalPrecip()=="Admin2seasonal"){
-        list(src='www/seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalPrecipZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
       }
       else if (seasonalPrecip()=="Admin3seasonal"){
-        list(src='www/seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalPrecipZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
       }
     })
     
