@@ -588,14 +588,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                       fluidRow(
                         column(12,
                               h4(strong("Description")),
-                              p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at Commune level (admin 3) in figures 4, 5 and 6. 
+                              p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at commune level (admin 3) in figures 4, 5, and 6. 
                                 In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), align="justify",
                               p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62) with statistical significance. 
-                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. 2018 appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), align="justify",
+                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), align="justify",
                               p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation with high statistical significance. 
                                 This again directs us towards the aggregation effect which was done at commune level (admin 3). Hence it would be interesting to observe similar relationship at the disaggregated level, 
-                                enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger.
-                                We can further conduct other statistical analysis such as regression to examine the causal relationship. "), align="justify",
+                                enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger."), align="justify",
                  )),
 ),
                  ## Tab Takeaways ---------------------------------------------------------------
@@ -655,10 +654,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
                                      tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Agricultural Engineering)"),
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Biological Systems Engineering)"),
                                      h4(strong("Graduate Research Assistant")), tags$br(),
                                      tags$br(), img(src = "fellow-armine.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
-                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Environmental and Natural Resource Economics)")
+                                     tags$br(), p(a(href = 'https://www.linkedin.com/in/poghosyan-armine/', 'Armine Poghosyan', target = '_blank'), "(Virginia Tech, Department of Agricultural and Applied Economics)")
                               ),
                               column(4, align = "center",
                                      h4(strong("Undergraduate Interns")), tags$br(),
