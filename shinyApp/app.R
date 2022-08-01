@@ -505,11 +505,11 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                    
                           column(4, 
                           h4(strong("5. Precipitation & Share of Food Expenditure")), align="center",
-                          img(src = "corr_precipZ_fdecp_adm3.png", class = "topimage", width = "87%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                          img(src = "corr_precipZ_fdecp_adm3.png", class = "topimage", width = "82%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                  ),
                           column(4,
                           h4(strong("6. NDVI & Share of Food Expenditure")), align="center",
-                          img(src = "corr_ndviZ_fdecp_adm3.png", class = "topimage", width = "90%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                          img(src = "corr_ndviZ_fdecp_adm3.png", class = "topimage", width = "85%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                 )
                           ),
                      br(),
