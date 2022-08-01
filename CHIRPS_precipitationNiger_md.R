@@ -171,7 +171,7 @@ seasonalAnnualZscore3_md <-
   ungroup()
 
 ### to download the dataframe as csv file
-write.csv(seasonalAnnualZscore3_md, "./seasonalAnnualZscore2_md.csv", row.names = FALSE)
+write.csv(seasonalAnnualZscore2_md, "./seasonalAnnualZscore2_md.csv", row.names = FALSE)
 write.csv(seasonalAnnualZscore3_md, "./seasonalAnnualZscore3_md.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
