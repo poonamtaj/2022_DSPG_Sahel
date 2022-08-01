@@ -254,13 +254,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             h1(strong("Data Sources")),
                             h3(strong("Precipitation")),
                             fluidRow(
-                              column(4,
+                              column(6,
                                      p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
                                    researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
                                    spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
                               ),
-                              column(8,
-                                     img(src = "precipitation.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                              column(6,
+                                     img(src = "precipitation.png", class = "topimage", width = "35%", style = "display: block; margin-left: auto; margin-right: auto;"),
                               )),
                             h3(strong("Normalized Difference Vegetation Index")),
                             p("The Normalized Difference Vegetative Index (NDVI) dataset is unique in that it bridges the gap between satellite imagery and internal vegetative processes. Satellite
@@ -274,7 +274,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               over time to establish “normal” growing conditions in a region for a given time of year. Further analysis can then characterize the health of vegetation in that place relative
                               to the norm. When analyzed through time, NDVI can reveal where vegetation is thriving and where it is under stress, as well as changes in vegetation due to human activities such
                               as deforestation, natural disturbances such as wild fires, or changes in plants' phenological stage."),
-                            img(src = "ndvi.png", class = "topimage", width = "15%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                            img(src = "ndvi.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;"),
                             h3(strong("Food Insecurity")),
                             p("In this research we will use the indicator of current economic vulnerability as a proxy for the food insecurity. The current economic vulnerability represents the percentage of
                               total household expenditures devoted to food over the reference period and is calculated as a ratio of food expenditure to the total expenditure. The identification of food insecure
@@ -285,14 +285,14 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               information at the village level and also at the level of rural households."),
                             h3(strong("Living Standards Measurement Study")),
                             fluidRow(
-                              column(4,
+                              column(6,
                                      p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
                               been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure. 3859 households were surveyed in 2011, 3627 households were surveyed in 2014 and 
                                        6024 households were surveyed in 2018.When we aggregated at median level, we got 50 observations in 2011 as well as 2014 and 61 observations in 2018 at Department level (admin 2) while 96 observations in 2011 and 2014 and
                                        232 observations in 2018 at Commune level (admin 3)."),
                               ),
-                              column(8,
+                              column(6,
                                      img(src = "lsms.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;")),
                             ),
                             h1(strong("Methodology")),
@@ -301,8 +301,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               amount or NDVI value is by comparing that value (xi) to the mean (x̄) of those values in a prior period (here we used 1981-2010), and dividing by the standard deviation
                               (si) across that same baseline period."),
                             h3(strong('Correlation')),
-                            p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Person R correlation
-                              coefficient, which measures the strength of the linear association between the variables."), align = "justify",),
+                            p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Pearson's correlation
+                              coefficient (r), which measures the strength of the linear association between the variables."), align = "justify",),
                  ),
                  ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
