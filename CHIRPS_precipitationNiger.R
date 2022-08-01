@@ -146,7 +146,7 @@ yearData1 <-
   yearData2 %>% 
   filter(year %in% seq(1981, 2021, 1)) %>%
   group_by(admin1Name, year) %>% 
-  mutate(Precipitation = round(mean(total_precip),digits = 1)) %>% 
+  mutate(Precipitation = round(mean(total_precip),digits = 3)) %>% 
   ungroup() %>% 
   distinct(admin1Name, Precipitation, year)
 
@@ -173,8 +173,8 @@ mean(yearData1$Precipitation, na.rm = TRUE)
 
 
 ### to download the dataframe as csv file
-write.csv(yearData1, ".yearData1.csv", row.names = FALSE)
-write.csv(yearData1, ".yearData2.csv", row.names = FALSE)
+write.csv(yearData1, "yearData1.csv", row.names = FALSE)
+write.csv(yearData1, "yearData2.csv", row.names = FALSE)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precipitation Maps (Admin 2) -----
