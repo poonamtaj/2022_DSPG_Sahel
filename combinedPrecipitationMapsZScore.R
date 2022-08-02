@@ -249,6 +249,22 @@ seasonalNDVIMean_admin3 <-read_excel("./seasonalndvimean3.xlsx")
 seasonalNDVIMedian_admin2 <-read_excel("./seasonalNDVIAdmin2_md.xlsx")
 seasonalNDVIMedian_admin3 <-read_excel("./seasonalNDVIZscore3_md.xlsx")
 
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Clean NDVI Data -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Annual Admin 3
+cleanedannualNDVIMean_admin3 <-
+  annualNDVIMean_admin3 %>% 
+  distinct(rowcacode3.x, year, zscore_ndvi)
+
+colnames(cleanedannualNDVIMean_admin3) <- c('rowcacode3','year','zscore_ndvi')
+
+#Seasonal Admin 3
+cleanedseasonalNDVIMean_admin3 <-
+  seasonalNDVIMean_admin3 %>% 
+  distinct(rowcacode3.x, year, zscore_ndvi)
+
+colnames(cleanedseasonalNDVIMean_admin3) <- c('rowcacode3','year','zscore_ndvi')
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate NDVI Annual Mean Z-Score Maps (Admin 2 & Admin 3) -----
@@ -274,8 +290,8 @@ annualNDVIMeanDepartment <-
 
 #Admin 3
 nigerNDVIZScoreMerged3 = full_join(geospatialData3,
-                                   annualNDVIMean_admin3,
-                                   by = "adm_03")
+                                   cleanedannualNDVIMean_admin3,
+                                   by = "rowcacode3")
 
 annualNDVIMeanCommune <-
   nigerNDVIZScoreMerged3 %>% 
@@ -297,12 +313,12 @@ annualNDVIMeanCommune <-
 # Generate NDVI Seasonal Mean Z-Score Data Graphics (Admin 2 & Admin 3)-----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #Admin 2
-seasonalNDVIZScore_Merged2 = full_join(geospatialData2,
-                                       seasonalNDVIMean_admin2,
-                                       by = "admin2Pcod")
+nigerNDVIZScoreMerged2 = full_join(geospatialData2,
+                                   seasonalNDVIMean_admin2,
+                                   by = "admin2Pcod")
 
 seasonalNDVIMeanDepartment <-
-  seasonalNDVIZScore_Merged2 %>% 
+  nigerNDVIZScoreMerged2 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
@@ -317,12 +333,12 @@ seasonalNDVIMeanDepartment <-
         rect = element_blank())
 
 #Admin 3
-seasonalNDVIZScore_Merged3 = full_join(geospatialData3,
-                                       seasonalNDVIMean_admin3,
-                                       by = "adm_03")
+nigerNDVIZScoreMerged3 = full_join(geospatialData3,
+                                   cleanedseasonalNDVIMean_admin3,
+                                   by = "rowcacode3")
 
 seasonalNDVIMeanCommune <-
-  seasonalNDVIZScore_Merged3 %>% 
+  nigerNDVIZScoreMerged3 %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
   geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
@@ -362,8 +378,7 @@ annualNDVIMedianDepartment <-
 #Admin 3
 annualNDVIZScoreMerged3_md = full_join(geospatialData3,
                                        annualNDVIMedian_admin3,
-                                       by = "adm_03")
-
+                                       by = "rowcacode3")
 
 annualNDVIMedianCommune <-
   annualNDVIZScoreMerged3_md %>% 
@@ -386,14 +401,13 @@ annualNDVIMedianCommune <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 seasonalNDVIZScore_Merged2_md = full_join(geospatialData2,
                                           seasonalNDVIMedian_admin2,
-                                          by = "admin2Name")
-
+                                          by = "admin2Pcod")
 
 seasonalNDVIMedianDepartment <-
   seasonalNDVIZScore_Merged2_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = yearpeak_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Median", fill = "z-score" ) + 
@@ -407,7 +421,7 @@ seasonalNDVIMedianDepartment <-
 #Admin 3
 seasonalNDVIZScoreMerged3_md = full_join(geospatialData3,
                                          seasonalNDVIMedian_admin3,
-                                         by = "adm_03")
+                                         by = "rowcacode3")
 
 
 seasonalNDVIMedianCommune <-
