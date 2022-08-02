@@ -246,7 +246,7 @@ annualNDVIMedian_admin3 <-read_excel("./annualNDVIZScoreAdmin3_md.xlsx")
 seasonalNDVIMean_admin2 <-read_excel("./seasonalndvimean2.xlsx")
 seasonalNDVIMean_admin3 <-read_excel("./seasonalndvimean3.xlsx")
 
-seasonalNDVIMedian_admin2 <-read_excel("./seasonalNDVIAdmin2_md.xlsx")
+seasonalNDVIMedian_admin2 <-read_excel("./seasonalAnnualZscore2_md.xlsx")
 seasonalNDVIMedian_admin3 <-read_excel("./seasonalNDVIZscore3_md.xlsx")
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -407,7 +407,7 @@ seasonalNDVIMedianDepartment <-
   seasonalNDVIZScore_Merged2_md %>% 
   filter(year == 2011|year == 2014|year == 2015|year == 2017|year == 2018) %>% 
   ggplot() + 
-  geom_sf(aes(fill = yearpeak_ndvi),color = NA, alpha = 0.8) +
+  geom_sf(aes(fill = zscore_ndvi),color = NA, alpha = 0.8) +
   scale_fill_viridis_c(direction = -1) +
   facet_wrap(~year, nrow = 1) +
   labs(title="Median", fill = "z-score" ) + 
