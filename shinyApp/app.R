@@ -422,6 +422,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             ),
                           br(),
                           br(),
+                          br(),
                           
                             fluidRow(
                               column(
