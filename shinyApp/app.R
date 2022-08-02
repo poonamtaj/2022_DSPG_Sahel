@@ -495,7 +495,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                               Food shortages, low purchasing power, improper food distribution, or improper food utilization at the household level could all be contributing factors to this predicament."),
                                             p("These maps show the food insecurity data at the Department level(67 departments) which comes from the EVIAM surveys (joint survey on vulnerability to household food insecurity in Niger) for the years 2015 and 2017. 
                                               There are three main variables to understand the magnitude of food insecurity: the population at risk, the population at moderate risk, and the population at severe risk."),
-                                            p("If we focus on the maps, it is observed that food insecurity is concentrated in southwest regions in both 2015 and 2017. If we look at the differences between 2105 and 2017, 
+                                            p("If we focus on the maps, it is observed that food insecurity is concentrated in southwest regions in both 2015 and 2017. If we look at the differences between 2015 and 2017, 
                                               more share of the population was food insecure in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an upward trend in the percentages of populations with severe, moderate, and at-risk food insecurity."),
                                             p("To view the share of the food insecure population in different departments, hover over the respective department on the map."), 
                                             align = "justify"),
