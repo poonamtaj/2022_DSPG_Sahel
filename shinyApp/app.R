@@ -311,7 +311,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             withMathJax()),
                           tabsetPanel(
                  tabPanel("Precipitation",
-                          fluidRow(
+                          fluidRow(style = "margin: 2px;",
+                                   br(""),
                             column(
                               4,
                               p(h4(strong("Description"))),
@@ -332,7 +333,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           ), 
                           br(),
                           
-                          fluidRow(
+                          fluidRow(style = "margin: 2px;",
+                                   br(""),
                             column(
                               4,
                               p(h4(strong("Description"))),
@@ -357,7 +359,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           br(),
                           
                           
-                          fluidRow(
+                          fluidRow(style = "margin: 2px;",
+                                   br(""),
                             column(
                               4,
                               p(h4(strong("Description"))),
@@ -384,7 +387,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                  
                  tabPanel("NDVI", 
                             
-                            fluidRow(
+                            fluidRow(style = "margin: 2px;",
+                                     br(""),
                               column(4,
                                      p(h4(strong("Description"))),
                                      p("The annual peak NDVI by region line charts show that there are significant peaks
@@ -400,7 +404,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             ),
                           br(),
                           
-                            fluidRow(
+                            fluidRow(style = "margin: 2px;",
+                                     br(""),
                               column(
                                 4,
                                 p(h4(strong("Description"))),
@@ -422,7 +427,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             ),
                           br(),
                           
-                            fluidRow(
+                            fluidRow(style = "margin: 2px;",
+                                     br(""),
                               column(
                                 4,
                                 p(h4(strong("Description"))),
