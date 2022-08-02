@@ -778,7 +778,7 @@ server <- function(input, output) {
     
     output$plot4 <- renderPlotly({
       annualndvi_md %>%
-        ggplot(aes(x = Year, y = NDVI, color = Region)) +
+        ggplot(aes(x = Year, y = ndvi, color = Region)) +
         geom_line()+ 
         scale_color_viridis_d(option = "H") +
         labs(title = "Median",
