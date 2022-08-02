@@ -110,7 +110,7 @@ annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
 
 ### NDVI data
 #mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
-annualndvi <- read_csv("./data/ndviyearData_admin1.csv")
+annualndvi <- read_csv("./data/yearData_admin1.csv")
 annualndvi_md <- read_csv("./data/ndviyearAdmin1_md.csv")
 ### food insecurity data
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
@@ -420,8 +420,6 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                 plotOutput("NDVI_out")
                               ),  
                             ),
-                          br(),
-                          br(),
                           br(),
                           
                             fluidRow(
@@ -778,7 +776,7 @@ server <- function(input, output) {
     
     output$plot4 <- renderPlotly({
       annualndvi_md %>%
-        ggplot(aes(x = Year, y = ndvi, color = Region)) +
+        ggplot(aes(x = Year, y = NDVI, color = Region)) +
         geom_line()+ 
         scale_color_viridis_d(option = "H") +
         labs(title = "Median",
@@ -792,10 +790,10 @@ server <- function(input, output) {
     })
     output$NDVI_out<-renderImage({
       if(NDVI()=="Admin2"){
-        list(src='www/annualNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=400)
       }
       else if (NDVI()=="Admin3"){
-        list(src='www/annualNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/annualNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=400)
       }
     })
     seasonalNDVI <- reactive({
@@ -803,10 +801,10 @@ server <- function(input, output) {
     })
     output$seasonalNDVI_out<-renderImage({
       if(seasonalNDVI()=="Admin2seasonal"){
-        list(src='www/seasonalNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=400)
       }
       else if (seasonalNDVI()=="Admin3seasonal"){
-        list(src='www/seasonalNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+        list(src='www/seasonalNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=400)
       }
     })
  
