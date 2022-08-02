@@ -329,7 +329,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               p(h4(strong("Total Annual Precipitation by Region"))),
                               plotlyOutput("plot1"),
                               plotlyOutput("plot2")
-                            ),  
+                            ), align = "justify", 
                           ), 
                           br(),
                           
@@ -355,7 +355,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                 "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
                               plotOutput("precipitation_out")
                             ),  
-                          ),
+                          ), align = "justify",
                           br(),
                           
                           
@@ -379,7 +379,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
                                 "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
                               plotOutput("seasonalPrecip_out")
-                            ),  
+                            ), 
                           )
                           
                           
@@ -400,8 +400,8 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                      p(h4(strong("Peak Annual NDVI by Region"))),
                                      plotlyOutput("plot3"),
                                      plotlyOutput("plot4")
-                              ),
-                            ),
+                              ), align = "justify",
+                            ), 
                           br(),
                           
                             fluidRow(style = "margin: 2px;",
@@ -424,7 +424,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                   "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
                                 plotOutput("NDVI_out")
                               ),  
-                            ),
+                            ), align = "justify",
                           br(),
                           
                             fluidRow(style = "margin: 2px;",
