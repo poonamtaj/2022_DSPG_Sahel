@@ -182,7 +182,7 @@ yearAdmin1_md  %>%
              y = Precipitation, 
              color = Region, linetype = Region)) +
   geom_line() +
-  labs(title = "Total Precipitation (mm) By Administrative Region (Admin 1)", 
+  labs(title = "Total Precipitation (mm) By Administrative Region (Admin 1) Median", 
        caption = "Data Source: CHIRPS",
        y = "", 
        x = "",
@@ -210,6 +210,7 @@ annualZScoreMerged2_md %>%
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
+        axis.line = element_blank(),
         rect = element_blank())
 
 #Admin 3
@@ -228,6 +229,7 @@ annualZScoreMerged3_md %>%
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
+        axis.line = element_blank(),
         rect = element_blank())
 
 
@@ -249,6 +251,7 @@ seasonalZScore_Merged2_md %>%
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
+        axis.line = element_blank(),
         rect = element_blank())
 
 #Admin 3
@@ -267,6 +270,7 @@ seasonalZScoreMerged3_md %>%
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
+        axis.line = element_blank(),
         rect = element_blank())
 
 
