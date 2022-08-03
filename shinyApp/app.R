@@ -179,7 +179,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           fluidRow(style = "margin: 2px;",
                                    align = "center",
                                    br(""),
-                                   h1(strong("Sensing Drought in the Sahel for household resilience")),
+                                   h1(strong("Sensing Drought in the Sahel for Household Resilience")),
                                    h4("Data Science for the Public Good Program"),
                                    h4("Virginia Tech"),
                                    h4("Department of Agricultural and Applied Economics")
@@ -189,7 +189,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                           h2(strong("Project Overview"), align = "center"),
                                           p("Decades of economic research has shown that without effective social protection, 
                                           extreme weather in sub-Saharan Africa has resulted in people resorting to harmful coping 
-                                          strategies, including removing children from school, skipping meals, and selling off assets (Premand 2020). 
+                                          strategies, including removing children from school, skipping meals, and selling off assets (Premand, 2020). 
                                           These coping strategies further perpetuate the poverty cycle, preventing future generations from
                                           achieving a higher quality of life. Weather trends in the past few decades have also shown that 
                                           the number of people exposed to drought in the Sahel has increased (Sahel Adaptive Social Protection Program 2020)."),
@@ -219,14 +219,14 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                           p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
                                             withdrew from the French Community in 1960, proclaiming independence. Hamani Diori led a single-party dictatorship until he was
                                             overthrown in a coup in 1974. Niger has long struggled to maintain peace within its changing government, with minimal resources
-                                            and insufficient funding. Niger’s present republic is responsible for regulating its 7 regions, further divided into 36 departments
-                                            and 265 communes. "),
+                                            and insufficient funding. Niger’s present republic is responsible for regulating its 8 regions, further divided into 67 departments 
+                                            and 266 communes. "),
                                           p("The economy in Niger centers on subsistence (rain-fed) crops, livestock, and uranium deposits. Agriculture contributes 40% of the
                                             GDP and provides livelihoods for over 80% of the population (Central Intelligence Agency 2022). Despite the reliance on the agriculture industry, agricultural production
                                             is constrained to the short rainy season, with limited access to irrigation. Niger is highly exposed to climatic shocks such as drought;
                                             the frequency and severity of these shocks is expected to increase due to climate change. Considering the dependence on agriculture and
                                             the frequency of drought, Niger is a high poverty and food insecure country with low living standards, leaving the country as one of the
-                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index (Laya 2021).")), align = "justify",
+                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index (Laya, 2021).")), align = "justify",
                                    column(4,
                                           h2(strong("Recent History"), align = "center"),
                                           p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
@@ -234,10 +234,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                             rate of just 19%. The healthcare system is also inadequate, due to a lack of both financial and human capital. Niger is one of the poorest
                                             countries in the world, with a GDP per capita of 895 USD in 2015. The desert terrain and frequent drought faced by the people of Niger create
                                             significant obstacles in alleviating poverty. Weather shocks were found to decrease household consumption by 31-48%, create large movement in
-                                            food prices, and have a negative effect on technology adoption (Laya 2021)."),
+                                            food prices, and have a negative effect on technology adoption (Laya, 2021)."),
                                           p("Niger is a member of multiple international organizations, including the United Nations, International Monetary Fund, World Bank, etcetera; and
                                             receives substantial humanitarian assistance. In 2011, the Government of Niger began a national safety net system organized in the Office of the
-                                            Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions (Nicole 2019). This system is supported by the Sahel
+                                            Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions (Nicole, 2019). This system is supported by the Sahel
                                             Adaptive Social Protection Program (SASPP), launched by the World Bank in 2014 with the goal of developing adaptive social protection systems in
                                             six Sahel countries to help poor and vulnerable households become more resilient to the effects of climate change. Presently, the program is entering
                                             a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs (Sahel Adaptive Social Protection Program 2019).
@@ -256,7 +256,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             fluidRow(
                               column(6,
                                      p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
-                                   researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
+                                   researchers to evaluate the severity of rainfall deficits. Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
                                    spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
                               ),
                               column(6,
@@ -607,10 +607,10 @@ tabPanel("Takeaways",
                                    more so than in annual totals. Most notable with NDVI mapping, median data accounts for outliers to better visually represent data,
                                    whereas mapping using mean appears washed out. Additionally, looking at data by commune rather than department shows more variation
                                    in refined locations. "),
-                p("Next Steps: Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource
+                p("Next Steps: Therefore, to further examine, our next proposed steps are to include alternative indicators for drought e.g., water resource
                                    stress index and soil moisture, which may exhibit greater correspondence with agricultural drought conditions. We will also disaggregate
                                    the food insecurity data to focus on smaller administrative units that may illustrate greater variation over space. Another option is to
-                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships. This research will work on to include a 20km buffer around the LSMS enumeration areas to address spatial aggregation question"), align = "justify",
+                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships. This research will work on to include a 20km buffer around the LSMS enumeration areas to address spatial aggregation question."), align = "justify",
          )),
                  
                  ## Tab References --------------------------------------------------------------

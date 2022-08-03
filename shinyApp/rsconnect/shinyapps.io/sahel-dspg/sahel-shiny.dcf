@@ -5,9 +5,9 @@ account: sahel-dspg
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6703767
-bundleId: 6159218
+bundleId: 6159890
 url: https://sahel-dspg.shinyapps.io/sahel-shiny/
-when: 1659471525.53102
-lastSyncTime: 1659471525.53102
+when: 1659489844.44551
+lastSyncTime: 1659489844.44551
 asMultiple: FALSE
 asStatic: FALSE
