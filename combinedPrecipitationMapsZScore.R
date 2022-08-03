@@ -1,10 +1,10 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Author: Catherine Back
 # Project name: Sahel Adaptive Social Protection Program
-# Date Created: # Wed Jul 20 14:33:13 2022 ------------------------------
+# Date Created: # Wed Aug 3 14:33:17 2022 ------------------------------
 # Date Last Updated:
 # R version: 4.1.3
-# Purpose: Combine Median and Mean Precipitation Z-Score Data
+# Purpose: Combine Median and Median Precipitation/NDVI Z-Score Maps
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
