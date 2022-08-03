@@ -1,7 +1,7 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Author: Catherine Back and Elinor Benami
 # Project name: Sahel Adaptive Social Protection Program
-# Date Created: # Wed Jul 20 14:33:13 2022 ------------------------------
+# Date Created: # Wed Aug 3 14:33:13 2022 ------------------------------
 # Date Last Updated:
 # R version: 4.1.3
 # Purpose: Load and Clean Precip Data Files
@@ -114,19 +114,6 @@ dataAdmin3 <-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Generate Total Precip Graphics By Admin 0 (country) and Admin 1 (building off admin 2) ---- 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Admin 0 (one line for the entire region)
-annualPrecip <- 
-  dataAdmin2 %>%
-  group_by(year) %>%
-  mutate(meanAnnualPrecip = mean(Precipitation)) %>%
-  ungroup() %>%
-  distinct(year, meanAnnualPrecip)
-
-annualPrecip %>% 
-  ggplot(aes(x=year, y=meanAnnualPrecip)) +
-  geom_line() + 
-  labs(title="Average Rainfall by Year", x="Year", y ="Average Precipitation (mm)") +
-  theme_classic() 
 
 # Calculate total admin 2 precipitation for maps (if every obs is on admin 2 basis, then show)
 yearData2 <- 
@@ -283,6 +270,7 @@ nigerZScoreMerged2 %>%
            theme_classic() + 
            theme(axis.text.x = element_blank(),
                  axis.text.y = element_blank(),
+                 axis.line = element_blank(),
                  axis.ticks = element_blank(),
                  rect = element_blank())
 
@@ -301,6 +289,7 @@ nigerZScoreMerged3 %>%
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
+        axis.line = element_blank(),
         axis.ticks = element_blank(),
         rect = element_blank())
 
@@ -399,6 +388,7 @@ seasonalZScore_Merged2 %>%
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
+        axis.line = element_blank(),
         rect = element_blank())
 
 #Admin 3
@@ -417,5 +407,6 @@ seasonalZScore_Merged3 %>%
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
+        axis.line = element_blank(),
         rect = element_blank())
 
