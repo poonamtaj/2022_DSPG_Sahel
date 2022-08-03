@@ -1,7 +1,7 @@
 ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Author: Milind Gupta and Elinor Benami
 # Project name: Sahel 
-# Date Last Updated: # Mon Aug 2 2022
+# Date Last Updated: # Mon Aug 3 2022
 # Purpose: Import LSMS Data and Generate Maps of Food Expenditure and Total Expenditure for admin 3 in Niger
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -21,6 +21,7 @@ library(viridis)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Loading dataset
+# TODO: coauthors -- change the file path/directory according to your path/directory
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 welfare_2011 <-read_dta("ECVMA_2011_welfare.dta")
 welfare_2014 <-read_dta("ECVMA_2014_welfare.dta")
@@ -74,7 +75,7 @@ lsms_slim_2011_2014 <-
   ecvma_slim_2014 %>% 
   rbind(ecvma_slim_2011)
 
-#slimming down raw 2018 lsms dataset.Adding year column and renaming latitude and longitude columns
+#slimming down raw 2018 lsms dataset.
 ecvma_slim_2018 <- 
   welfare_2018 %>% 
   select(#year, 
@@ -88,8 +89,8 @@ ecvma_slim_2018 <-
     sh_nonfood,
     cons_pc_real
   ) %>% 
-  mutate(year = 2018) %>% 
-  rename(latitude = GPS__Latitude, 
+  mutate(year = 2018) %>% #Adding year column
+  rename(latitude = GPS__Latitude, #renaming latitude and longitude columns
          longitude = GPS__Longitude)
 
 #Converting 2018 food expenditure and total expenditure into deflated values
@@ -143,6 +144,7 @@ remove_chart_clutter <-
 
 LSMSdata <- mergednewdata
 
+#Loading shape file of Niger(admin 3)
 # TODO: coauthors -- change the file here for your path
 niger_level3 <- st_read(
   "C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 3_new/NER_adm03_feb2018.shp")
