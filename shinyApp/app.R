@@ -192,13 +192,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                           strategies, including removing children from school, skipping meals, and selling off assets (Premand, 2020). 
                                           These coping strategies further perpetuate the poverty cycle, preventing future generations from
                                           achieving a higher quality of life. Weather trends in the past few decades have also shown that 
-                                          the number of people exposed to drought in the Sahel has increased (Sahel Adaptive Social Protection Program 2020)."),
+                                          the number of people exposed to drought in the Sahel has increased (Sahel Adaptive Social Protection Program, 2020)."),
                                           p("The Data Science for the Public 
                                           Good (DSPG) project seeks to help break the link between drought and distress, by identifying where 
                                           droughts have created greatest harms. The research team is supporting stakeholder The World Bank’s 
                                           Sahel Adaptive Protection Program, who is looking to use readily available data on drought conditions 
                                           to determine the most efficient use of funding to aid those at greatest risk at a more rapid pace than 
-                                          before (Sahel Adaptive Social Protection Program 2020). Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
+                                          before (Sahel Adaptive Social Protection Program, 2020). Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
                                           by developing targeting mechanisms, identifying the most vulnerable and quickly scaling up programs when needed.
                                           The DSPG team will be using publicly available data on historical drought indicators, including precipitation and 
                                           biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country 
