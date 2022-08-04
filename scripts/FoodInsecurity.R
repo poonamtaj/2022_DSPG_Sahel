@@ -2,7 +2,7 @@
 ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Author: Milind Gupta 
 # Project name: Sahel 
-# Date last updated: 12 JULY 2022
+# Date last updated: 4 Aug 2022
 # Purpose: Generate Maps of Food Insecurity
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -31,12 +31,13 @@ remove_chart_clutter <-
 
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
-setwd("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel")
-mydata <-read_excel("Données EVIAM 15 17 insécurite alimentaire.xlsx")
-niger_level2 <- st_read("C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
+#setwd("C:/Users/Milind Gupta/Desktop/2022_DSPG_SAHEL/2022_DSPG_Sahel")
+#mydata <-read_excel("Données EVIAM 15 17 insécurite alimentaire.xlsx")
+#niger_level2 <- st_read("C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
 
-mydata <-read_excel("Données EVIAM 15 17 insécurite alimentaire.xlsx")
-niger_level2 <- st_read("C:/Users/Milind Gupta/Desktop/dspg-sahel/Level 2_new/niger_admin2.shp")
+mydata <-read_excel("./data/raw_data/Données EVIAM 15 17 insécurite alimentaire.xlsx")
+niger_level2 <- st_read("./data/shapefiles/wb_niger_admin2_shapefile/niger_admin2.shp")
+
 
 # adjusting the discrepancy in some names due to French accent
 
