@@ -201,20 +201,19 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                           before (Sahel Adaptive Social Protection Program, 2020). Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
                                           by developing targeting mechanisms, identifying the most vulnerable and quickly scaling up programs when needed.
                                           The DSPG team will be using publicly available data on historical drought indicators, including precipitation and 
-                                          biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country 
-                                            of Niger. "),
+                                          biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country of Niger. "),
                                           p("Key questions include examining correlation between precipitation and NDVI drought indices, followed by determining the relationship between drought
-                                          and welfare data, using food insecurity as proxy. Lastly, we would like to examine whether aggregating data to different scales, such as mean and median,
-                                          will provide any additional insight into the relationships between the four datasets.")), 
+                                          and welfare data, using food insecurity as proxy. Lastly, we would like to examine whether aggregating data to different scales, such as mean and median, and at different administrative levels
+                                          will provide any additional insight into the relationships between the our datasets.")), 
                                    column(4,
                                           h2(strong("Introduction to The Sahel"), align = "center"),
                                           p("The Sahel is a band of territory in Africa that stretches the length of the continent, from the Atlantic coast of Senegal
                                             and Mauritania to the Red Sea coast of Eritrea, acting as a buffer zone between the Sahara Desert in the North and the
                                             Savannas in the South. The country of Niger is located in the middle of the Sahel, neighboring Mali, Chad, and Nigeria.
                                             Niger is split into three distinct zones, a desert zone in the North, an intermediate zone in the center, and a cultivated
-                                            zone in the South where a greater part of the 22-million person population is concentrated (Laya 2021). As over 80% of the land is 
+                                            zone in the South where a greater part of the 22-million person population is concentrated (Laya, 2021). As over 80% of the land is 
                                             covered by uninhabitable desert, 94% of the population lives on just 35% of the land. Niger does not have many large cities,
-                                            only roughly 19% of the population lives in urban areas (Central Intelligence Agency 2022)."),
+                                            only roughly 19% of the population lives in urban areas (Central Intelligence Agency, 2022)."),
                                           img(src = "niger.png", class = "topimage", width = "60%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                           p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
                                             withdrew from the French Community in 1960, proclaiming independence. Hamani Diori led a single-party dictatorship until he was
@@ -230,7 +229,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                    column(4,
                                           h2(strong("Recent History"), align = "center"),
                                           p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
-                                            by popular vote (Central Intelligence Agency 2022). Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
+                                            by popular vote (Central Intelligence Agency, 2022). Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
                                             rate of just 19%. The healthcare system is also inadequate, due to a lack of both financial and human capital. Niger is one of the poorest
                                             countries in the world, with a GDP per capita of 895 USD in 2015. The desert terrain and frequent drought faced by the people of Niger create
                                             significant obstacles in alleviating poverty. Weather shocks were found to decrease household consumption by 31-48%, create large movement in
@@ -240,7 +239,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                             Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions (Nicole, 2019). This system is supported by the Sahel
                                             Adaptive Social Protection Program (SASPP), launched by the World Bank in 2014 with the goal of developing adaptive social protection systems in
                                             six Sahel countries to help poor and vulnerable households become more resilient to the effects of climate change. Presently, the program is entering
-                                            a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs (Sahel Adaptive Social Protection Program 2019).
+                                            a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs (Sahel Adaptive Social Protection Program, 2019).
                                             The cash transfer program involves providing small, regular, and unconditional transfers targeted to poor households, selected based on a proxy-means test. This
                                             design rationales that it would help households better prepare themselves against future shocks; creating a more proactive system rather than only
                                             responding to existing shocks."), align = "justify",
@@ -626,7 +625,7 @@ tabPanel("Takeaways",
                                  p("Nicole, H. (2019, December 6). The organizations and steps used in reducing poverty in Niger. The Borgen Project. Retrieved July 13, 2022, from https://borgenproject.org/reducing-poverty-in-niger/ "),
                                  p("Premand, P., & Stoeffler, Q. (2020, November). Do cash transfers foster resilience? - world bank. Do Cash Transfers Foster Resilience? . Retrieved July 13, 2022, from https://documents1.worldbank.org/curated/en/281821605039063267/pdf/Do-Cash-Transfers-Foster-Resilience-Evidence-from-Rural-Niger.pdf "),
                                  p("Sahel adaptive Social Protection Program (ASPP). World Bank. (2020, June 1). Retrieved July 13, 2022, from https://www.worldbank.org/en/programs/sahel-adaptive-social-protection-program-trust-fund "),
-                                 p("U.S. Department of State. (2021, June 16). U.S. relations with Niger - United States Department of State. U.S. Department of State. Retrieved July 13, 2022, from https://www.state.gov/u-s-relations-with-niger/ ")
+                                 p("U.S. Department of State. (2021, June 16). U.S. relations with Niger - United States Department of State. U.S. Department of State. Retrieved July 13, 2022, from https://www.state.gov/u-s-relations-with-niger/ "), align = "justify",
                           )),
                  
                  ## Tab Team ---------------------------------------------------------------------
