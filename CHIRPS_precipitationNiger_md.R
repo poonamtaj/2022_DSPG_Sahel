@@ -23,14 +23,32 @@ remove_chart_clutter <-
     axis.title.y = element_text(angle = 0, vjust = 0.5),      # Rotate y axis so don't have to crank head
     legend.position="bottom"
   )
+
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-csvData2 <-read.csv("./dataAdmin2_md.csv")
-csvData3 <-read.csv("./dataAdmin3_md.csv")
+precipDataLong2 <-read.csv("./precipDataLong2_md.csv")
+precipDataLong3 <-read.csv("./precipDataLong3_md.csv")
 
 geospatialData2 <- st_read("./niger_admin2/niger_admin2.shp")
 geospatialData3 <- st_read("./niger_admin3/NER_adm03_feb2018.shp")
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Convert Column Names to Dates and create new columns -----
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+csvData2 <- 
+  precipDataLong2 %>%
+  mutate(year = year(Date), 
+         month = month(Date), 
+         day = day(Date)) %>%
+  ungroup()
+
+csvData3 <- 
+  precipDataLong3 %>%
+  mutate(year = year(Date), 
+         month = month(Date), 
+         day = day(Date)) %>%
+  ungroup()
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Admin 2 and Admin 3 Data Frames ---- 
