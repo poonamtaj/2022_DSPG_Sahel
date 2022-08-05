@@ -23,17 +23,6 @@ library(tidyverse)
 library(ggstatsplot)
 
 
-###Set Options -----
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-remove_chart_clutter <- 
-  theme(    
-    panel.grid.major = element_blank(),      # Remove panel grid lines
-    panel.grid.minor = element_blank(),      # Remove panel grid lines
-    panel.background = element_blank(),      # Remove panel background
-    axis.line = element_line(colour = "grey"),       # Add axis line
-    axis.title.y = element_text(angle = 0, vjust = 0.5),      # Rotate y axis so don't have to crank head
-    legend.position="bottom"
-  ) 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Load Data -----
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
