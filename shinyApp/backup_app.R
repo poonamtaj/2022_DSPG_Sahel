@@ -105,12 +105,12 @@ jscode <- "function getUrlVars() {
 # Setting working directory and reading data
 # TODO: coauthors -- change the file here for your path
 ### precipitation data
-annualPrecip <- read_csv("./data/yearData1_precip.csv")
+annualPrecip <- read_csv("./data/yearData1.csv")
 annualPrecip_md <- read_csv("./data/yearAdmin1_md.csv")
 
 ### NDVI data
 #mydt_ndvi_md <-read_csv("./data/admin2ndvi_md.csv")
-annualndvi <- read_csv("./data/ndviyearData_admin1.csv")
+annualndvi <- read_csv("./data/yearData_admin1.csv")
 annualndvi_md <- read_csv("./data/ndviyearAdmin1_md.csv")
 ### food insecurity data
 mydata <- read_excel("./data/food_insecurity_15_17.xlsx")
@@ -179,7 +179,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           fluidRow(style = "margin: 2px;",
                                    align = "center",
                                    br(""),
-                                   h1(strong("Sensing Drought in the Sahel for household resilience")),
+                                   h1(strong("Sensing Drought in the Sahel for Household Resilience")),
                                    h4("Data Science for the Public Good Program"),
                                    h4("Virginia Tech"),
                                    h4("Department of Agricultural and Applied Economics")
@@ -189,59 +189,60 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                           h2(strong("Project Overview"), align = "center"),
                                           p("Decades of economic research has shown that without effective social protection, 
                                           extreme weather in sub-Saharan Africa has resulted in people resorting to harmful coping 
-                                          strategies, including removing children from school, skipping meals, and selling off assets. 
+                                          strategies, including removing children from school, skipping meals, and selling off assets (Premand, 2020). 
                                           These coping strategies further perpetuate the poverty cycle, preventing future generations from
                                           achieving a higher quality of life. Weather trends in the past few decades have also shown that 
-                                          the number of people exposed to drought in the Sahel has increased."),
+                                          the number of people exposed to drought in the Sahel has increased (Sahel Adaptive Social Protection Program, 2020)."),
                                           p("The Data Science for the Public 
                                           Good (DSPG) project seeks to help break the link between drought and distress, by identifying where 
                                           droughts have created greatest harms. The research team is supporting stakeholder The World Bank’s 
                                           Sahel Adaptive Protection Program, who is looking to use readily available data on drought conditions 
                                           to determine the most efficient use of funding to aid those at greatest risk at a more rapid pace than 
-                                          before. Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
+                                          before (Sahel Adaptive Social Protection Program, 2020). Through this analysis, The World Bank seeks to take a more proactive approach to social protection 
                                           by developing targeting mechanisms, identifying the most vulnerable and quickly scaling up programs when needed.
                                           The DSPG team will be using publicly available data on historical drought indicators, including precipitation and 
-                                          biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country 
-                                            of Niger. ")), 
+                                          biomass indices from remote sensing data, and comparing them with historical welfare measures, focusing on the country of Niger. "),
+                                          p("Key questions include examining correlation between precipitation and NDVI drought indices, followed by determining the relationship between drought
+                                          and welfare data, using food insecurity as proxy. Lastly, we would like to examine whether aggregating data to different scales, such as mean and median, and at different administrative levels
+                                          will provide any additional insight into the relationships between the our datasets.")), 
                                    column(4,
                                           h2(strong("Introduction to The Sahel"), align = "center"),
                                           p("The Sahel is a band of territory in Africa that stretches the length of the continent, from the Atlantic coast of Senegal
                                             and Mauritania to the Red Sea coast of Eritrea, acting as a buffer zone between the Sahara Desert in the North and the
                                             Savannas in the South. The country of Niger is located in the middle of the Sahel, neighboring Mali, Chad, and Nigeria.
                                             Niger is split into three distinct zones, a desert zone in the North, an intermediate zone in the center, and a cultivated
-                                            zone in the South where a greater part of the 22-million person population is concentrated. As over 80% of the land is 
+                                            zone in the South where a greater part of the 22-million person population is concentrated (Laya, 2021). As over 80% of the land is 
                                             covered by uninhabitable desert, 94% of the population lives on just 35% of the land. Niger does not have many large cities,
-                                            only roughly 19% of the population lives in urban areas."),
+                                            only roughly 19% of the population lives in urban areas (Central Intelligence Agency, 2022)."),
                                           img(src = "niger.png", class = "topimage", width = "60%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                           p("Niger was incorporated into French West Africa in 1896, becoming a colony in 1922 following frequent rebellions. The country
                                             withdrew from the French Community in 1960, proclaiming independence. Hamani Diori led a single-party dictatorship until he was
                                             overthrown in a coup in 1974. Niger has long struggled to maintain peace within its changing government, with minimal resources
-                                            and insufficient funding. Niger’s present republic is responsible for regulating its 7 regions, further divided into 36 departments
-                                            and 265 communes. "),
+                                            and insufficient funding. Niger’s present republic is responsible for regulating its 8 regions, further divided into 67 departments 
+                                            and 266 communes. "),
                                           p("The economy in Niger centers on subsistence (rain-fed) crops, livestock, and uranium deposits. Agriculture contributes 40% of the
-                                            GDP and provides livelihoods for over 80% of the population. Despite the reliance on the agriculture industry, agricultural production
+                                            GDP and provides livelihoods for over 80% of the population (Central Intelligence Agency 2022). Despite the reliance on the agriculture industry, agricultural production
                                             is constrained to the short rainy season, with limited access to irrigation. Niger is highly exposed to climatic shocks such as drought;
                                             the frequency and severity of these shocks is expected to increase due to climate change. Considering the dependence on agriculture and
                                             the frequency of drought, Niger is a high poverty and food insecure country with low living standards, leaving the country as one of the
-                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index.")),
+                                            poorest and least developed in the world, it ranked last in the UNDP 2019 Human Development Index (Laya, 2021).")), align = "justify",
                                    column(4,
                                           h2(strong("Recent History"), align = "center"),
                                           p("Under the constitution established in 2010, Niger is a republic with a president acting as head of state serving five year terms, elected
-                                            by popular vote. Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
+                                            by popular vote (Central Intelligence Agency, 2022). Education in Niger is free, but is severely underutilized due to high rates of poverty, leaving the country with a literacy
                                             rate of just 19%. The healthcare system is also inadequate, due to a lack of both financial and human capital. Niger is one of the poorest
                                             countries in the world, with a GDP per capita of 895 USD in 2015. The desert terrain and frequent drought faced by the people of Niger create
                                             significant obstacles in alleviating poverty. Weather shocks were found to decrease household consumption by 31-48%, create large movement in
-                                            food prices, and have a negative effect on technology adoption."),
+                                            food prices, and have a negative effect on technology adoption (Laya, 2021)."),
                                           p("Niger is a member of multiple international organizations, including the United Nations, International Monetary Fund, World Bank, etcetera; and
                                             receives substantial humanitarian assistance. In 2011, the Government of Niger began a national safety net system organized in the Office of the
-                                            Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions. This system is supported by the Sahel
+                                            Prime Minister, with the objective of developing multi-year safety nets and shock-responsive interventions (Nicole, 2019). This system is supported by the Sahel
                                             Adaptive Social Protection Program (SASPP), launched by the World Bank in 2014 with the goal of developing adaptive social protection systems in
                                             six Sahel countries to help poor and vulnerable households become more resilient to the effects of climate change. Presently, the program is entering
-                                            a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs. The cash
-                                            transfer program involves providing small, regular, and unconditional transfers targeted to poor households, selected based on a proxy-means test. This
+                                            a new phase focused on strengthening these social protection systems, expanding the reach of existing shock response cash transfer programs (Sahel Adaptive Social Protection Program, 2019).
+                                            The cash transfer program involves providing small, regular, and unconditional transfers targeted to poor households, selected based on a proxy-means test. This
                                             design rationales that it would help households better prepare themselves against future shocks; creating a more proactive system rather than only
-                                            responding
-                                            to existing shocks."),
+                                            responding to existing shocks."), align = "justify",
                                    )
                           )
                  ),
@@ -252,13 +253,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             h1(strong("Data Sources")),
                             h3(strong("Precipitation")),
                             fluidRow(
-                              column(4,
+                              column(6,
                                      p("Estimating rainfall variations over space and time is a key tool of predicting drought and conducting environmental monitoring. Using historical context allows
-                                   researchers to evaluate the severity of rainfall deficits.  Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
+                                   researchers to evaluate the severity of rainfall deficits. Climate Hazards Group InfraRed Precipitation with Station (CHIRPS) data is a quasi-global rainfall dataset
                                    spanning 50°S-50°N and all longitudes ranging from 1981 to present, showing gridded rainfall time series for trend analysis and seasonal drought monitoring."),
                               ),
-                              column(8,
-                                     img(src = "precipitation.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                              column(6,
+                                     img(src = "precipitation.png", class = "topimage", width = "35%", style = "display: block; margin-left: auto; margin-right: auto;"),
                               )),
                             h3(strong("Normalized Difference Vegetation Index")),
                             p("The Normalized Difference Vegetative Index (NDVI) dataset is unique in that it bridges the gap between satellite imagery and internal vegetative processes. Satellite
@@ -272,7 +273,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               over time to establish “normal” growing conditions in a region for a given time of year. Further analysis can then characterize the health of vegetation in that place relative
                               to the norm. When analyzed through time, NDVI can reveal where vegetation is thriving and where it is under stress, as well as changes in vegetation due to human activities such
                               as deforestation, natural disturbances such as wild fires, or changes in plants' phenological stage."),
-                            img(src = "ndvi.png", class = "topimage", width = "15%", style = "display: block; margin-left: auto; margin-right: auto;"),
+                            img(src = "ndvi.png", class = "topimage", width = "25%", style = "display: block; margin-left: auto; margin-right: auto;"),
                             h3(strong("Food Insecurity")),
                             p("In this research we will use the indicator of current economic vulnerability as a proxy for the food insecurity. The current economic vulnerability represents the percentage of
                               total household expenditures devoted to food over the reference period and is calculated as a ratio of food expenditure to the total expenditure. The identification of food insecure
@@ -283,24 +284,24 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                               information at the village level and also at the level of rural households."),
                             h3(strong("Living Standards Measurement Study")),
                             fluidRow(
-                              column(4,
+                              column(6,
                                      p("The Living Standards Measurement Study (LSMS) is a survey program conducted by the World Bank, with the goal of strengthening household survey systems and improving the quality
                               of microdata. LSMS data allows a higher degree of accuracy in research and policy development, collecting measures of household and individual wellbeing. LSMS data from Niger has
                               been utilized in this research to study expenditure, by category: food expenditure, non-food expenditure, and total expenditure. 3859 households were surveyed in 2011, 3627 households were surveyed in 2014 and 
                                        6024 households were surveyed in 2018.When we aggregated at median level, we got 50 observations in 2011 as well as 2014 and 61 observations in 2018 at Department level (admin 2) while 96 observations in 2011 and 2014 and
                                        232 observations in 2018 at Commune level (admin 3)."),
                               ),
-                              column(8,
-                                     img(src = "lsms.png", class = "topimage", width = "45%", style = "display: block; margin-left: auto; margin-right: auto;")),
+                              column(6,
+                                     img(src = "lsms.png", class = "topimage", width = "50%", style = "display: block; margin-left: auto; margin-right: auto;")),
                             ),
                             h1(strong("Methodology")),
-                            h3(strong('Z-Score')),
-                            p("The DSPG team used z-scores to translate historical weather to “anomalies” from normal (xI). Z-scores (Zit) quantify how anomalous a given annual precipitation
-                              amount or NDVI value is by comparing that value (xI) to the mean (x̄) of those values in a prior period (here we used 1981-2010), and dividing by the standard deviation
+                            h3(strong('Standardized Measure')),
+                            p("The DSPG team used z-scores to translate historical weather to “anomalies” from normal (xi) as a standaridized measure. Z-scores (Zit) quantify how anomalous a given annual precipitation
+                              amount or NDVI value is by comparing that value (xi) to the mean (x̄) of those values in a prior period (here we used 1981-2010), and dividing by the standard deviation
                               (si) across that same baseline period."),
                             h3(strong('Correlation')),
-                            p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Person R correlation
-                              coefficient, which measures the strength of the linear association between the variables.")),
+                            p("Analysis then moved to determining the relationship between annual weather anomalies and aggregate welfare using the Pearson's correlation
+                              coefficient (r), which measures the strength of the linear association between the variables."), align = "justify",),
                  ),
                  ## Tab Drought Index ---------------------------------------------------------------
                  tabPanel("Drought Index",
@@ -309,71 +310,75 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             withMathJax()),
                           tabsetPanel(
                             tabPanel("Precipitation",
-                                     fluidRow(
-                                       column(
-                                         4,
-                                         p(h4(strong("Description"))),
-                                         p("The total annual precipitation by region line charts
+                                     fluidRow(style = "margin: 2px;",
+                                              br(""),
+                                              column(
+                                                4,
+                                                p(h4(strong("Description"))),
+                                                p("The total annual precipitation by region line charts
                                 shows that there are some regions that receive more
                                 precipitation than others. We see a couple peaks in
                                 precipitation along different years; specifically in
                                 1994, 1998, and 2020. These trends stay similar when
                                 looking at data aggregated using mean and aggregated
                                 using median. "), 
-                                       ),
-                                       column(
-                                         7,
-                                         p(h4(strong("Total Annual Precipitation by Region"))),
-                                         plotlyOutput("plot1"),
-                                         plotlyOutput("plot2")
-                                       ),  
+                                              ),
+                                              column(
+                                                7,
+                                                p(h4(strong("Total Annual Precipitation by Region"))),
+                                                plotlyOutput("plot1"),
+                                                plotlyOutput("plot2")
+                                              ), align = "justify", 
                                      ), 
                                      br(),
                                      
-                                     fluidRow(
-                                       column(
-                                         4,
-                                         p(h4(strong("Description"))),
-                                         p("The department level shows differences in the z-score between the mean
+                                     fluidRow(style = "margin: 2px;",
+                                              br(""),
+                                              column(
+                                                4,
+                                                p(h4(strong("Description"))),
+                                                p("The department level shows differences in the z-score between the mean
                                 versus median aggregated data. In addition, there are high z-scores in
                                 the northern regions of Niger, which are mostly desert. These scores could
                                 be due to data skewing from flood year outliers as the baseline data had
                                 little rain."), 
-                                         p("The commune level shows differences in the z-score score between the data
+                                                p("The commune level shows differences in the z-score score between the data
                                 aggregated using mean and aggregated using median. While there are high z-scores
                                 in the northern regions when using mean, using median shows that there is a region
                                 in the middle of Niger that receives more rainfall compared to the baseline data. "),
-                                       ),
-                                       column(
-                                         7,
-                                         p(h4(strong("Annual Z-Score Precipitation Mean and Median"))),
-                                         radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
-                                           "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
-                                         plotOutput("precipitation_out")
-                                       ),  
-                                     ),
+                                              ),
+                                              column(
+                                                7,
+                                                p(h4(strong("Annual Z-Score Precipitation Mean and Median"))),
+                                                radioButtons("precipitation", "Select Administrative levels:", width="100%", choices = c(
+                                                  "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                                plotOutput("precipitation_out")
+                                              ),  
+                                     ), align = "justify",
                                      br(),
                                      
-                                     fluidRow(
-                                       column(
-                                         4,
-                                         p(h4(strong("Description"))),
-                                         p("We see slight differences in the seasonal precipitation data when looking at
+                                     
+                                     fluidRow(style = "margin: 2px;",
+                                              br(""),
+                                              column(
+                                                4,
+                                                p(h4(strong("Description"))),
+                                                p("We see slight differences in the seasonal precipitation data when looking at
                                 mean versus median aggregated data. There are high z-scores in the northern
                                 region, especially in the years 2015 and 2018. These results align with records
                                 which indicate flooding in the year of 2018."), 
-                                         p("The commune level shows slight differences in the z-score when we look at mean
+                                                p("The commune level shows slight differences in the z-score when we look at mean
                               versus median aggregated data. While there are high z-scores in the northern regions
                               when using mean, using median we can see that there is the largest difference when
                               looking at 2015."),
-                                       ),
-                                       column(
-                                         7,
-                                         p(h4(strong("Seasonal Z-Score Precipitation Mean and Median"))),
-                                         radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
-                                           "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
-                                         plotOutput("seasonalPrecip_out")
-                                       ),  
+                                              ), 
+                                              column(
+                                                7,
+                                                p(h4(strong("Seasonal Z-Score Precipitation Mean and Median"))),
+                                                radioButtons("seasonalPrecip", "Select Administrative levels:", width="100%", choices = c(
+                                                  "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
+                                                plotOutput("seasonalPrecip_out")
+                                              ), 
                                      )
                                      
                                      
@@ -381,64 +386,66 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             
                             tabPanel("NDVI", 
                                      
-                                     fluidRow(
-                                       column(4,
-                                              p(h4(strong("Description"))),
-                                              p("The annual peak NDVI by region line charts show that there are significant peaks
+                                     fluidRow(style = "margin: 2px;",
+                                              br(""),
+                                              column(4,
+                                                     p(h4(strong("Description"))),
+                                                     p("The annual peak NDVI by region line charts show that there are significant peaks
                                          during 1994 and 2004. The stark peak during 1994 is reflected in precipitation data,
                                          however the peak in 2004 is unsupported by precipitation. The trends across time are
                                          similar when aggregated using mean and median."),
-                                       ),
-                                       column(7,
-                                              p(h4(strong("Peak Annual NDVI by Region"))),
-                                              plotlyOutput("plot3"),
-                                              plotlyOutput("plot4")
-                                       ),
-                                     ),
+                                              ),
+                                              column(7,
+                                                     p(h4(strong("Peak Annual NDVI by Region"))),
+                                                     plotlyOutput("plot3"),
+                                                     plotlyOutput("plot4")
+                                              ), align = "justify",
+                                     ), 
                                      br(),
                                      
-                                     fluidRow(
-                                       column(
-                                         4,
-                                         p(h4(strong("Description"))),
-                                         p("Annual Z-Score NDVI data is mapped to compare mean and median aggregation. 
+                                     fluidRow(style = "margin: 2px;",
+                                              br(""),
+                                              column(
+                                                4,
+                                                p(h4(strong("Description"))),
+                                                p("Annual Z-Score NDVI data is mapped to compare mean and median aggregation. 
                                 As NDVI data is a comparison to historical measures, there is little change in
                                 vegetation over time in the northern desert regions as shown in the maps. As such,
                                 the variation is concentrated in the southern regions."),
-                                         p("In both administrative levels the median data shows more variation in regions
+                                                p("In both administrative levels the median data shows more variation in regions
                                 as it accounts for any outliers in the data, also reflected by the narrower scale
                                 of z-score."),
-                                       ),
-                                       column(
-                                         7,
-                                         p(h4(strong("Annual Z-Score NDVI Mean and Median"))),
-                                         radioButtons("NDVI", "Select Administrative levels:", width="100%", choices = c(
-                                           "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
-                                         plotOutput("NDVI_out")
-                                       ),  
-                                     ),
-                                     br(),
+                                              ),
+                                              column(
+                                                7,
+                                                p(h4(strong("Annual Z-Score NDVI Mean and Median"))),
+                                                radioButtons("NDVI", "Select Administrative levels:", width="100%", choices = c(
+                                                  "Département (Admin 2)"="Admin2","Commune (Admin 3)"="Admin3")),
+                                                plotOutput("NDVI_out")
+                                              ),  
+                                     ), align = "justify",
                                      br(),
                                      
-                                     fluidRow(
-                                       column(
-                                         4,
-                                         p(h4(strong("Description"))),
-                                         p("Similar to annual data, variation is generally concentrated in the southern regions
+                                     fluidRow(style = "margin: 2px;",
+                                              br(""),
+                                              column(
+                                                4,
+                                                p(h4(strong("Description"))),
+                                                p("Similar to annual data, variation is generally concentrated in the southern regions
                                   regardless of mean or median aggregation. There are higher z-scores in the southern
                                   region on the 2018 map, which aligns with records reporting flooding during 2018."), 
-                                         p("The commune level maps aggregated by mean include outliers in a few communes that
+                                                p("The commune level maps aggregated by mean include outliers in a few communes that
                                   skew the scale of z-score, washing out the maps. Median data, accounting for
                                   outliers, is more visually representative when mapped. Interestingly, z-scores
                                   were slightly lower in 2015 despite flooding recorded during that year."),
-                                       ),
-                                       column(
-                                         7,
-                                         p(h4(strong("Seasonal Z-Score NDVI Mean and Median"))),
-                                         radioButtons("seasonalNDVI", "Select Administrative levels:", width="100%", choices = c(
-                                           "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
-                                         plotOutput("seasonalNDVI_out")
-                                       ),  
+                                              ), 
+                                              column(
+                                                7,
+                                                p(h4(strong("Seasonal Z-Score NDVI Mean and Median"))),
+                                                radioButtons("seasonalNDVI", "Select Administrative levels:", width="100%", choices = c(
+                                                  "Département (Admin 2)"="Admin2seasonal","Commune (Admin 3)"="Admin3seasonal")),
+                                                plotOutput("seasonalNDVI_out")
+                                              ),  
                                      )
                                      
                                      
@@ -454,22 +461,20 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             tabPanel("LSMS",
                                      column(4,
                                             h4(strong("Description")),
-                                            p("The Living Standards Measurement Study (LSMS), the World Bank's 
-                                              premier household survey program, aims to improve the quality of 
-                                              microdata and strengthen household survey systems in client countries
-                                              in order to better inform development policies. Its main objective is to
-                                              promote the creation and adoption of new standards and methods for gathering 
-                                              household data in order to support evidence-based policymaking."),
-                                            p("These maps show the food expenditure and total expenditure data at the Department level and Commune
-                                              level which comes from the LSMS surveys for the years 2011,2014 and 2018.  
-                                              We aggregated it by median because the median is less affected by outliers
-                                              and skewed data than the mean, and is usually the preferred measure of central
-                                              tendency when the distribution is not symmetrical. When we aggregated at median level, 
-                                              we got 50 observations in 2011 as well as 2014 and 61 observations in 2018 at Department level (admin 2)
-                                              while 96 observations in 2011 and 2014 and 232 observations in 2018 at Commune level (admin 3)."),
-                                            p(" We analyzed that per capita food expenditures have been lowest in the southern region.
-                                              It is lower in 2018 as compared to 2011 and 2014 at both admin levels. We also observed that total expenditures are
-                                              lowest in southern regions and highest in northwest regions at both admin levels. "),
+                                            p("The Living Standards Measurement Study (LSMS), the World Bank's premier household survey program, 
+                                              aims to improve the quality of microdata and strengthen household survey systems in client countries
+                                              in order to better inform development policies. It's main objective is to promote the creation and 
+                                              adoption of new standards and methods for gathering household data in order to support evidence-based
+                                              policymaking."),
+                                            p("These maps show the food expenditure and total expenditure data at the Department level and Commune level
+                                              which comes from the LSMS surveys for the years 2011, 2014, and 2018. We aggregated it by median because the
+                                              median is less affected by outliers and skewed data than the mean, and is usually the preferred measure of central
+                                              tendency when the distribution is not symmetrical. When we aggregated at median level, we got 50 observations in 2011 
+                                              as well as 2014 and 61 observations in 2018 at Department level (admin 2) while 96 observations in 2011 and 2014 and 232 
+                                              observations in 2018 at Commune level (admin 3)."),
+                                            p("We analyzed that per capita food expenditures have been lowest in the southern region. It is lower in 2018 as
+                                              compared to 2011 and 2014 at both admin levels. We also observed that total expenditures are lowest in southern
+                                              regions and highest in northwest regions at both admin levels. "),
                                             align = "justify"),
                                      column(8,
                                             h4(strong("Food Expenditure")),
@@ -489,26 +494,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             tabPanel("Food Insecurity",
                                      column(4,
                                             h4(strong("Description")),
-                                            p("Food insecurity is defined as when people lack access to 
-                                                enough wholesome food and don't get the nutrition they require
-                                                to grow normally and live active, healthy lives. Food shortages, 
-                                                low purchasing power, improper food distribution, or improper food 
-                                                utilization at the household level could all be contributing 
-                                                factors to this predicament."),
-                                            p("These maps show the food insecurity data at the Department level(67 departments) 
-                                                which comes from the EVIAM surveys (joint survey on vulnerability to household 
-                                                food insecurity in Niger ) for the years 2015 and 2017. There are three main 
-                                                variables to understand magnitude of the food insecurity: population at risk , 
-                                                population at moderate risk , and population at severe risk."),
-                                            p("If we focus on the maps , 
-                                                it is observed that food insecurity is concentrated in southwest regions 
-                                                in both 2015 and 2017.If we look at the differences between 2105 and 2017,more share of population 
-                                                being food insecure
-                                                in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an
-                                                upward trend in the percentages of populations with severe,
-                                                moderate and at risk food insecurity."),
-                                            p("To view the share of the food insecure population at different departments ,
-                                                hover over the respective department in the map."), 
+                                            p("Food insecurity is defined as when people lack access to enough wholesome food and don't get the nutrition they require to grow normally and live active healthy lives. 
+                                              Food shortages, low purchasing power, improper food distribution, or improper food utilization at the household level could all be contributing factors to this predicament."),
+                                            p("These maps show the food insecurity data at the Department level(67 departments) which comes from the EVIAM surveys (joint survey on vulnerability to household food insecurity in Niger) for the years 2015 and 2017. 
+                                              There are three main variables to understand the magnitude of food insecurity: the population at risk, the population at moderate risk, and the population at severe risk."),
+                                            p("If we focus on the maps, it is observed that food insecurity is concentrated in southwest regions in both 2015 and 2017. If we look at the differences between 2015 and 2017, 
+                                              more share of the population was food insecure in 2017 as compared to 2015. Hence, over the period from 2015 to 2017, there is an upward trend in the percentages of populations with severe, moderate, and at-risk food insecurity."),
+                                            p("To view the share of the food insecure population in different departments, hover over the respective department on the map."), 
                                             align = "justify"),
                                      column(8,
                                             h4(strong("Maps"),align="center"),
@@ -550,13 +542,13 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           fluidRow(
                             column(12,
                                    h4(strong("Description")),
-                                   p("In this section we are performing correlation analysis using Pearson Correlation Coefficient method. At the top of each plot, we can find the statistical significance (p) value besides Pearson correlation coefficient (r) and number of observations (n).
-                                 In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), align="justify",
+                                   p("In this section we are conducting correlation analysis with Pearson's Correlation Coefficient method. At the top of each plot, we can find the Pearson's correlation coefficient (r), confidence interval (CI), and number of observations (n).
+                                 In these plots we can also observe the histograms (distribution) of each axis/variable on top and right side."), 
                                    p("The first correlation plot is between annual cumulative precipitation z-score and annual NDVI z-score at Department level (admin 2) for select years 2011, 2014, 2015, 2017, and 2018. To have coherence and better understand correlation, 
                                  we have kept observations only from departments that are covered in 2018 LSMS household survey 61 out of 67 total departments in Niger. We observe that correlation precipitation and NDVI z-scores are positively correlated except in 2017. 
-                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02) with low significance. There is a year-to-year change in this relationship in strength and the direction."), align="justify",
+                                 The higher correlation is in 2011 (r = 0.52), whereas 2015 shows nearly zero correlation (r = 0.02). There is a year-to-year change in this relationship in strength and the direction."), 
                                    p("Figures 2 and 3 shows correlation graphs between share of per capita food expenditure with annual precipitation z-score and NDVI z-score respectively. The share of per capita food expenditure is obtained from LSMS data after aggregating at department level
-                                 taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure. The statistical significance also varies in each year.
+                                 taking median values of per capita food expenditure and per capita total expenditure in a household. In both figures we observe little or no correlation between drought indices and share of per capita food expenditure.
                                  Such low or no correlation could be a result of aggregation at a higher administrative unit due to which we might be losing the relationship that is measured at household level. "), align="justify",
                             )),
                           br(),
@@ -589,10 +581,10 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             column(12,
                                    h4(strong("Description")),
                                    p("In order to better understand the correlation between drought indices and share of food expenditure we have now aggregated the values at commune level (admin 3) in figures 4, 5, and 6. 
-                                In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), align="justify",
-                                   p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62) with statistical significance. 
-                                Whereas 2015 and 2017 shows very zero correlation but in different direction with significance. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), align="justify",
-                                   p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation with high statistical significance. 
+                                In figure 4 we have excluded same departments which are not covered in 2018 LSMS data."), 
+                                   p("Figure 4 shows that correlation precipitation and NDVI z-scores are positively correlated except in 2017. The higher correlation is in 2011 (r = 0.62). 
+                                Whereas 2015 and 2017 shows very zero correlation but in different direction. In year 2018 it appears to be affected by extreme values of NDVI z-score resulting in low correlation. "), 
+                                   p("The correlations of share of food expenditure with both precipitation and NDVI z-scores in figures 5 and 6 are showing very low correlation. 
                                 This again directs us towards the aggregation effect which was done at commune level (admin 3). Hence it would be interesting to observe similar relationship at the disaggregated level, 
                                 enumeration area or at household level for better understanding. These relationships could improve potentially when we include other factors such as soil moisture and temperature to analyze drought conditions in Niger."), align="justify",
                             )),
@@ -602,20 +594,22 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                           column(3),
                           column(6,
                                  h1(strong("Takeaways"), align = "center"),
-                                 p("Comparing data that is aggregated at mean vs median level shows differences 
-                                 in the Z-Score maps the most and not much differences in annual totals. 
-                                 Looking at data that is using admin 2 vs admin 3 its easy
-                                 to see where the data is most significant at a more refined locations. 
-                                 It is easier to spot variation when comparing seasonal rainfall maps versus 
-                                 annual rainfall maps."), 
-                                 p("Comparing data that NDVI..."),
-                                 p("Comparing per capita food expenditures and total expenditures aggregated at median level, we analyzed that per capita food expenditures have been lowest in the southern region and lower in 2018 as compared to 2011 and 2014 at both admin levels. 
-                                   We also observed that total expenditures are lowest in southern regions and highest in northwest regions at both admin levels"),
-                                 p("Although NDVI and Precipitation appear to positively correlate with one another, especially in 2011 and 2014 when droughts were reported, we observe very low correlation between drought indices (precipitation and NDVI) and 
-                                 share of food expenditure. This limited relationship may be a result from the high degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions."),
-                                 p("Therefore, to further examine, our next proposed are to include alternative indicators for drought e.g., water resource stress index and soil moisture may also exhibit greater correspondence with agricultural drought conditions, to 
-                                 disaggregate the food insecurity data to focus on smaller administrative units that would illustrate greater variation over space, and to evaluate alternative approaches to measure correspondence that may account for nonlinear relationships
-")
+                                 p("Comparing Precipitation and NDVI: As expected, precipitation and NDVI data generally correlate over every level of aggregation
+                                   (mean versus median, admin 2 versus admin 3). There are a few notable exceptions in particular years to further investigate,
+                                   including a peak in NDVI data in 2004 that is not reflected in precipitation data. Additionally, there is a significant peak in
+                                   NDVI data in 1994 that is somewhat reflected in precipitation data, but not to the same severity. "),
+                                 p("Comparing Drought and Consumption: Although NDVI and Precipitation appear to positively correlate with one another, we observe
+                                   very low correlation between drought indices and share of food expenditure. This limited relationship may be a result from the high
+                                   degree of aggregation across spatial units that causes us to lose some of the variation in underlying conditions. This finding guided
+                                   the process of determining next steps to gain a better understanding of the true relationship between drought and welfare."),
+                                 p("Aggregation by Mean Versus Median: Comparing data that is aggregated at mean vs median level shows differences in the z-score maps
+                                   more so than in annual totals. Most notable with NDVI mapping, median data accounts for outliers to better visually represent data,
+                                   whereas mapping using mean appears washed out. Additionally, looking at data by commune rather than department shows more variation
+                                   in refined locations. "),
+                                 p("Next Steps: Therefore, to further examine, our next proposed steps are to include alternative indicators for drought e.g., water resource
+                                   stress index and soil moisture, which may exhibit greater correspondence with agricultural drought conditions. We will also disaggregate
+                                   the food insecurity data to focus on smaller administrative units that may illustrate greater variation over space. Another option is to
+                                   evaluate alternative approaches to measuring correspondence that may account for nonlinear relationships. This research will work on to include a 20km buffer around the LSMS enumeration areas to address spatial aggregation question."), align = "justify",
                           )),
                  
                  ## Tab References --------------------------------------------------------------
@@ -631,7 +625,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                                  p("Nicole, H. (2019, December 6). The organizations and steps used in reducing poverty in Niger. The Borgen Project. Retrieved July 13, 2022, from https://borgenproject.org/reducing-poverty-in-niger/ "),
                                  p("Premand, P., & Stoeffler, Q. (2020, November). Do cash transfers foster resilience? - world bank. Do Cash Transfers Foster Resilience? . Retrieved July 13, 2022, from https://documents1.worldbank.org/curated/en/281821605039063267/pdf/Do-Cash-Transfers-Foster-Resilience-Evidence-from-Rural-Niger.pdf "),
                                  p("Sahel adaptive Social Protection Program (ASPP). World Bank. (2020, June 1). Retrieved July 13, 2022, from https://www.worldbank.org/en/programs/sahel-adaptive-social-protection-program-trust-fund "),
-                                 p("U.S. Department of State. (2021, June 16). U.S. relations with Niger - United States Department of State. U.S. Department of State. Retrieved July 13, 2022, from https://www.state.gov/u-s-relations-with-niger/ ")
+                                 p("U.S. Department of State. (2021, June 16). U.S. relations with Niger - United States Department of State. U.S. Department of State. Retrieved July 13, 2022, from https://www.state.gov/u-s-relations-with-niger/ "), align = "justify",
                           )),
                  
                  ## Tab Team ---------------------------------------------------------------------
@@ -653,7 +647,7 @@ ui <- navbarPage(title = "SAHEL DSPG 2022",
                             fluidRow(
                               column(4, align = "center",
                                      h4(strong("Graduate Fellow")), tags$br(),
-                                     tags$br(), img(src = "fellow-poonam.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
+                                     tags$br(), img(src = "fellow-poonam.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
                                      tags$br(), p(a(href = 'https://www.linkedin.com/in/poonam-tajanpure-72a64523b/', 'Poonam Tajanpure', target = '_blank'), "(Virginia Tech, Biological Systems Engineering)"),
                                      h4(strong("Graduate Research Assistant")), tags$br(),
                                      tags$br(), img(src = "fellow-armine.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width="37%", height="37%"),
@@ -703,10 +697,10 @@ server <- function(input, output) {
   })
   output$food_expenditure_out<-renderImage({
     if(food_expenditure()=="Admin2"){
-      list(src='www/latest_foodexp_admin2.png', align = "center",width=725,height=425)
+      list(src='www/deflated_foodexp_admin2.png', align = "center",width=725,height=425)
     }
     else if (food_expenditure()=="Admin3"){
-      list(src='www/latest_foodexp_admin3.png', align = "center",width=725,height=425)
+      list(src='www/deflated_foodexp_admin3.png', align = "center",width=725,height=425)
     }
   })
   
@@ -715,10 +709,10 @@ server <- function(input, output) {
   })
   output$total_expenditure_out<-renderImage({
     if(total_expenditure()=="total_Admin2"){
-      list(src='www/total_expend_admin2.png', align = "center",width=725,height=425)
+      list(src='www/deflated_totalexp_admin2.png', align = "center",width=725,height=425)
     }
     else if (total_expenditure()=="total_Admin3"){
-      list(src='www/total_expend_admin3.png', align = "center",width=725,height=425)
+      list(src='www/deflated_totalexp_admin3.png', align = "center",width=725,height=425)
     }
   })
   
@@ -753,10 +747,10 @@ server <- function(input, output) {
   })
   output$precipitation_out<-renderImage({
     if(precipitation()=="Admin2"){
-      list(src='www/annualRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/annualPrecipZScoreAdmin2Comparisons.png', align = "center",width=800,height=400)
     }
     else if (precipitation()=="Admin3"){
-      list(src='www/annualRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/annualPrecipZScoreAdmin3Comparisons.png', align = "center",width=800,height=400)
     }
   })
   
@@ -765,10 +759,10 @@ server <- function(input, output) {
   })
   output$seasonalPrecip_out<-renderImage({
     if(seasonalPrecip()=="Admin2seasonal"){
-      list(src='www/seasonalRainfallZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/seasonalPrecipZScoreAdmin2Comparisons.png', align = "center",width=800,height=400)
     }
     else if (seasonalPrecip()=="Admin3seasonal"){
-      list(src='www/seasonalRainfallZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/seasonalPrecipZScoreAdmin3Comparisons.png', align = "center",width=800,height=400)
     }
   })
   
@@ -801,10 +795,10 @@ server <- function(input, output) {
   })
   output$NDVI_out<-renderImage({
     if(NDVI()=="Admin2"){
-      list(src='www/annualNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/annualNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=400)
     }
     else if (NDVI()=="Admin3"){
-      list(src='www/annualNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/annualNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=400)
     }
   })
   seasonalNDVI <- reactive({
@@ -812,10 +806,10 @@ server <- function(input, output) {
   })
   output$seasonalNDVI_out<-renderImage({
     if(seasonalNDVI()=="Admin2seasonal"){
-      list(src='www/seasonalNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/seasonalNDVIZScoreAdmin2Comparisons.png', align = "center",width=800,height=400)
     }
     else if (seasonalNDVI()=="Admin3seasonal"){
-      list(src='www/seasonalNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=500)
+      list(src='www/seasonalNDVIZScoreAdmin3Comparisons.png', align = "center",width=800,height=400)
     }
   })
   
