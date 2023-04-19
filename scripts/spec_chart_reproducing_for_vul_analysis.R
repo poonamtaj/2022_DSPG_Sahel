@@ -5,24 +5,12 @@
 #===============================================================================
 
 #===============================================================================
-# Clean work space & load libraries
+# Clean work space 
 #===============================================================================
 rm(list=ls(all=TRUE))
 
-library(tidyverse)
-library(dplyr)
-library(janitor)
-
-library(sf)
-library(haven)
-library(viridis)
-
-# for regressions
-library(plm)
-library(fixest)
-
 #===============================================================================
-# Set up file paths  & Load data 
+# Set up file paths  & load data 
 #===============================================================================
 # 1. Set up relative file paths so sourcing will work appropriately  ----
 this.wd <- dirname(rstudioapi::getActiveDocumentContext()$path)  
@@ -37,8 +25,27 @@ pathdata <- if(Sys.info()["user"] == "elinor"){
 }
 datapath <- function(x){paste0(pathdata, x)}
 
+#===============================================================================
+# Load libraries
+#===============================================================================
+library(tidyverse)
+library(dplyr)
+library(janitor)
 
-# 2. Load data
+library(sf)
+library(haven)
+library(viridis)
+
+# for regressions
+library(plm)
+library(fixest)
+library(broom)
+
+# source spec_chart.R
+source("spec_chart.R")
+#===============================================================================
+# Load and minorly clean data 
+#===============================================================================
 data_sj <- 
   read_csv(datapath("processed/merge_lsms_sj.csv")) %>% 
   filter(year==2011 & rururb==0| 
@@ -47,69 +54,96 @@ data_sj <-
   mutate(log_tot_cons = log(data_sj$tot_cons))
 
 #===============================================================================
-# Step 1: Get the mean of expected consumption
+# Step 1: Get the mean of expected consumption without weather vars
 #===============================================================================
+# model <- feols(log_tot_cons ~ total_precip + hhsize + mvsw(hhagey, hheducat4, roof, wall, floor), data = data_sj)
+model_multi_object <- feols(log_tot_cons ~ hhsize + mvsw(hhagey, hheducat4, roof, wall, floor), data = data_sj)
+etable(model_multi_object)
 
-# Get all combinations of variables
-n <- 6
-l <- rep(list(0:1), n)
-model.space <- expand.grid(l) %>% filter(Var1==1) %>% 
-  data.frame() #32 combinations hence we need to estimate 32 models
-
-# Filter for usable independent vars for regression analysis
-var <- data_sj %>% 
-  select('hhsize', 'hhagey', 'hheducat4', 'roof', 'wall', 'floor')
-
-# Create a list of model data frames
-model_list <- lapply(1:nrow(model.space), function(i) {
-  
-  # Select the columns from variable_matrix based on the values in the ith row of model.space
-  var[, model.space[i,] == 1, drop = FALSE]
-})
-
-# Example of accessing the first model
-#model_list[[1]] #this is correct
-
-# Loop over each element in the list and create a new data frame with a unique name
-for (i in seq_along(model_list)) {
-  
-  # Create a unique name for the data frame
-  df_name <- paste0("mod", i)
-  
-  # Extract the current vector from the list and convert it to a data frame
-  df <- as.data.frame(model_list[[i]])
-  
-  # Assign the data frame to a variable with the unique name
-  assign(df_name, df)
+# Function to predict on fixest_multi objects
+predict_fixest_multi <- function(fixest_multi_obj, new_data) {
+  predictions <- lapply(fixest_multi_obj, function(model) {
+    predict(model, new_data = new_data)
+  })
+  return(predictions)
 }
 
-# Create an empty data frame to store the predicted values
-predict <-  data.frame(matrix(nrow=length(data_sj$log_tot_cons), ncol=0))
+predictions <- predict_fixest_multi(model_multi_object)
+modelnames <- names(model_multi_object)
 
-# Loop over each data frame name and run a linear regression model
-for (i in 1:nrow(model.space)) {
-  
-  # Extract the data frame
-  data <- get(paste0("mod", i))
-  
-  # Run the linear regression model
-  model <- lm(data_sj$log_tot_cons ~ ., data = data)
-  
-  # Make predictions
-  predict$exp.mean_mod <- model$fitted.values
-  
-  # Create a unique name for the variables
-  colname <- paste0("exp.mean_mod",i)
-  
-  # Assign the variable to its unique name
-  predict[[colname]] <- predict$exp.mean_mod
-}
+# Convert predictions list to a data frame
+predictions_df <- t(data.frame(matrix(unlist(predictions), nrow=length(predictions), byrow=T))) %>% as.data.frame()
 
-# Print the resulting data frame
-#print(predict) #correct
+# Add model names as a new column
+names(predictions_df) <- modelnames
 
-# Remove unnecessary columns
-predict <- predict[,-1]
+
+# ####
+# 
+# # Get all combinations of variables
+# n <- 6
+# l <- rep(list(0:1), n)
+# 
+# model.space <- 
+#   expand.grid(l) %>% 
+#   filter(Var1==1) %>% 
+#   data.frame() #32 combinations hence we need to estimate 32 models
+# 
+# # Filter for usable independent vars for regression analysis
+# var <- data_sj %>% select('hhsize', 'hhagey', 'hheducat4', 'roof', 'wall', 'floor')
+# 
+# # Create a list of model data frames
+# model_list <- lapply(1:nrow(model.space), function(i) {var[model.space[i] == 1]})
+# 
+# # Create a list of model data frames
+# model_list <- lapply(1:nrow(model.space), function(i) {
+#   # Select the columns from variable_matrix based on the values in the ith row of model.space
+#   var[, model.space[i,] == 1, drop = FALSE]
+# })
+# 
+# # Example of accessing the first model
+# #model_list[[1]] #this is correct
+# 
+# # Loop over each element in the list and create a new data frame with a unique name
+# for (i in seq_along(model_list)) {
+#   
+#   # Create a unique name for the data frame
+#   df_name <- paste0("mod", i)
+#   
+#   # Extract the current vector from the list and convert it to a data frame
+#   df <- as.data.frame(model_list[[i]])
+#   
+#   # Assign the data frame to a variable with the unique name
+#   assign(df_name, df)
+# }
+# 
+# # Create an empty data frame to store the predicted values
+# predict <-  data.frame(matrix(nrow=length(data_sj$log_tot_cons), ncol=0))
+# 
+# # Loop over each data frame name and run a linear regression model
+# for (i in 1:nrow(model.space)) {
+#   
+#   # Extract the data frame
+#   data <- get(paste0("mod", i))
+#   
+#   # Run the linear regression model
+#   model <- lm(data_sj$log_tot_cons ~ ., data = data)
+#   
+#   # Make predictions
+#   predict$exp.mean_mod <- model$fitted.values
+#   
+#   # Create a unique name for the variables
+#   colname <- paste0("exp.mean_mod",i)
+#   
+#   # Assign the variable to its unique name
+#   predict[[colname]] <- predict$exp.mean_mod
+# }
+# 
+# # Print the resulting data frame
+# #print(predict) #correct
+# 
+# # Remove unnecessary columns
+# predict <- predict[,-1]
 
 #===============================================================================
 # Step 2: Get the draws for residual & weather indicators
