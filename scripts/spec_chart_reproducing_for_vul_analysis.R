@@ -1,36 +1,50 @@
 #===============================================================================
 # Description: Script to plot a specification chart of vulnerability analysis 
 # Author: Armine Poghosyan
-# Last Updated: April 19, 2023
+# Last Updated: # Wed Apr 19 18:30:40 2023 ------------------------------
 #===============================================================================
 
 #===============================================================================
 # Clean work space & load libraries
 #===============================================================================
-
-library(dplyr)
-library(haven)
-library(sf)
-library(tidyverse)
-library(janitor)
-library(viridis)
-library(plm)
-
 rm(list=ls(all=TRUE))
 
+library(tidyverse)
+library(dplyr)
+library(janitor)
+
+library(sf)
+library(haven)
+library(viridis)
+
+# for regressions
+library(plm)
+library(fixest)
+
 #===============================================================================
-# Load data 
+# Set up file paths  & Load data 
 #===============================================================================
+# 1. Set up relative file paths so sourcing will work appropriately  ----
+this.wd <- dirname(rstudioapi::getActiveDocumentContext()$path)  
+setwd(this.wd) 
+# setwd("G:/My Drive/VT/_Projects/_WB Sahel/_data/output")
 
-setwd("G:/My Drive/VT/_Projects/_WB Sahel/_data/output")
-data_sj <- read.csv("merge_lsms_sj.csv")
+# 2. Point to filepath in dropbox ----
+pathdata <- if(Sys.info()["user"] == "elinor"){
+  "~/Dropbox/research/wb_climateshocks/data/shared_wb_climateshocks/data/"
+} else{
+  # enter your filepath here
+}
+datapath <- function(x){paste0(pathdata, x)}
 
-data_sj <- data_sj %>% 
-  filter(year==2011 & rururb==0| year==2014 & rururb==0| year==2018 & rururb==2)
 
-# get log of tot cons
-data_sj$log_tot_cons <- log(data_sj$tot_cons)
-
+# 2. Load data
+data_sj <- 
+  read_csv(datapath("processed/merge_lsms_sj.csv")) %>% 
+  filter(year==2011 & rururb==0| 
+           year==2014 & rururb==0| 
+           year==2018 & rururb==2) %>% 
+  mutate(log_tot_cons = log(data_sj$tot_cons))
 
 #===============================================================================
 # Step 1: Get the mean of expected consumption
