@@ -1,16 +1,16 @@
 #===============================================================================
-# Description: Script to plot a specification chart of vulnerability analysis 
-# Author: Armine Poghosyan
+# Purpose: Plot specification chart for vulnerability analysis 
+# Author: Armine Poghosyan & Elinor Benami
 # Last Updated: # Wed Apr 19 18:30:40 2023 ------------------------------
 #===============================================================================
 
 #===============================================================================
-# Clean work space 
+# Clean work space ----
 #===============================================================================
 rm(list=ls(all=TRUE))
 
 #===============================================================================
-# Set up file paths  & load data 
+# Set up file paths  & load data ----
 #===============================================================================
 # 1. Set up relative file paths so sourcing will work appropriately  ----
 this.wd <- dirname(rstudioapi::getActiveDocumentContext()$path)  
@@ -26,7 +26,7 @@ pathdata <- if(Sys.info()["user"] == "elinor"){
 datapath <- function(x){paste0(pathdata, x)}
 
 #===============================================================================
-# Load libraries
+# Load libraries ----
 #===============================================================================
 library(tidyverse)
 library(dplyr)
@@ -39,12 +39,11 @@ library(viridis)
 # for regressions
 library(plm)
 library(fixest)
-library(broom)
 
 # source spec_chart.R
 source("spec_chart.R")
 #===============================================================================
-# Load and minorly clean data 
+# Load and minorly clean data  ----
 #===============================================================================
 data_sj <- 
   read_csv(datapath("processed/merge_lsms_sj.csv")) %>% 
@@ -54,9 +53,8 @@ data_sj <-
   mutate(log_tot_cons = log(data_sj$tot_cons))
 
 #===============================================================================
-# Step 1: Get the mean of expected consumption without weather vars
+# Step 1: Get the mean of expected consumption without weather vars ---- 
 #===============================================================================
-# model <- feols(log_tot_cons ~ total_precip + hhsize + mvsw(hhagey, hheducat4, roof, wall, floor), data = data_sj)
 model_multi_object <- feols(log_tot_cons ~ hhsize + mvsw(hhagey, hheducat4, roof, wall, floor), data = data_sj)
 etable(model_multi_object)
 
@@ -77,211 +75,62 @@ predictions_df <- t(data.frame(matrix(unlist(predictions), nrow=length(predictio
 # Add model names as a new column
 names(predictions_df) <- modelnames
 
+#===============================================================================
+# Step 2: Get the draws for residual & weather indicators ---- 
+#===============================================================================
+model_multi_weather <- feols(log_tot_cons ~ total_precip + hhsize + mvsw(hhagey, hheducat4, roof, wall, floor), data = data_sj)
+etable(model_multi_weather)
 
-# ####
-# 
-# # Get all combinations of variables
-# n <- 6
-# l <- rep(list(0:1), n)
-# 
-# model.space <- 
-#   expand.grid(l) %>% 
-#   filter(Var1==1) %>% 
-#   data.frame() #32 combinations hence we need to estimate 32 models
-# 
-# # Filter for usable independent vars for regression analysis
-# var <- data_sj %>% select('hhsize', 'hhagey', 'hheducat4', 'roof', 'wall', 'floor')
-# 
-# # Create a list of model data frames
-# model_list <- lapply(1:nrow(model.space), function(i) {var[model.space[i] == 1]})
-# 
-# # Create a list of model data frames
-# model_list <- lapply(1:nrow(model.space), function(i) {
-#   # Select the columns from variable_matrix based on the values in the ith row of model.space
-#   var[, model.space[i,] == 1, drop = FALSE]
-# })
-# 
-# # Example of accessing the first model
-# #model_list[[1]] #this is correct
-# 
-# # Loop over each element in the list and create a new data frame with a unique name
-# for (i in seq_along(model_list)) {
-#   
-#   # Create a unique name for the data frame
-#   df_name <- paste0("mod", i)
-#   
-#   # Extract the current vector from the list and convert it to a data frame
-#   df <- as.data.frame(model_list[[i]])
-#   
-#   # Assign the data frame to a variable with the unique name
-#   assign(df_name, df)
-# }
-# 
-# # Create an empty data frame to store the predicted values
-# predict <-  data.frame(matrix(nrow=length(data_sj$log_tot_cons), ncol=0))
-# 
-# # Loop over each data frame name and run a linear regression model
-# for (i in 1:nrow(model.space)) {
-#   
-#   # Extract the data frame
-#   data <- get(paste0("mod", i))
-#   
-#   # Run the linear regression model
-#   model <- lm(data_sj$log_tot_cons ~ ., data = data)
-#   
-#   # Make predictions
-#   predict$exp.mean_mod <- model$fitted.values
-#   
-#   # Create a unique name for the variables
-#   colname <- paste0("exp.mean_mod",i)
-#   
-#   # Assign the variable to its unique name
-#   predict[[colname]] <- predict$exp.mean_mod
-# }
-# 
-# # Print the resulting data frame
-# #print(predict) #correct
-# 
-# # Remove unnecessary columns
-# predict <- predict[,-1]
+# Extract coefficients for each model in the fixest_multi object
+coefficients_list <- lapply(model_multi_weather, coef)
+
+# Extract residuals for each model in the fixest_multi object
+residuals_list <- lapply(model_multi_weather, residuals)
 
 #===============================================================================
-# Step 2: Get the draws for residual & weather indicators
+# Step 3: Get the mean and sd of residuals ---- 
 #===============================================================================
-
-# Get all combinations of variables
-n <- 7 #adding the weather indicator
-l <- rep(list(0:1), n)
-model.space <- expand.grid(l) %>% filter(Var1==1 & Var2==1) %>% 
-  data.frame() #32 combinations hence we need to estimate 32 models
-
-# Filter for usable independent vars for regression analysis
-var <- data_sj %>% 
-  select('z_ndvi_1982_2010','hhsize', 'hhagey', 'hheducat4', 'roof', 'wall', 'floor')
-
-# Create empty data frame to store the residuals & list to store coefficients
-residual <-  data.frame(matrix(nrow=length(data_sj$log_tot_cons), ncol=0))
-coef_list <- list()
-
-# Create a list of model data frames
-model_list <- lapply(1:nrow(model.space), function(i) {
-  
-  # Select the columns from variable_matrix based on the values in the ith row of model.space
-  var[, model.space[i,] == 1, drop = FALSE]
-})
-
-
-# Loop over each element in the list and create a new data frame with a unique name
-for (i in seq_along(model_list)) {
-  
-  # Create a unique name for the data frame
-  df_name <- paste0("mod", i)
-  
-  # Extract the current vector from the list and convert it to a data frame
-  df <- as.data.frame(model_list[[i]])
-  
-  # Assign the data frame to a variable with the unique name
-  assign(df_name, df)
-}
-
-
-# Loop over each data frame name and run a linear regression model
-for (i in 1:nrow(model.space)) {
-  
-  # Extract the data frame
-  data <- get(paste0("mod", i))
-  
-  # Run the linear regression model
-  formula <- as.formula(lm(data_sj$log_tot_cons ~ ., data = data))
-  
-  # Obtain residuals 
-  residual$resid <- residuals(lm(formula, data = data))
-  
-  # Create a unique name for the variables
-  colname <- paste0("resid_mod",i)
-  
-  # Assign the variable to its unique name
-  residual[[colname]] <-  residual$resid
-  
-  # Moving to obtaining coefficients
-  
-  # Collect coeffs from regression model in the list
-  coef_list[[i]] <- list(coef(lm(formula, data = data)))
-  
-  # Choose names for extracted coeffs
-  df_name <- names(coef_list)[i] <- paste0("coef", i)
-  
-  # Extract the current vector from the list, convert it to a data frame 
-  # and assign it to selected unique column names
-  assign(df_name, setNames(as.data.frame(coef_list[[i]]), df_name))
-}
-
-# Remove unnecessary columns
-residual <- residual[,-1]
+sd_resid <- lapply(residuals_list, sd) %>% unlist() %>% as.data.frame() %>% setNames("sd_resid")
+mean_resid <- lapply(residuals_list, mean) %>% unlist() %>% as.data.frame() %>% setNames("mean_resid")
+resid_mean_sd <- bind_cols(mean_resid, sd_resid)
+rownames(resid_mean_sd) <- modelnames 
 
 #===============================================================================
-# Get the mean and sd of residuals & simulate 1,000 draws from normal dist
+# Step 4: simulate 1,000 draws from normal dist ---- 
 #===============================================================================
-
-# Create an empty data frame to store the mean residuals
-resid_mean_sd <-  data.frame(matrix(nrow=nrow(model.space), ncol=0))
-
-for (i in 1:nrow(model.space)) {
-  
-  # Extract the data frame
-  data <- residual[, i]
-  
-  # Get the mean and sd
-  resid_mean_sd$mean <- mean(data)
-  resid_mean_sd$sd   <- sd(data)
-  
-  # Assign unique column names for mean and sd associated w/regression models
-  colname1 <- paste0("mean.resid",i)
-  resid_mean_sd[[colname1]] <-  resid_mean_sd$mean
-  
-  colname2 <- paste0("sd.resid",i)
-  resid_mean_sd[[colname2]] <-  resid_mean_sd$sd
-}
-
-# Remove unnecessary columns
-resid_mean_sd <- resid_mean_sd[,c(-1,-2)]
-
 # Set seed
 set.seed(37)
 
-# Create an empty data frame to store the simulated values of residuals
-sim.resid <-list()
+simulate_values <- function(df) {
+  mean_resid <- df[[1]]
+  sd_resid <- df[[2]]
+  
+  # Obtain simulated values, assuming resids follow  Gaussian normal dist
 
-for (i in 1:nrow(model.space)) {
+  sim_values <- rnorm(n = 1000, mean = mean_resid, sd = sd_resid)
   
-  colname1 <- paste0("mean.resid",i)
-  colname2 <- paste0("sd.resid",i)
-  
-  # Obtain simulated values
-  sim.resid[[i]] <- rnorm(n=1000, #assuming resids follow  Gaussian normal dist
-                          resid_mean_sd[[colname1]], 
-                          resid_mean_sd[[colname2]])
-  
-  # Assign simulated values a unique name associated w/regression models
-  #colname3 <- paste0("sim.resid_mod",i)
-  #sim.resid[[colname3]] <-   sim.resid$sim
+  return(sim_values)
 }
 
-
-#===============================================================================
-# Get the mean and sd of weather anomaly & simulate 1,000 draws from hist. dist
-#===============================================================================
-
-# Take 1,000 draws of weather anomaly from its historic distr. 
-sim.precip <- as.data.frame(rnorm(n=1000, 
-                                  mean(data_sj$z_ndvi_1982_2010), 
-                                  sd(data_sj$z_ndvi_1982_2010)))
+# Run 1,000 simulations for each row in resid_mean_sd
+simulations_list <- lapply(seq_len(nrow(resid_mean_sd)), function(i) {
+  simulate_values(resid_mean_sd[i,])
+})
 
 
 #===============================================================================
-# Step 3: Get var of total per capita consumption
+# Step 5: Get the mean and sd of weather anomaly & simulate 1,000 draws from hist. dist ---- 
 #===============================================================================
+# Take 1,000 draws of the weather anomaly from its historic distr. 
+sim.precip <-
+  rnorm(n = 1000,
+        mean(data_sj$z_ndvi_1982_2010),
+        sd(data_sj$z_ndvi_1982_2010)) %>%
+  as.data.frame()
 
+#===============================================================================
+# Step 6: Get var of total per capita consumption ---- 
+#===============================================================================
 # Create an empty list to store the simulated per capita consumption
 sim_cons <- list()
 
@@ -485,3 +334,170 @@ schart(data_chart1, labels, ylab="Percentage of vulnerable",
        col.dot=c("grey60","grey95","grey95","royalblue"),
        lwd.symbol=2, lwd.est=2, 
        ylim = c(49, 52))
+
+
+
+
+### Scrap--- 
+# ####
+# 
+# # Get all combinations of variables
+# n <- 6
+# l <- rep(list(0:1), n)
+# 
+# model.space <- 
+#   expand.grid(l) %>% 
+#   filter(Var1==1) %>% 
+#   data.frame() #32 combinations hence we need to estimate 32 models
+# 
+# # Filter for usable independent vars for regression analysis
+# var <- data_sj %>% select('hhsize', 'hhagey', 'hheducat4', 'roof', 'wall', 'floor')
+# 
+# # Create a list of model data frames
+# model_list <- lapply(1:nrow(model.space), function(i) {var[model.space[i] == 1]})
+# 
+# # Create a list of model data frames
+# model_list <- lapply(1:nrow(model.space), function(i) {
+#   # Select the columns from variable_matrix based on the values in the ith row of model.space
+#   var[, model.space[i,] == 1, drop = FALSE]
+# })
+# 
+# # Example of accessing the first model
+# #model_list[[1]] #this is correct
+# 
+# # Loop over each element in the list and create a new data frame with a unique name
+# for (i in seq_along(model_list)) {
+#   
+#   # Create a unique name for the data frame
+#   df_name <- paste0("mod", i)
+#   
+#   # Extract the current vector from the list and convert it to a data frame
+#   df <- as.data.frame(model_list[[i]])
+#   
+#   # Assign the data frame to a variable with the unique name
+#   assign(df_name, df)
+# }
+# 
+# # Create an empty data frame to store the predicted values
+# predict <-  data.frame(matrix(nrow=length(data_sj$log_tot_cons), ncol=0))
+# 
+# # Loop over each data frame name and run a linear regression model
+# for (i in 1:nrow(model.space)) {
+#   
+#   # Extract the data frame
+#   data <- get(paste0("mod", i))
+#   
+#   # Run the linear regression model
+#   model <- lm(data_sj$log_tot_cons ~ ., data = data)
+#   
+#   # Make predictions
+#   predict$exp.mean_mod <- model$fitted.values
+#   
+#   # Create a unique name for the variables
+#   colname <- paste0("exp.mean_mod",i)
+#   
+#   # Assign the variable to its unique name
+#   predict[[colname]] <- predict$exp.mean_mod
+# }
+# 
+# # Print the resulting data frame
+# #print(predict) #correct
+# 
+# # Remove unnecessary columns
+# predict <- predict[,-1]
+
+
+# 
+# # Get all combinations of variables
+# n <- 7 #adding the weather indicator
+# l <- rep(list(0:1), n)
+# model.space <- expand.grid(l) %>% filter(Var1==1 & Var2==1) %>% 
+#   data.frame() #32 combinations hence we need to estimate 32 models
+# 
+# # Filter for usable independent vars for regression analysis
+# var <- data_sj %>% 
+#   select('z_ndvi_1982_2010','hhsize', 'hhagey', 'hheducat4', 'roof', 'wall', 'floor')
+# 
+# # Create empty data frame to store the residuals & list to store coefficients
+# residual <-  data.frame(matrix(nrow=length(data_sj$log_tot_cons), ncol=0))
+# coef_list <- list()
+# 
+# # Create a list of model data frames
+# model_list <- lapply(1:nrow(model.space), function(i) {
+#   
+#   # Select the columns from variable_matrix based on the values in the ith row of model.space
+#   var[, model.space[i,] == 1, drop = FALSE]
+# })
+# 
+# 
+# # Loop over each element in the list and create a new data frame with a unique name
+# for (i in seq_along(model_list)) {
+#   
+#   # Create a unique name for the data frame
+#   df_name <- paste0("mod", i)
+#   
+#   # Extract the current vector from the list and convert it to a data frame
+#   df <- as.data.frame(model_list[[i]])
+#   
+#   # Assign the data frame to a variable with the unique name
+#   assign(df_name, df)
+# }
+# 
+# 
+# # Loop over each data frame name and run a linear regression model
+# for (i in 1:nrow(model.space)) {
+#   
+#   # Extract the data frame
+#   data <- get(paste0("mod", i))
+#   
+#   # Run the linear regression model
+#   formula <- as.formula(lm(data_sj$log_tot_cons ~ ., data = data))
+#   
+#   # Obtain residuals 
+#   residual$resid <- residuals(lm(formula, data = data))
+#   
+#   # Create a unique name for the variables
+#   colname <- paste0("resid_mod",i)
+#   
+#   # Assign the variable to its unique name
+#   residual[[colname]] <-  residual$resid
+#   
+#   # Moving to obtaining coefficients
+#   
+#   # Collect coeffs from regression model in the list
+#   coef_list[[i]] <- list(coef(lm(formula, data = data)))
+#   
+#   # Choose names for extracted coeffs
+#   df_name <- names(coef_list)[i] <- paste0("coef", i)
+#   
+#   # Extract the current vector from the list, convert it to a data frame 
+#   # and assign it to selected unique column names
+#   assign(df_name, setNames(as.data.frame(coef_list[[i]]), df_name))
+# }
+# 
+# # Remove unnecessary columns
+# residual <- residual[,-1]
+
+
+# Create an empty data frame to store the mean residuals
+resid_mean_sd <-  data.frame(matrix(nrow=nrow(model.space), ncol=0))
+
+for (i in 1:nrow(model.space)) {
+  
+  # Extract the data frame
+  data <- residual[, i]
+  
+  # Get the mean and sd
+  resid_mean_sd$mean <- mean(data)
+  resid_mean_sd$sd   <- sd(data)
+  
+  # Assign unique column names for mean and sd associated w/regression models
+  colname1 <- paste0("mean.resid",i)
+  resid_mean_sd[[colname1]] <-  resid_mean_sd$mean
+  
+  colname2 <- paste0("sd.resid",i)
+  resid_mean_sd[[colname2]] <-  resid_mean_sd$sd
+}
+
+# Remove unnecessary columns
+resid_mean_sd <- resid_mean_sd[,c(-1,-2)]
