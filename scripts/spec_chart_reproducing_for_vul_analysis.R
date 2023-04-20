@@ -40,6 +40,9 @@ library(viridis)
 library(plm)
 library(fixest)
 
+# For functional programming
+library(purrr) 
+
 # source spec_chart.R
 source("spec_chart.R")
 #===============================================================================
@@ -50,7 +53,7 @@ data_sj <-
   filter(year==2011 & rururb==0| 
            year==2014 & rururb==0| 
            year==2018 & rururb==2) %>% 
-  mutate(log_tot_cons = log(data_sj$tot_cons))
+  mutate(log_tot_cons = log(tot_cons))
 
 #===============================================================================
 # Step 1: Get the mean of expected consumption without weather vars ---- 
@@ -82,7 +85,7 @@ model_multi_weather <- feols(log_tot_cons ~ total_precip + hhsize + mvsw(hhagey,
 etable(model_multi_weather)
 
 # Extract coefficients for each model in the fixest_multi object
-coefficients_list <- lapply(model_multi_weather, coef)
+coef_list <- lapply(model_multi_weather, coef)
 
 # Extract residuals for each model in the fixest_multi object
 residuals_list <- lapply(model_multi_weather, residuals)
@@ -113,24 +116,105 @@ simulate_values <- function(df) {
 }
 
 # Run 1,000 simulations for each row in resid_mean_sd
-simulations_list <- lapply(seq_len(nrow(resid_mean_sd)), function(i) {
+sim_resid <- lapply(nrow(resid_mean_sd), function(i) {
   simulate_values(resid_mean_sd[i,])
-})
-
+}) %>%
+  setNames("sim_resid") %>% 
+  unlist() %>% 
+  as.vector()
 
 #===============================================================================
 # Step 5: Get the mean and sd of weather anomaly & simulate 1,000 draws from hist. dist ---- 
 #===============================================================================
 # Take 1,000 draws of the weather anomaly from its historic distr. 
-sim.precip <-
+sim_precip <-
   rnorm(n = 1000,
         mean(data_sj$z_ndvi_1982_2010),
         sd(data_sj$z_ndvi_1982_2010)) %>%
-  as.data.frame()
+  as.data.frame() %>% 
+  setNames("sim_precip")
 
 #===============================================================================
 # Step 6: Get var of total per capita consumption ---- 
 #===============================================================================
+list_names <- paste0("coef_list[", 1:32, "]") # Create a vector of list names 
+list_of_lists <- map(list_names, ~ eval(parse(text = .x))) # Extract the lists
+combined_matrix <- reduce(list_of_lists, bind_rows). # Combine the lists into a single dataframe
+df_list <- map_df(1:1000, ~ combined_matrix) # Duplicate the combined_matrix 1000 times 
+final_df <- bind_rows(df_list) # Combine the dataframes into a single dataframe, with NA's for missing obs
+dim(final_df) # Check the dimensions of the final dataframe (should be 32,000 by 8)
+
+# Repeat the vector 32 times
+sim_precip_col <- sim_precip_col <- rep(sim_precip, times = 32) %>% unlist() %>% as.vector() 
+sim_resid_col <- rep(sim_resid, times = 32) %>% unlist() %>% as.vector() 
+
+# Sort the data.frame by the number of NA's in each row
+df_sorted <- final_df[order(rev(apply(is.na(final_df), 1, sum))),]
+
+merged_df <- 
+  df_sorted %>% 
+  mutate(sim_precip = sim_precip_col,
+         sim_resid = sim_resid_col)
+
+# Duplicate the data.frame 4145 times and combine into a single data.frame
+df_dup <- do.call(rbind, rep(list(merged_df), 4145))
+
+# Create a new data.frame with the values to merge (4145 total)
+new_df <- data.frame(hhsize_raw = data_sj$hhsize, 
+                     hhagey_raw = data_sj$hhagey, 
+                     hheducat4_raw = data_sj$hheducat4, 
+                     roof_raw = data_sj$roof, 
+                     wall_raw = data_sj$wall, 
+                     floor_raw = data_sj$floor)
+
+# Create a list of 4145 identical copies of new_df
+new_df_list <- replicate(32000, new_df, simplify = FALSE)
+
+# Add an id column to each copy of new_df using map_dfr
+new_df_list <- map_dfr(new_df_list, ~cbind(.x, id = seq_len(nrow(.x))))
+
+# Add the new data.frame to the duplicated data.frame
+giant_df <- cbind(df_dup, new_df_list)
+
+# Convert NA values to 0's
+giant_df  <- replace(giant_df, is.na(giant_df) , 0)
+
+# Get the predictions of hh income
+giant_df_pred <-
+  giant_df %>%
+  mutate(prediction =
+      `(Intercept)` + 
+      total_precip * sim_precip + 
+      hhsize * hhsize_raw + 
+      hhagey * hhagey_raw + 
+      hheducat4 * hheducat4_raw + 
+      roof * roof_raw + 
+      wall * wall_raw + 
+      floor * floor_raw)
+
+      
+
+
+hh_df_pred <- 
+  giant_df_pred %>% 
+  group_by(id) %>% 
+  mutate(hh_stdev = sd(prediction)) %>% 
+  ungroup()
+
+hh_df_pred_small <-
+  
+
+
+# Calculate st. dev. for each HH using 1,000 obs.
+sim.stdev <- list()
+
+for(i in 1:length(sim_cons)){
+  
+  sim.stdev[[i]] <- rep(sd(sim_cons[[i]]), length(data_sj$log_tot_cons))
+}
+
+
+
 # Create an empty list to store the simulated per capita consumption
 sim_cons <- list()
 
