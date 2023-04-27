@@ -109,7 +109,6 @@ simulate_values <- function(df) {
   sd_resid <- df[[2]]
   
   # Obtain simulated values, assuming resids follow  Gaussian normal dist
-
   sim_values <- rnorm(n = 1000, mean = mean_resid, sd = sd_resid)
   
   return(sim_values)
@@ -139,7 +138,7 @@ sim_precip <-
 #===============================================================================
 list_names <- paste0("coef_list[", 1:32, "]") # Create a vector of list names 
 list_of_lists <- map(list_names, ~ eval(parse(text = .x))) # Extract the lists
-combined_matrix <- reduce(list_of_lists, bind_rows). # Combine the lists into a single dataframe
+combined_matrix <- reduce(list_of_lists, bind_rows) # Combine the lists into a single dataframe
 df_list <- map_df(1:1000, ~ combined_matrix) # Duplicate the combined_matrix 1000 times 
 final_df <- bind_rows(df_list) # Combine the dataframes into a single dataframe, with NA's for missing obs
 dim(final_df) # Check the dimensions of the final dataframe (should be 32,000 by 8)
@@ -177,7 +176,8 @@ new_df_list <- map_dfr(new_df_list, ~cbind(.x, id = seq_len(nrow(.x))))
 giant_df <- cbind(df_dup, new_df_list)
 
 # Convert NA values to 0's
-giant_df  <- replace(giant_df, is.na(giant_df) , 0)
+# giant_df  <- replace(giant_df, is.na(giant_df) , 0)
+giant_df[] <- lapply(giant_df, function(x) ifelse(is.na(x), 0, x))
 
 # Get the predictions of hh income
 giant_df_pred <-
@@ -191,8 +191,6 @@ giant_df_pred <-
       roof * roof_raw + 
       wall * wall_raw + 
       floor * floor_raw)
-
-      
 
 
 hh_df_pred <- 
